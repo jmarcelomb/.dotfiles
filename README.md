@@ -2,6 +2,13 @@
 
 ## How to setup:
 
+
+# Submodule init
+```sh
+git submodule update --init --recursive
+
+```
+
 ```sh
 sudo apt-get install stow
 stow
@@ -25,7 +32,6 @@ echo "exec zsh" > ~/.bashrc
 ```
 
 ## tmux:
-
 ### Install:
 
 ```sh
@@ -33,13 +39,11 @@ sudo apt-get install tmux
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 ```
 
-### Configure oh-my-tmux
-
+## Rust
+### Install:
 ```sh
-ln -s -f .tmux/.tmux.conf
-cp .tmux/.tmux.conf.local .
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
-
 
 ### i3m:
 
