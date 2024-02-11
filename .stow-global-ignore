@@ -23,4 +23,5 @@ _darcs
 
 # Personal
 
+\.gitmodules
 scripts/
