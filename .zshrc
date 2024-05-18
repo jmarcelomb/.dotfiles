@@ -115,7 +115,7 @@ fi
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-if [[ -n "$(which cargo)" ]]; then
+if [[ "$(which cargo)" != "cargo not found" ]]; then
 . "$HOME/.cargo/env"
 fi
 # Set up fzf key bindings and fuzzy completion
