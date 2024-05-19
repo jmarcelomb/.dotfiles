@@ -20,8 +20,21 @@ stow
 
 ```sh
 sudo apt install git zsh -y
+```
+
+### OMZ
+
+```sh
 sh -c "$(wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
 ```
+
+### Startship.rs
+
+```sh
+curl -sS https://starship.rs/install.sh | sh
+```
+
+### Set default shell
 
 Set default as default shell:
 

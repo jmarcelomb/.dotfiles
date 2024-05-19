@@ -16,7 +16,7 @@ if [ -n "$has_neovim" ]; then
 
 read -p "Do you want to delete neovim folder? (y/n) " yn
 
-case $yn in 
+case $yn in
 	[Yy]* ) echo "ok, deleting folder"; rm -rf neovim;;
 	[Nn]* ) echo exiting...;
 		exit;;
@@ -26,7 +26,7 @@ esac
 
 fi
 
-echo "Clonning neovim"
+echo "Cloning neovim"
 git clone https://github.com/neovim/neovim.git
 
 cd neovim

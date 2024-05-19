@@ -19,4 +19,3 @@ local keymap = vim.api.nvim_set_keymap
 keymap("n", toggle_breakpoint_str, "<cmd>lua require('persistent-breakpoints.api').toggle_breakpoint()<cr>", opts)
 keymap("n", conditional_breakpoint_str, "<cmd>lua require('persistent-breakpoints.api').set_conditional_breakpoint()<cr>", opts)
 keymap("n", clear_breakpoint_str, "<cmd>lua require('persistent-breakpoints.api').clear_all_breakpoints()<cr>", opts)
-
