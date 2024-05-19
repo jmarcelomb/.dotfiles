@@ -11,7 +11,7 @@ git submodule update --init --recursive
 
 ```sh
 sudo apt-get install stow
-stow
+stow .
 ```
 
 ## Useful commands:
@@ -22,7 +22,7 @@ stow
 sudo apt install git zsh -y
 ```
 
-### OMZ
+### ~~OMZ (not used)~~
 
 ```sh
 sh -c "$(wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
