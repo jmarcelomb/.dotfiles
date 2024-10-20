@@ -11,4 +11,7 @@
     file.".local/bin".source =
       config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.dotfiles/scripts";
   };
+
+  # Nicely reload system units when changing configs
+  systemd.user.startServices = "sd-switch";
 }
