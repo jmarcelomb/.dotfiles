@@ -1,4 +1,4 @@
-{
+{ pkgs, config, ... }: {
   programs.fzf = {
     enable = true;
     enableZshIntegration = true;
@@ -32,19 +32,7 @@
   programs.starship = {
     enable = true;
     enableZshIntegration = true;
-    settings = {
-      character = {
-        success_symbol = "[›](bold green)";
-        error_symbol = "[›](bold red)";
-      };
-
-      git_status = {
-        deleted = "✗";
-        modified = "✶";
-        staged = "✓";
-        stashed = "≡";
-      };
-    };
+    settings = pkgs.lib.importTOML "${config.home.homeDirectory}/.dotfiles/.config/starship.toml" ;
   };
   # home.sessionVariables.STARSHIP_CACHE = "${config.xdg.cacheHome}/starship";
 }
