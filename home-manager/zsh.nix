@@ -20,8 +20,8 @@
       pkgs = "nvim ${flakeDir}/nixos/packages.nix";
 
       ll = "eza -lh";
-      la = "eza -lah";
-      l. = "eza -a";
+      lla = "eza -lah";
+      la = "eza -a";
       v = "nvim";
       ff = "fastfetch";
     };
