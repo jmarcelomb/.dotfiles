@@ -8,7 +8,7 @@
 
     shellAliases =
       let
-        flakeDir = "~/nix";
+        flakeDir = "~/.dotfiles";
       in {
       rb = "sudo nixos-rebuild switch --flake ${flakeDir}";
       upd = "nix flake update ${flakeDir}";
