@@ -15,6 +15,7 @@
     # Coding stuff
     gnumake
     gcc
+    uv
     (python3.withPackages (ps: with ps; [ requests ]))
 
     # CLI utils
