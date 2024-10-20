@@ -1,13 +1,12 @@
 {
-
   imports = [
     ./zsh.nix
     ./modules/bundle.nix
   ];
 
   home = {
-    username = "amper";
-    homeDirectory = "/home/amper";
-    stateVersion = "23.11";
+    username = "jmmb";
+    homeDirectory = "/home/jmmb";
+    stateVersion = "24.05";
   };
 }

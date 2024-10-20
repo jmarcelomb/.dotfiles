@@ -6,11 +6,9 @@
     ./env.nix
     ./user.nix
     ./xserver.nix
+    #./libinput.nix
     ./nm.nix
-    ./virtmanager.nix
-    ./hyprland.nix
     ./trim.nix
     ./bluetooth.nix
-    ./nixvim/nixvim.nix
   ];
 }

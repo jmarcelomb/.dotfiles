@@ -21,17 +21,10 @@
 
       ll = "ls -l";
       v = "nvim";
-      se = "sudoedit";
       ff = "fastfetch";
     };
 
     history.size = 10000;
     history.path = "${config.xdg.dataHome}/zsh/history";
-
-    oh-my-zsh = {
-      enable = true;
-      plugins = [ "git" "sudo" ];
-      theme = "agnoster"; # blinks is also really nice
-    };
   };
 }

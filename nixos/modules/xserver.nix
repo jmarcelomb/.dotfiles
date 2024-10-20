@@ -8,19 +8,18 @@
     #   autoLogin.user = "amper";
     #   lightdm.enable = true;
     # };
-
-    layout = "us";
-    xkbVariant = "";
-
-    libinput = {
-      enable = true;
-      mouse.accelProfile = "flat";
-      touchpad.accelProfile = "flat";
+    xkb = {
+      layout = "us";
+      variant = "";
     };
 
-    videoDrivers = [ "amdgpu" ];
-    deviceSection = ''Option "TearFree" "True"'';
-    #displayManager.gdm.enable = true;
-    #desktopManager.gnome.enable = true;
+    displayManager.gdm.enable = true;
+    desktopManager.gnome.enable = true;
   };
+
+   services.libinput = {
+      enable = true;
+      #mouse.accelProfile = "flat";
+      #touchpad.accelProfile = "flat";
+   };
 }
