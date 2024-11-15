@@ -6,8 +6,8 @@ return {
 			sources = {
 				null_ls.builtins.formatting.stylua,
 				-- Python
-				null_ls.builtins.diagnostics.ruff,
-				null_ls.builtins.diagnostics.python,
+				-- null_ls.builtins.diagnostics.ruff,
+				-- null_ls.builtins.diagnostics.python,
 			},
 		})
 	end,

@@ -1,12 +1,20 @@
 vim.g.mapleader = " "
-vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
+local function map(mode, lhs, rhs)
+  -- vim.keymap.set(mode, lhs, rhs, { silent = true })
+  vim.keymap.set(mode, lhs, rhs)
+end
 
-vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]])
-vim.keymap.set("n", "<leader>Y", [["+Y]])
+map("n", "<leader>pv", vim.cmd.Ex)
 
-vim.keymap.set("i", "<C-c>", "<Esc>")
+map({ "n", "v" }, "<leader>y", [["+y]])
+map("n", "<leader>Y", [["+Y]])
 
-vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
-vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
+map("i", "<C-c>", "<Esc>")
 
-vim.keymap.set("n", "<leader>f", vim.lsp.buf.format)
+map("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
+map("n", "<leader>x", "<cmd>!chmod +x %<CR>")
+
+map("n", "<leader>f", vim.lsp.buf.format)
+
+-- Repeat last macro
+map("", ",", "@@")
