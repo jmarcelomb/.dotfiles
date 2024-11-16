@@ -3,6 +3,8 @@ require("marcelo.snippets")
 vim.opt.completeopt = { "menu", "menuone", "noselect" }
 vim.opt.shortmess:append("c")
 
+require("luasnip.loaders.from_vscode").lazy_load()
+
 local lspkind = require("lspkind")
 lspkind.init({})
 
@@ -33,6 +35,10 @@ cmp.setup({
 			vim.snippet.expand(args.body)
 		end,
 	},
+    window = {
+      completion = cmp.config.window.bordered(),
+      documentation = cmp.config.window.bordered(),
+    },
 })
 
 -- Setup up vim-dadbod

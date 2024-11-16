@@ -12,7 +12,7 @@ map("n", "<leader>Y", [["+Y]])
 map("i", "<C-c>", "<Esc>")
 
 map("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
-map("n", "<leader>x", "<cmd>!chmod +x %<CR>")
+-- map("n", "<leader>x", "<cmd>!chmod +x %<CR>")
 
 map("n", "<leader>f", vim.lsp.buf.format)
 
