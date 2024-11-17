@@ -1,0 +1,23 @@
+[font]
+size = 12.0
+
+[font.bold]
+family = "SauceCodePro NFP Medium"
+style = "Bold"
+
+[font.bold_italic]
+family = "SauceCodePro NFP Medium"
+style = "Bold Italic"
+
+[font.italic]
+family = "SauceCodePro NFP Medium"
+style = "Italic"
+
+[font.normal]
+family = "SauceCodePro NFP Medium"
+style = "Regular"
+
+[keyboard]
+bindings = [
+   { key = "Return", mods = "Control|Shift", action = "SpawnNewInstance" }
+]
