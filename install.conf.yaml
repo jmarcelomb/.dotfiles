@@ -1,0 +1,23 @@
+- defaults:
+    link:
+      relink: true
+
+- clean: ['~']
+
+- link:
+    ~/scripts: scripts/
+    ~/.config/alacritty: .config/alacritty
+    ~/.config/zellij/: .config/zellij
+    ~/.config/starship.toml: .config/starship.toml
+    ~/.config/i3: .config/i3/
+    ~/.zshrc: .zshrc
+    ~/.aliases: .aliases
+    ~/.tmux.conf: .tmux.conf
+    ~/.fzf/: fzf/
+
+# - create:
+#     - ~/.vim/undo-history
+
+- shell:
+  - [git submodule update --init --recursive, Installing submodules]
+  - ./fzf/install --all
