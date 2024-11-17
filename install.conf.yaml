@@ -6,6 +6,7 @@
 
 - link:
     ~/scripts: scripts/
+    ~/.config/nvim: .config/nvim
     ~/.config/alacritty: .config/alacritty
     ~/.config/zellij/: .config/zellij
     ~/.config/starship.toml: .config/starship.toml
