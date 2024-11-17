@@ -98,7 +98,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 Install useful CLI utilities via Cargo:
 
 ```sh
-cargo install zellij bat eza zoxide fd-find ripgrep dust
+cargo install zellij bat eza zoxide fd-find ripgrep du-dust bottom
 ```
 
 ---
