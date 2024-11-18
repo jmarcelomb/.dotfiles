@@ -49,4 +49,6 @@ _fzf_compgen_dir() {
 
 source ~/.aliases
 
+eval "$(direnv hook zsh)"
+
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
