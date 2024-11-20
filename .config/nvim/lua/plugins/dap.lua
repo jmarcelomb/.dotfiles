@@ -70,15 +70,18 @@ return {
   {
     "mfussenegger/nvim-dap-python",
     config = function()
-      require("dap-python").setup()
+      local dap_python = require("dap-python")
+      dap_python.setup()
+      dap_python.test_runner = "pytest"
     end,
+    keys = {
+      {
+        "<leader>dpt",
+        function()
+          require("dap-python").test_method()
+        end,
+        desc = "Debug python test",
+      },
+    },
   },
-  -- {
-  --   "Weissle/persistent-breakpoints.nvim",
-  --   config = function()
-  --     require("persistent-breakpoints").setup({
-  --       load_breakpoints_event = { "BufReadPost" },
-  --     })
-  --   end,
-  -- },
 }
