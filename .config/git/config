@@ -1,0 +1,25 @@
+[user]
+  email = me@marceloborges.dev 
+  name = Marcelo Borges
+  signingkey = 98A61F86729C7B67
+
+[core]
+  pager = delta
+  editor = nvim -f
+
+[format]
+  signoff = true
+
+[interactive]
+  diffFilter = delta --color-only
+
+[delta]
+  navigate = true  # use n and N to move between diff sections
+  dark = true      # or light = true, or omit for auto-detection
+
+[merge]
+  conflictstyle = zdiff3
+
+[commit]
+  gpgsign = true
+
