@@ -1,7 +1,9 @@
 # If you come from bash you might have to change your $PATH.
 export PATH=$HOME/bin:/usr/local/bin:$HOME/Tools/fzf/bin:$HOME/Tools/neovim/bin:$HOME/.local/bin:$PATH
 
-eval "$(starship init zsh)"
+if command -v starship >/dev/null 2>&1; then
+  eval "$(starship init zsh)"
+fi
 
 # Set the directory we want to store zinit and plugins
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
@@ -23,11 +25,12 @@ zinit light Aloxaf/fzf-tab
 if [[ "$(which cargo)" != "cargo not found" ]]; then
 . "$HOME/.cargo/env"
 fi
+
 # Set up fzf key bindings and fuzzy completion
-eval "$(fzf --zsh)"
-
+if command -v zoxide >/dev/null 2>&1; then
+  eval "$(fzf --zsh)"
+fi
 # -- Use fd instead of fzf --
-
 export FZF_DEFAULT_COMMAND="fd --hidden --strip-cwd-prefix --exclude .git"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_ALT_C_COMMAND="fd --type=d --hidden --strip-cwd-prefix --exclude .git"
@@ -47,8 +50,13 @@ _fzf_compgen_dir() {
   fd --type=d --hidden --exclude .git . "$1"
 }
 
-source ~/.aliases
+if command -v direnv >/dev/null 2>&1; then
+  eval "$(direnv hook zsh)"
+fi
 
-eval "$(direnv hook zsh)"
+if command -v zoxide >/dev/null 2>&1; then
+  eval "$(zoxide init zsh)"
+fi
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+[ -f ~/.aliases ] && source ~/.aliases
