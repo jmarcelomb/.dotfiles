@@ -1,5 +1,9 @@
 # If you come from bash you might have to change your $PATH.
-export PATH=$HOME/bin:/usr/local/bin:$HOME/Tools/fzf/bin:$HOME/Tools/neovim/bin:$HOME/.local/bin:$PATH
+export PATH=/usr/local/bin:$HOME/bin:/usr/local/bin:$HOME/.local/bin:$PATH
+export PATH=$HOME/Tools/fzf/bin:$PATH
+export PATH=$HOME/Tools/neovim/bin:$PATH
+export PATH=$HOME/go/bin:$PATH
+
 
 if command -v starship >/dev/null 2>&1; then
   eval "$(starship init zsh)"
