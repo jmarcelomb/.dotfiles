@@ -3,3 +3,7 @@
 -- Add any additional options here
 vim.g.lazyvim_picker = "telescope"
 vim.g.lazyvim_python_ruff = "ruff"
+
+-- remove transparency
+vim.opt.pumblend = 0 -- for cmp menu
+vim.opt.winblend = 0 -- for documentation popup
