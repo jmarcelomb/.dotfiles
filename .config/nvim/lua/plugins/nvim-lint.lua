@@ -6,7 +6,7 @@ return {
     linters_by_ft = {
       py = { "ruff", "pylint", "mypy" },
       -- Use the "*" filetype to run linters on all filetypes.
-      -- ["*"] = { "cspell" },
+      ["*"] = { "cspell" },
       -- Use the "_" filetype to run linters on filetypes that don't have other linters configured.
       -- ['_'] = { 'fallback linter' },
       -- ["*"] = { "typos" },
