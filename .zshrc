@@ -1,9 +1,16 @@
+setopt inc_append_history
+setopt share_history # Reloads the history whenever you use it
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=10000000
+SAVEHIST=10000000
+
 # If you come from bash you might have to change your $PATH.
 export PATH=/usr/local/bin:$HOME/bin:/usr/local/bin:$HOME/.local/bin:$PATH
 export PATH=$HOME/Tools/fzf/bin:$PATH
 export PATH=$HOME/Tools/neovim/bin:$PATH
 export PATH=$HOME/go/bin:$PATH
 
+export EDITOR=nvim
 
 if command -v starship >/dev/null 2>&1; then
   eval "$(starship init zsh)"
@@ -31,7 +38,7 @@ if [[ "$(which cargo)" != "cargo not found" ]]; then
 fi
 
 # Set up fzf key bindings and fuzzy completion
-if command -v zoxide >/dev/null 2>&1; then
+if command -v fzf >/dev/null 2>&1; then
   eval "$(fzf --zsh)"
 fi
 # -- Use fd instead of fzf --
