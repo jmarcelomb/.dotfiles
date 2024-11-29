@@ -11,3 +11,9 @@ vim.opt.winblend = 0 -- for documentation popup
 -- enable spell check
 -- vim.opt.spelllang = "en_us"
 -- vim.opt.spell = true
+
+vim.opt.listchars = {
+  tab = "> ",
+  trail = "·",
+  nbsp = "+",
+}
