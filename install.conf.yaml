@@ -15,11 +15,10 @@
     ~/.zshrc: .zshrc
     ~/.aliases: .aliases
     ~/.tmux.conf: .tmux.conf
-    ~/.fzf/: fzf/
 
 # - create:
 #     - ~/.vim/undo-history
 
 - shell:
     - [git submodule update --init --recursive, Installing submodules]
-    - ./fzf/install --all
+    - ./scripts/install_fzf.sh
