@@ -3,6 +3,7 @@ setopt share_history # Reloads the history whenever you use it
 HISTFILE="$HOME/.zsh_history"
 HISTSIZE=10000000
 SAVEHIST=10000000
+export HISTIGNORE='*sudo -S*'
 
 # If you come from bash you might have to change your $PATH.
 export PATH=/usr/local/bin:$HOME/bin:/usr/local/bin:$HOME/.local/bin:$PATH
