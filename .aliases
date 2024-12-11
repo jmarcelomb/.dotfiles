@@ -36,13 +36,24 @@ alias edit=nvim
 # Git aliases
 alias gs="git status"
 alias ga="git add"
+alias gA="git add -A"
 alias gr="git restore"
 alias grs="git restore --staged"
 alias gc="git commit"
-alias gp="git push"
+alias gcm="git commit -m"
+alias gP="git push"
+alias gPf="git push --force-with-lease"
+alias gPF="git push --force"
+alias ga="git add"
+alias gp="git pull"
 alias gl="git log --oneline --graph --decorate"
 alias gco="git checkout"
 alias gb="git branch"
+alias gcp="git cherry-pick"
+alias gcpn="git cherry-pick -n"
+alias gwa="git worktree add"
+alias gwr="git worktree remove"
+alias gwls="git worktree list"
 
 # File search and manipulation aliases
 alias f="find . -type f -iname" # Search for files by name
