@@ -8,6 +8,8 @@ alias ll="ls -lH"  # Detailed listing
 alias lt="ls --tree" # Display directory as a tree
 alias ld="ls -ld */" # List only directories
 
+alias lg=lazygit
+
 # Check if zoxide exists and alias cd to zoxide
 if command -v zoxide >/dev/null 2>&1; then
   alias cd=z
