@@ -10,6 +10,7 @@ export PATH=/usr/local/bin:$HOME/bin:/usr/local/bin:$HOME/.local/bin:$PATH
 export PATH=$HOME/Tools/fzf/bin:$PATH
 export PATH=$HOME/Tools/neovim/bin:$PATH
 export PATH=$HOME/go/bin:$PATH
+export PATH=$HOME/scripts/:$PATH
 
 export EDITOR=nvim
 
