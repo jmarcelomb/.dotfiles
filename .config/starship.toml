@@ -1,62 +1,3 @@
-# Get editor completions based on the config schema
-"$schema" = 'https://starship.rs/config-schema.json'
-
-# Inserts a blank line between shell prompts
-add_newline = false
-
-format = "$all $character"
-right_format = "$cmd_duration"
-
-# Replace the "❯" symbol in the prompt with "➜"
-[character] # The name of the module we are configuring is "character"
-success_symbol = "[➜](bold green)" # The "success_symbol" segment is being set to "➜" with the color "bold green"
-error_symbol = "[➜](bold red)"
-
-[cmd_duration]
-min_time = 1
-show_milliseconds = false
-disabled = false
-style = "bold"
-format = '[$duration]($style) '
-
-
-[battery]
-full_symbol = "🔋"
-charging_symbol = "🔌"
-discharging_symbol = "⚡"
-
-[[battery.display]]
-threshold = 30
-style = "bold red"
-
-[directory]
-read_only = " 󰌾"
-truncation_length = 5
-format = "[$path]($style)[$lock_symbol]($lock_style)"
-
-[git_branch]
-format = " [$symbol$branch]($style) "
-symbol = " "
-style = "bold yellow"
-
-[git_commit]
-commit_hash_length = 8
-style = "bold white"
-
-[git_state]
-format = '[\($state( $progress_current of $progress_total)\)]($style) '
-
-[hostname]
-ssh_symbol = " "
-ssh_only = false
-format = "<[$hostname]($style)>"
-trim_at = "-"
-style = "bold dimmed white"
-disabled = true
-
-[memory_usage]
-symbol = "󰍛 "
-
 [aws]
 symbol = "  "
 
@@ -75,14 +16,11 @@ symbol = " "
 [dart]
 symbol = " "
 
+[directory]
+read_only = " 󰌾"
+
 [docker_context]
 symbol = " "
-format = "via [$symbol$context]($style) "
-style = "blue bold"
-only_with_files = true
-detect_files = ["docker-compose.yml", "docker-compose.yaml", "Dockerfile"]
-detect_folders = []
-disabled = false
 
 [elixir]
 symbol = " "
@@ -94,6 +32,9 @@ symbol = " "
 symbol = " "
 
 [fossil_branch]
+symbol = " "
+
+[git_branch]
 symbol = " "
 
 [golang]
@@ -111,6 +52,9 @@ symbol = " "
 [hg_branch]
 symbol = " "
 
+[hostname]
+ssh_symbol = " "
+
 [java]
 symbol = " "
 
@@ -122,6 +66,9 @@ symbol = " "
 
 [lua]
 symbol = " "
+
+[memory_usage]
+symbol = "󰍛 "
 
 [meson]
 symbol = "󰔷 "
@@ -185,7 +132,6 @@ Windows = "󰍲 "
 
 [package]
 symbol = "󰏗 "
-disabled = true
 
 [perl]
 symbol = " "
@@ -206,7 +152,7 @@ symbol = "󰟔 "
 symbol = " "
 
 [rust]
-symbol = " "
+symbol = "󱘗 "
 
 [scala]
 symbol = " "
