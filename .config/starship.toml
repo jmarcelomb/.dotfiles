@@ -7,18 +7,33 @@ symbol = "  "
 
 [buf]
 symbol = " "
+format = "[$symbol]($style)"
 
 [c]
 symbol = " "
+
+[cmake]
+format = "[$symbol]($style)"
+
+[cobol]
+format = "[$symbol]($style)"
 
 [conda]
 symbol = " "
 
 [crystal]
 symbol = " "
+format = "[$symbol]($style)"
 
 [dart]
 symbol = " "
+format = "[$symbol]($style)"
+
+[daml]
+format = "[$symbol]($style)"
+
+[deno]
+format = "[$symbol]($style)"
 
 [directory]
 read_only = " 󰌾"
@@ -26,23 +41,38 @@ read_only = " 󰌾"
 [docker_context]
 symbol = " "
 
+[dotnet]
+format = "[$symbol(🎯 $tfm )]($style)"
+
 [elixir]
 symbol = " "
+format = "[$symbol]($style)"
 
 [elm]
 symbol = " "
+format = "[$symbol]($style)"
+
+[erlang]
+format = "[$symbol]($style)"
 
 [fennel]
 symbol = " "
+format = "[$symbol]($style)"
 
 [fossil_branch]
 symbol = " "
+[gleam]
+format = "[$symbol]($style)"
 
 [git_branch]
 symbol = " "
 
 [golang]
 symbol = " "
+format = "[$symbol]($style)"
+
+[gradle]
+format = "[$symbol]($style)"
 
 [guix_shell]
 symbol = " "
@@ -52,42 +82,53 @@ symbol = " "
 
 [haxe]
 symbol = " "
+format = "[$symbol]($style)"
 
 [hg_branch]
 symbol = " "
+[helm]
+format = "[$symbol]($style)"
 
 [hostname]
 ssh_symbol = " "
 
 [java]
 symbol = " "
+format = "[$symbol]($style)"
 
 [julia]
 symbol = " "
+format = "[$symbol]($style)"
 
 [kotlin]
 symbol = " "
+format = "[$symbol]($style)"
 
 [lua]
 symbol = " "
+format = "[$symbol]($style)"
 
 [memory_usage]
 symbol = "󰍛 "
 
 [meson]
 symbol = "󰔷 "
+format = "[$symbol]($style)"
 
 [nim]
 symbol = "󰆥 "
+format = "[$symbol]($style)"
 
 [nix_shell]
 symbol = " "
 
 [nodejs]
 symbol = " "
+format = "[$symbol]($style)"
 
 [ocaml]
 symbol = " "
+format = '[$symbol(\($switch_indicator$switch_name\) )]($style)'
 
 [os.symbols]
 Alpaquita = " "
@@ -133,39 +174,76 @@ Ubuntu = " "
 Unknown = " "
 Void = " "
 Windows = "󰍲 "
+[opa]
+format = "[$symbol]($style)"
 
 [package]
 symbol = "󰏗 "
 
 [perl]
 symbol = " "
+format = "[$symbol]($style)"
 
 [php]
 symbol = " "
+format = "[$symbol]($style)"
 
 [pijul_channel]
 symbol = " "
 
+[pulumi]
+format = "[$symbol$stack]($style)"
+
+[purescript]
+format = "[$symbol]($style)"
+
 [python]
 symbol = " "
+format = "[$symbol]($style)"
+
+[quarto]
+format = "[$symbol]($style)"
+
+[raku]
+format = "[$symbol]($style)"
+
+[red]
+format = "[$symbol]($style)"
 
 [rlang]
 symbol = "󰟔 "
+format = "[$symbol]($style)"
 
 [ruby]
 symbol = " "
+format = "[$symbol]($style)"
 
 [rust]
 symbol = "󱘗 "
+format = "[$symbol]($style)"
 
 [scala]
 symbol = " "
 
+[solidity]
+format = "[$symbol]($style)"
+
 [swift]
 symbol = " "
+format = "[$symbol]($style)"
+
+[typst]
+format = "[$symbol]($style)"
+
+[vagrant]
+format = "[$symbol]($style)"
+
+[vlang]
+format = "[$symbol]($style)"
 
 [zig]
 symbol = " "
+format = "[$symbol]($style)"
 
 [palettes.catppuccin_frappe]
 rosewater = "#f2d5cf"
