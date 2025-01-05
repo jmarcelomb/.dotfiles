@@ -14,6 +14,9 @@
     ~/.config/i3: .config/i3/
     ~/.config/neovide/: .config/neovide/
     ~/.config/ghostty/: .config/ghostty/
+    ~/.config/aerospace/: .config/aerospace/
+    ~/.config/fish/: .config/fish/
+    ~/.aliases.fish: .aliases.fish
     ~/.zshrc: .zshrc
     ~/.aliases: .aliases
     ~/.tmux.conf: .tmux.conf
