@@ -40,6 +40,7 @@ read_only = " 󰌾"
 
 [docker_context]
 symbol = " "
+format = "[$symbol]($style)"
 
 [dotnet]
 format = "[$symbol(🎯 $tfm )]($style)"
@@ -179,6 +180,7 @@ format = "[$symbol]($style)"
 
 [package]
 symbol = "󰏗 "
+format = "[$symbol]($style)"
 
 [perl]
 symbol = " "
