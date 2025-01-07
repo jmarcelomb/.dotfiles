@@ -6,7 +6,7 @@ SETUVAR FZF_ALT_C_OPTS:\x2d\x2dpreview\x20\x27eza\x20\x2d\x2dtree\x20\x2d\x2dcol
 SETUVAR FZF_CTRL_T_COMMAND:fd\x20\x2d\x2dhidden\x20\x2d\x2dstrip\x2dcwd\x2dprefix\x20\x2d\x2dexclude\x20\x2egit
 SETUVAR FZF_CTRL_T_OPTS:\x2d\x2dpreview\x20\x27bat\x20\x2dn\x20\x2d\x2dcolor\x3dalways\x20\x2d\x2dline\x2drange\x20\x3a500\x20\x7b\x7d\x27
 SETUVAR FZF_DEFAULT_COMMAND:fd\x20\x2d\x2dhidden\x20\x2d\x2dstrip\x2dcwd\x2dprefix\x20\x2d\x2dexclude\x20\x2egit
-SETUVAR --export --path PATH:/Users/jmmb/scripts\x1e/Users/jmmb/\x2ecargo/bin\x1e/Users/jmmb/go/bin\x1e/Users/jmmb/Tools/neovim/bin\x1e/Users/jmmb/Tools/fzf/bin\x1e/Users/jmmb/\x2elocal/bin\x1e/Users/jmmb/bin\x1e/opt/homebrew/bin\x1e/usr/local/bin\x1e/Users/jmmb/\x2ecargo/bin\x1e/Users/jmmb/\x2efzf/bin\x1e/usr/local/bin\x1e/System/Cryptexes/App/usr/bin\x1e/usr/bin\x1e/bin\x1e/usr/sbin\x1e/sbin\x1e/var/run/com\x2eapple\x2esecurity\x2ecryptexd/codex\x2esystem/bootstrap/usr/local/bin\x1e/var/run/com\x2eapple\x2esecurity\x2ecryptexd/codex\x2esystem/bootstrap/usr/bin\x1e/var/run/com\x2eapple\x2esecurity\x2ecryptexd/codex\x2esystem/bootstrap/usr/appleinternal/bin\x1e/Applications/VMware\x20Fusion\x2eapp/Contents/Public
+SETUVAR --export --path PATH:/Users/jmmb/scripts\x1e/Users/jmmb/\x2ecargo/bin\x1e/Users/jmmb/go/bin\x1e/Users/jmmb/Tools/neovim/bin\x1e/Users/jmmb/Tools/fzf/bin\x1e/Users/jmmb/\x2elocal/bin\x1e/Users/jmmb/bin\x1e/opt/homebrew/bin\x1e/usr/local/bin\x1e/Users/jmmb/\x2efzf/bin\x1e/Users/jmmb/scripts\x1e/Users/jmmb/\x2ecargo/bin\x1e/Users/jmmb/go/bin\x1e/Users/jmmb/Tools/neovim/bin\x1e/Users/jmmb/Tools/fzf/bin\x1e/Users/jmmb/\x2elocal/bin\x1e/Users/jmmb/bin\x1e/opt/homebrew/bin\x1e/usr/local/bin\x1e/Users/jmmb/\x2ecargo/bin\x1e/usr/local/bin\x1e/System/Cryptexes/App/usr/bin\x1e/usr/bin\x1e/bin\x1e/usr/sbin\x1e/sbin\x1e/var/run/com\x2eapple\x2esecurity\x2ecryptexd/codex\x2esystem/bootstrap/usr/local/bin\x1e/var/run/com\x2eapple\x2esecurity\x2ecryptexd/codex\x2esystem/bootstrap/usr/bin\x1e/var/run/com\x2eapple\x2esecurity\x2ecryptexd/codex\x2esystem/bootstrap/usr/appleinternal/bin\x1e/Applications/VMware\x20Fusion\x2eapp/Contents/Public
 SETUVAR __fish_initialized:3400
 SETUVAR fish_color_autosuggestion:brblack
 SETUVAR fish_color_cancel:\x2dr
@@ -30,7 +30,7 @@ SETUVAR fish_color_selection:white\x1e\x2d\x2dbold\x1e\x2d\x2dbackground\x3dbrbl
 SETUVAR fish_color_status:red
 SETUVAR fish_color_user:brgreen
 SETUVAR fish_color_valid_path:\x2d\x2dunderline
-SETUVAR fish_key_bindings:fish_default_key_bindings
+SETUVAR fish_key_bindings:fish_vi_key_bindings
 SETUVAR fish_pager_color_completion:normal
 SETUVAR fish_pager_color_description:yellow\x1e\x2di
 SETUVAR fish_pager_color_prefix:normal\x1e\x2d\x2dbold\x1e\x2d\x2dunderline
