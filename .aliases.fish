@@ -56,7 +56,6 @@ alias gwls="git worktree list"
 
 # File search and manipulation aliases
 alias f="find . -type f -iname"
-alias fd="find . -type d -iname"
 alias grep="grep --color=auto"
 
 # System monitoring aliases
