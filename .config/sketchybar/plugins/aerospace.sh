@@ -7,9 +7,9 @@
 WORKSPACE="$1"
 APPS=$(aerospace list-windows --workspace "$WORKSPACE" | awk -F'|' 'NF > 1 {gsub(/^ +| +$/, "", $2); print $2}' | paste -sd ', ' -)
 
-# Update the sketchybar item
+# Check if APPS is empty and clear the label for empty workspaces
 if [ -z "$APPS" ]; then
-  sketchybar --set "$NAME"
+  sketchybar --set "$NAME" label="$WORKSPACE"
 else
   sketchybar --set "$NAME" label="$WORKSPACE:$APPS"
 fi
