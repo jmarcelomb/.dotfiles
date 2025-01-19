@@ -1,0 +1,18 @@
+# Dropping to the shell
+[[manager.prepend_keymap]]
+on = "!"
+run = 'shell "$SHELL" --block'
+desc = "Open shell here"
+
+# Close input by once Esc press
+[[input.prepend_keymap]]
+on = "<Esc>"
+run = "close"
+desc = "Cancel input"
+
+# macOS: Preview files with the system Quick Look
+[[manager.prepend_keymap]]
+on = "<C-p>"
+run = '''
+  shell 'qlmanage -p "$@"'
+'''
