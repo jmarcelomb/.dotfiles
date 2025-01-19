@@ -32,19 +32,29 @@ Clone the repository and initialize submodules:
 git clone https://github.com/jmarcelomb/.dotfiles.git
 cd .dotfiles
 git submodule update --init --recursive
-./install
+./setup.sh
 ```
 
 ---
 
 ## 💻 Shell Setup
 
-### Install zsh
+Currently I'm using [fish](https://fishshell.com/) and zsh shells with (starship.rs)[starship.rs] prompt.
 
-Ensure you have `zsh` installed:
+### How to install zsh
+
+Ubuntu:
 
 ```sh
 sudo apt install git zsh -y
+```
+
+### How to install fish
+
+Ubuntu:
+
+```sh
+sudo apt install fish -y
 ```
 
 ### Install Starship Prompt
@@ -55,7 +65,7 @@ Install [Starship](https://starship.rs/) for a modern shell prompt:
 curl -sS https://starship.rs/install.sh | sh
 ```
 
-### Set Zsh as Default Shell
+### How to set Zsh as Default Shell
 
 Change your default shell to Zsh:
 
@@ -99,6 +109,51 @@ Install useful CLI utilities via Cargo:
 
 ```sh
 cargo install zellij bat eza zoxide fd-find ripgrep du-dust bottom git-delta typos-cli yazi-fm yazi-cli
+```
+
+### Alacritty
+
+```sh
+cargo install alacritty
+```
+
+### [cargo-update](https://github.com/nabijaczleweli/cargo-update):
+
+You can use [cargo-update](https://github.com/nabijaczleweli/cargo-update) to update the installed programs. You can install it using cargo:
+
+```sh
+cargo install cargo-update
+```
+
+And then to update all programs do:
+
+```sh
+cargo install-update -a
+```
+
+### [cargo-binstall](https://github.com/cargo-bins/cargo-binstall)
+
+If you don't want to install compile the rust programs you can use [cargo-binstall](https://github.com/cargo-bins/cargo-binstall) to install only the binary of the respective program.
+
+Example:
+```sh
+cargo binstall zellij
+```
+
+### Alternative to [lazygit](https://github.com/jesseduffield/lazygit)
+
+I'm still trying it out, but we can use the [gitui](https://github.com/extrawurst/gitui) rust program to replace lazygit so we can install almost all tools using cargo.
+
+```sh
+cargo install gitui
+```
+
+### Yazi
+
+Install theme:
+
+```sh
+ya pack -a dangooddd/kanagawa
 ```
 
 ---
