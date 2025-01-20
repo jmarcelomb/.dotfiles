@@ -56,6 +56,12 @@ Ubuntu:
 ```sh
 sudo apt install fish -y
 ```
+### How to set fish as Default Shell
+
+```sh
+echo $(which fish) | sudo tee -a /etc/shells
+chsh -s $(which fish)
+```
 
 ### Install Starship Prompt
 
