@@ -1,7 +1,6 @@
 [user]
   email = me@marceloborges.dev 
   name = Marcelo Borges
-  signingkey = 98A61F86729C7B67
 
 [core]
   pager = delta
@@ -19,9 +18,5 @@
 
 [merge]
   conflictstyle = zdiff3
-
-[commit]
-  gpgsign = true
-
 [init]
-	defaultBranch = main
+  defaultBranch = main
