@@ -1,6 +1,11 @@
-[submodule "dotbot"]
-	path = dotbot
-	url = git@github.com:anishathalye/dotbot.git
 [submodule ".config/alacritty/themes"]
 	path = .config/alacritty/themes
 	url = https://github.com/alacritty/alacritty-theme
+[submodule ".config/nvim"]
+	path = .config/nvim
+  url = https://github.com/jmarcelomb/nvim.git
+  branch = main
+[submodule "dotbot"]
+	path = dotbot
+  url = https://github.com/anishathalye/dotbot.git
+  branch = master
