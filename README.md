@@ -140,6 +140,12 @@ Example:
 cargo binstall zellij
 ```
 
+You can install it using cargo:
+
+```sh
+cargo install cargo-binstall
+```
+
 ### Alternative to [lazygit](https://github.com/jesseduffield/lazygit)
 
 I'm still trying it out, but we can use the [gitui](https://github.com/extrawurst/gitui) rust program to replace lazygit so we can install almost all tools using cargo.
