@@ -71,4 +71,3 @@ alias meminfo="free -h" # Memory usage
 alias ip="ip -c a" # Colorful IP address display
 alias ping="ping -c 5" # Limit ping to 5 packets
 alias ports="netstat -tulanp" # Show open ports
-
