@@ -12,12 +12,15 @@
     curl
     wl-clipboard
     zip
-    ripgrep
-    fzf
-    yazi
-    zellij
-    neovim
     git
+    zsh
+    ghostty
+    
+    fzf
+    alacritty
+    zellij
+    yazi
+    ripgrep
 
     # Coding stuff
     python311

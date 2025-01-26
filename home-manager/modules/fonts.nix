@@ -1,6 +1,6 @@
 { pkgs, ... }: {
-  fonts.packages = with pkgs; [
-  (nerdfonts.override { fonts = [ "Source Code Pro"  ]; })
-    jetbrains-mono
+  fonts.fontconfig.enable = true;
+  home.packages = [
+    (pkgs.nerdfonts.override { fonts = [ "SourceCodePro" ]; })
   ];
 }
