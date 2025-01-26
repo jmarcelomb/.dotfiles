@@ -62,5 +62,10 @@
           ./home-manager/home.nix
         ];
       };
+      # Define a formatter for nix fmt
+      formatter = {
+        aarch64-linux = nixpkgs.legacyPackages.${system}.nixpkgs-fmt;
+        x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixpkgs-fmt;
+      };
     };
 }
