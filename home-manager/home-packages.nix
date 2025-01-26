@@ -2,7 +2,7 @@
   nixpkgs.config.allowUnfree = true;
 
   home.packages = with pkgs; [
-    # Packages in each category are sorted alphabetically
+    firefox
 
     # CLI utils
     bc
@@ -30,6 +30,7 @@
     dust
     delta
     gitui
+    lazygit
 
     # Coding stuff
     python311
