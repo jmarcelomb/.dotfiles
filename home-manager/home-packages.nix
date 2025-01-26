@@ -33,6 +33,7 @@
 
     # Coding stuff
     python311
+    cargo
     gcc
   ];
 }

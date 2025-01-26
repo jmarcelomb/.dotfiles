@@ -2,22 +2,21 @@
   description = "My system configuration";
 
   inputs = {
+    # Default to the nixos-unstable branch
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
+    # Latest stable branch of nixpkgs, used for version rollback
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.11";
 
+    # Use the master branch of home-manager
     home-manager = {
-      url = "github:nix-community/home-manager/release-24.11";
+      url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # COMING SOON...
-    #nixvim = {
-    #  url = "github:nix-community/nixvim";
-    #  inputs.nixpkgs.follows = "nixpkgs";
-    #};
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, ... }@inputs:
     let
       system = "aarch64-linux";
       homeStateVersion = "24.11";
@@ -30,6 +29,10 @@
         system = system;
         specialArgs = {
           inherit inputs stateVersion hostname user;
+          pkgs-stable = import nixpkgs-stable {
+            inherit system;
+            config.allowUnfree = true;
+          };
         };
 
         modules = [
