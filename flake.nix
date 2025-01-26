@@ -21,46 +21,37 @@
       system = "aarch64-linux";
       homeStateVersion = "24.11";
       user = "hinata";
-      hosts = [
-        { hostname = "konoha"; stateVersion = "24.11"; }
-      ];
+      hosts = [{
+        hostname = "konoha";
+        stateVersion = "24.11";
+      }];
 
-      makeSystem = { hostname, stateVersion }: nixpkgs.lib.nixosSystem {
-        system = system;
-        specialArgs = {
-          inherit inputs stateVersion hostname user;
-          pkgs-stable = import nixpkgs-stable {
-            inherit system;
-            config.allowUnfree = true;
+      makeSystem = { hostname, stateVersion }:
+        nixpkgs.lib.nixosSystem {
+          system = system;
+          specialArgs = {
+            inherit inputs stateVersion hostname user;
+            pkgs-stable = import nixpkgs-stable {
+              inherit system;
+              config.allowUnfree = true;
+            };
           };
+
+          modules = [ ./hosts/${hostname}/configuration.nix ];
         };
 
-        modules = [
-          ./hosts/${hostname}/configuration.nix
-        ];
-      };
-
-    in
-    {
-      nixosConfigurations = nixpkgs.lib.foldl'
-        (configs: host:
-          configs // {
-            "${host.hostname}" = makeSystem {
-              inherit (host) hostname stateVersion;
-            };
-          })
-        { }
-        hosts;
+    in {
+      nixosConfigurations = nixpkgs.lib.foldl' (configs: host:
+        configs // {
+          "${host.hostname}" =
+            makeSystem { inherit (host) hostname stateVersion; };
+        }) { } hosts;
 
       homeConfigurations.${user} = home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.${system};
-        extraSpecialArgs = {
-          inherit inputs homeStateVersion user;
-        };
+        extraSpecialArgs = { inherit inputs homeStateVersion user; };
 
-        modules = [
-          ./home-manager/home.nix
-        ];
+        modules = [ ./home-manager/home.nix ];
       };
       # Define a formatter for nix fmt
       formatter = {
