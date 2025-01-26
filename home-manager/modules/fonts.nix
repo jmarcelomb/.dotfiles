@@ -1,6 +1,6 @@
 { pkgs, ... }: {
   fonts.fontconfig.enable = true;
   home.packages = [
-    (pkgs.nerdfonts.override { fonts = [ "SourceCodePro" ]; })
+    pkgs.source-code-pro
   ];
 }
