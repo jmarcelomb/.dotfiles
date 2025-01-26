@@ -1,0 +1,39 @@
+name: "nix flake check"
+on:
+  pull_request:
+    paths-ignore:
+      - 'README.md'
+  push:
+    paths-ignore:
+      - 'README.md'
+
+jobs:
+  nix-flake-check:
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, macos-latest ]
+    runs-on: ${{matrix.os}}
+    steps:
+    - uses: actions/checkout@v4
+    - uses: cachix/install-nix-action@v30
+      with:
+        github_access_token: ${{ secrets.GITHUB_TOKEN }}
+    - uses: DeterminateSystems/magic-nix-cache-action@v8
+
+    - name: Flake metadata
+      run: |
+        nix flake metadata
+        nix flake show
+
+    - name: Flake check
+      run: |
+        nix flake check -L
+
+    # - name: Cargo build
+    #   run: |
+    #     nix develop --command bash -c 'cd blinky && cargo build --release'
+
+    - name: Formatter check
+      run: |
+        nix fmt
+        git diff --exit-code
