@@ -11,7 +11,7 @@ on:
 jobs:
   flake-check:
     runs-on: ubuntu-latest
-    
+
     permissions:
       contents: write
 
@@ -21,7 +21,7 @@ jobs:
 
     - name: Install Nix
       uses: cachix/install-nix-action@v26
-      with: 
+      with:
         nix_path: nixpkgs=channel:nixos-unstable
 
     - name: Install Nix Linting and Formatting Tools
@@ -38,7 +38,7 @@ jobs:
 
     - name: Nix Flake Checker
       uses: DeterminateSystems/flake-checker-action@v5
-    
+
     - name: Update Readme
       run: nix run github:erictossell/readme-py -- -fs -fi -hmd docs/readme/header.md -fmd docs/readme/footer.md
 
