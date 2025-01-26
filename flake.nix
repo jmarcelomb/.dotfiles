@@ -28,7 +28,7 @@
 
       makeSystem = { hostname, stateVersion }:
         nixpkgs.lib.nixosSystem {
-          system = system;
+          inherit system;
           specialArgs = {
             inherit inputs stateVersion hostname user;
             pkgs-stable = import nixpkgs-stable {
@@ -40,12 +40,16 @@
           modules = [ ./hosts/${hostname}/configuration.nix ];
         };
 
-    in {
-      nixosConfigurations = nixpkgs.lib.foldl' (configs: host:
-        configs // {
-          "${host.hostname}" =
-            makeSystem { inherit (host) hostname stateVersion; };
-        }) { } hosts;
+    in
+    {
+      nixosConfigurations = nixpkgs.lib.foldl'
+        (configs: host:
+          configs // {
+            "${host.hostname}" =
+              makeSystem { inherit (host) hostname stateVersion; };
+          })
+        { }
+        hosts;
 
       homeConfigurations.${user} = home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.${system};
