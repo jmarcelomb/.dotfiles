@@ -5,6 +5,7 @@
 keybinds clear-defaults=true {
     locked {
         bind "Ctrl g" { SwitchToMode "normal"; }
+        bind "F7" {EditScrollback; }
     }
     pane {
         bind "left" { MoveFocus "left"; }
