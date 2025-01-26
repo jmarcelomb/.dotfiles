@@ -2,3 +2,4 @@ font-family = SauceCodePro Nerd Font
 font-size = 12
 theme = catppuccin-frappe
 font-feature = -liga
+macos-option-as-alt = true
