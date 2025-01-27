@@ -65,4 +65,4 @@ fi
 
 [ -f ~/.aliases ] && source ~/.aliases
 
-bind -x "\"\t\": fzf_bash_completion" 
+bind -x "\"\t\": fzf_bash_completion"
