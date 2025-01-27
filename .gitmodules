@@ -9,3 +9,6 @@
 	path = dotbot
   url = https://github.com/anishathalye/dotbot.git
   branch = master
+[submodule ".plugins/fzf-tab-completion"]
+	path = .plugins/fzf-tab-completion
+	url = https://github.com/lincheney/fzf-tab-completion.git
