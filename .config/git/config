@@ -20,3 +20,7 @@
   conflictstyle = zdiff3
 [init]
   defaultBranch = main
+
+[push]
+  autoSetupRemote = true
+
