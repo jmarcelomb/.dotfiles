@@ -8,7 +8,7 @@ export PATH=$HOME/scripts/:$PATH
 export EDITOR=nvim
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.bash
-source $HOME/.plugins/fzf-tab-completion/bash/fzf-bash-completion.sh
+source $HOME/.dotfiles/.plugins/fzf-tab-completion/bash/fzf-bash-completion.sh
 
 # Set up fzf key bindings and fuzzy completion
 if command -v fzf >/dev/null 2>&1; then
@@ -41,7 +41,7 @@ if command -v starship >/dev/null 2>&1; then
 fi
 
 if [[ "$(which cargo)" != "cargo not found" ]]; then
-. "$HOME/lib/Tools/.cargo/env"
+. "$HOME/.cargo/env"
 fi
 
 if command -v direnv >/dev/null 2>&1; then
