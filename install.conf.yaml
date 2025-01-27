@@ -19,6 +19,7 @@
     ~/.config/fish/: .config/fish/
     ~/.aliases.fish: .aliases.fish
     ~/.zshrc: .zshrc
+    ~/.bashrc.marcelo: .bashrc.marcelo
     ~/.aliases: .aliases
     ~/.tmux.conf: .tmux.conf
 
