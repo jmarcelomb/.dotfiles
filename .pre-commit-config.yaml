@@ -14,11 +14,11 @@ repos:
       - id: destroyed-symlinks
       - id: detect-private-key
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.4.0
+    rev: v2.4.1
     hooks:
       - id: codespell
         exclude: init.lua|remap.lua|marcelo.lua|noice.lua|lazy-lock.json
   - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.23.2
+    rev: v8.23.3
     hooks:
       - id: gitleaks
