@@ -16,3 +16,20 @@ on = "<C-p>"
 run = '''
   shell 'qlmanage -p "$@"'
 '''
+
+# Make vertical moviments wrap around
+[[manager.prepend_keymap]]
+on = "k"
+run = "plugin arrow -1"
+
+[[manager.prepend_keymap]]
+on = "j"
+run = "plugin arrow 1"
+
+[[manager.prepend_keymap]]
+on = "Up"
+run = "plugin arrow -1"
+
+[[manager.prepend_keymap]]
+on = "Down"
+run = "plugin arrow 1"
