@@ -8,6 +8,7 @@
 import os
 import subprocess
 import sys
+import argparse
 
 
 def get_git_diff():
@@ -24,10 +25,38 @@ def get_git_diff():
     return result.stdout.strip()
 
 
-def generate_commit_message(diff: str, context: str = "", attempts: int = 3):
+def prompt_llm(prompt: str, model="qwen2.5-coder:14b", attempts: int = 3):
+    messages: list[str] = []
+    for _ in range(attempts):
+        result = subprocess.run(
+            ["ask", model, prompt],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        messages.append(f"{result.stdout.strip()}\n")
+
+    for i, message in enumerate(messages):
+        print(f"===Commit message generated #{i} ===")
+        print(message)
+        print("=" * 40)  # Divider for readability
+
+    while True:
+        response = input("Press Enter or write y/yes to continue").strip()
+
+        if response == "" or response.lower() in ("y", "yes"):
+            break
+        print(f"Aborting commit.. Received '{response}'")
+        sys.exit(1)
+
+    subprocess.run(
+        ["git", "commit", "-e", "-m", "\n".join(messages)],
+        check=True,
+    )
+
+
+def generate_prompt(diff: str, context: str = "", use_emoji: bool = False):
     """Generates a commit message using a local instance of Ollama."""
-    model = "qwen2.5-coder:14b"
-    use_emoji = False
 
     if not diff:
         print(
@@ -61,7 +90,7 @@ fix, feat, build, chore, ci, docs, style, refactor, perf, test.
 """
     )
 
-    prompt = f"""
+    return f"""
 {identity} Your mission is to create clean and comprehensive commit messages
 as per the Conventional Commit Convention and explain WHAT were the changes and mainly WHY the changes were done.
 I'll send you an output of 'git diff --staged' command, and you are to convert it into a commit message.
@@ -74,39 +103,30 @@ Use the present tense. Lines must not be longer than 74 characters. Use English 
 {diff}
 """
 
-    messages: list[str] = []
-    for _ in range(attempts):
-        result = subprocess.run(
-            ["ask", model, prompt],
-            capture_output=True,
-            text=True,
-            check=True,
-        )
-        messages.append(f"{result.stdout.strip()}\n")
-
-    for i, message in enumerate(messages):
-        print(f"===Commit message generated #{i} ===")
-        print(message)
-        print("=" * 40)  # Divider for readability
-
-    while True:
-        response = input("Press Enter or write y/yes to continue").strip()
-
-        if response == "" or response.lower() in ("y", "yes"):
-            break
-        print(f"Aborting commit.. Received '{response}'")
-        sys.exit(1)
-
-    subprocess.run(
-        ["git", "commit", "-e", "-m", "\n".join(messages)],
-        check=True,
-    )
-
 
 def main():
-    context = " ".join(sys.argv[1:]) if len(sys.argv) > 1 else ""
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-c", "--context", help="Extra context to feed to prompt.", type=str, default=""
+    )
+    parser.add_argument(
+        "--stdout",
+        help="If given, echo's prompt to stdout instead of doing to ollama.",
+        action="store_true",
+    )
+    parser.add_argument(
+        "-e", "--emoji", help="Uses emojis if the flag is given.", action="store_true"
+    )
+    args = parser.parse_args()
     diff = get_git_diff()
-    generate_commit_message(diff, context)
+    prompt = generate_prompt(diff, args.context, use_emoji=args.emoji)
+
+    if args.stdout:
+        print(prompt)
+        sys.exit(0)
+
+    prompt_llm(prompt)
+    sys.exit(0)
 
 
 if __name__ == "__main__":
