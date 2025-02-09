@@ -17,11 +17,12 @@
     ~/.config/ghostty/: .config/ghostty/
     ~/.config/aerospace/: .config/aerospace/
     ~/.config/sketchybar/: .config/sketchybar/
-    ~/.config/fish/: .config/fish/
-    ~/.aliases.fish: .aliases.fish
     ~/.zshrc: .zshrc
     ~/.bashrc.marcelo: .bashrc.marcelo
     ~/.aliases: .aliases
+    ~/.aliases.common: .aliases.common
+    ~/.aliases.fish: .aliases.fish
+    ~/.config/fish/: .config/fish/
     ~/.tmux.conf: .tmux.conf
 
 # - create:
