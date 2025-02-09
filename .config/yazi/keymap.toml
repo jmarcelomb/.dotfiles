@@ -33,3 +33,8 @@ run = "plugin arrow -1"
 [[manager.prepend_keymap]]
 on = "Down"
 run = "plugin arrow 1"
+
+[[manager.prepend_keymap]]
+on = ["g", "i"]
+run = "plugin lazygit"
+desc = "run lazygit"

@@ -1,5 +1,9 @@
-[plugin]
-deps = []
+[[plugin.deps]]
+use = "Lil-Dank/lazygit"
+rev = "c82794f"
+hash = "2b0c33928986f126d5c5a4cac31a6b46"
 
-[flavor]
-deps = [{ use = "dangooddd/kanagawa", rev = "d98f0c3" }]
+[[flavor.deps]]
+use = "dangooddd/kanagawa"
+rev = "d98f0c3"
+hash = "cada780385f75abbcfbf5343256b441"
