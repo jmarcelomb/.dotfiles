@@ -3,6 +3,26 @@ use = "Lil-Dank/lazygit"
 rev = "c82794f"
 hash = "2b0c33928986f126d5c5a4cac31a6b46"
 
+[[plugin.deps]]
+use = "yazi-rs/plugins:chmod"
+rev = "0725851"
+hash = "f28138c2e11e87962b66d583fef724c3"
+
+[[plugin.deps]]
+use = "yazi-rs/plugins:git"
+rev = "0725851"
+hash = "771f18427fb75fb19990ce602bb322f4"
+
+[[plugin.deps]]
+use = "ahkohd/eza-preview"
+rev = "5ef05bc"
+hash = "72355a6c8b7c8de6ed4dda0f98f86fee"
+
+[[plugin.deps]]
+use = "Rolv-Apneseth/starship"
+rev = "d1cd0a3"
+hash = "d1fee6d0f74cb52d4e031dc6b9207f31"
+
 [[flavor.deps]]
 use = "dangooddd/kanagawa"
 rev = "d98f0c3"

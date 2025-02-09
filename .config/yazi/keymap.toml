@@ -27,14 +27,42 @@ on = "j"
 run = "plugin arrow 1"
 
 [[manager.prepend_keymap]]
-on = "Up"
+on = "<Up>"
 run = "plugin arrow -1"
 
 [[manager.prepend_keymap]]
-on = "Down"
+on = "<Down>"
 run = "plugin arrow 1"
 
+# Lazygit keybind
 [[manager.prepend_keymap]]
 on = ["g", "i"]
 run = "plugin lazygit"
 desc = "run lazygit"
+
+# Change mode keybind
+[[manager.prepend_keymap]]
+on = ["c", "m"]
+run = "plugin chmod"
+desc = "Chmod on selected files"
+
+# eza-preview
+[[manager.prepend_keymap]]
+on = ["E"]
+run = "plugin eza-preview"
+desc = "Toggle tree/list dir preview"
+
+[[manager.prepend_keymap]]
+on = ["-"]
+run = "plugin eza-preview --args='--inc-level'"
+desc = "Increment tree level"
+
+[[manager.prepend_keymap]]
+on = ["_"]
+run = "plugin eza-preview --args='--dec-level'"
+desc = "Decrement tree level"
+
+[[manager.prepend_keymap]]
+on = ["$"]
+run = "plugin eza-preview --args='--toggle-follow-symlinks'"
+desc = "Toggle tree follow symlinks"
