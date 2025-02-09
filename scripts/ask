@@ -1,17 +1,14 @@
-#!/usr/bin/env fish
+#!/usr/bin/env bash
 
-set -l model
+model="qwen2.5-coder:14b"
 
-if test (count $argv) -gt 1
-    # Remove model from the argv array
-    set model "$argv[1]"
-    set -e argv[1]
-else
-    set model "llama3.1"
-end
+if [[ $# -gt 1 ]]; then
+    model="$1"
+    shift
+fi
 
-if test (count $argv) -eq 0
+if [[ $# -eq 0 ]]; then
     ollama run --nowordwrap "$model"
 else
-    ollama run --nowordwrap "$model" "$argv"
-end
+    ollama run --nowordwrap "$model" "$@"
+fi
