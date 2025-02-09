@@ -105,9 +105,17 @@ Use the present tense. Lines must not be longer than 74 characters. Use English 
 
 
 def main():
+    default_model = "qwen2.5-coder:14b"
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "-c", "--context", help="Extra context to feed to prompt.", type=str, default=""
+    )
+    parser.add_argument(
+        "-m",
+        "--model",
+        help=f"Set model to use, default is {default_model}",
+        type=str,
+        default=default_model,
     )
     parser.add_argument(
         "--stdout",
@@ -125,7 +133,7 @@ def main():
         print(prompt)
         sys.exit(0)
 
-    prompt_llm(prompt)
+    prompt_llm(prompt, model=args.model)
     sys.exit(0)
 
 
