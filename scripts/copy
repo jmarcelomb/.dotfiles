@@ -1,4 +1,3 @@
 #!/bin/sh
 
 printf "\e]52;c;%s\a" "$(base64 -w0 | tr -d '\n')"
-
