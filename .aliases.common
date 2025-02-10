@@ -37,6 +37,7 @@ alias grs="git restore --staged"
 
 alias gc="git commit -s"
 alias gcm="git commit -s -m"
+alias gcem="git commit -s -e -m"
 
 alias gP="git push"
 alias gPf="git push --force-with-lease"
