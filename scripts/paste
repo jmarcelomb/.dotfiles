@@ -12,7 +12,7 @@ fi
 
 if [ -z "$clipboard_content" ]; then
   echoinfo "⚠️ No input received!"
-  exit 1
+  exit 0
 fi
 
 echoinfo "✅ Echoing clipboard contents:"
