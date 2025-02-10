@@ -12,6 +12,10 @@ alias zb="z -b" # Jump to the best match
 alias batn="bat --style=numbers" # Bat with line numbers
 alias batc="bat --style=changes" # Bat with Git diff highlights
 
+# Scripts aliases
+alias c="copy"
+alias p="paste"
+
 # lazygit aliases
 alias lg="lazygit"
 
