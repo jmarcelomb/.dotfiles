@@ -1,19 +1,72 @@
 #!/bin/sh
 
-# Use a friendly blue color for messages
-echoinfo() { printf "\033[1;36m%s\033[0m\n" "$@" >&2; } # Cyan text
-
-if [ -t 0 ]; then # Check if input is from a terminal (not piped)
-  echoinfo "📋 Input content and press Enter (Ctrl+D to finish):"
-  input_content=$(cat) # Capture full multi-line input
+# Check if the terminal supports colors
+if tput setaf 1 >/dev/null 2>&1; then
+  COLOR_INFO="$(tput setaf 4)"    # Bright Blue for general info
+  COLOR_WARN="$(tput setaf 3)"    # Yellow for warnings
+  COLOR_SUCCESS="$(tput setaf 2)" # Green for success
+  COLOR_RESET="$(tput sgr0)"
 else
-  input_content=$(cat) # Read from pipe
+  COLOR_INFO=""
+  COLOR_WARN=""
+  COLOR_SUCCESS=""
+  COLOR_RESET=""
+fi
+
+# Function to print messages with appropriate colors
+echoinfo() {
+  printf "%s%s%s\n" "$COLOR_INFO" "$1" "$COLOR_RESET" >&2
+}
+
+echowarn() {
+  printf "%s%s%s\n" "$COLOR_WARN" "$1" "$COLOR_RESET" >&2
+}
+
+echosuccess() {
+  printf "%s%s%s\n" "$COLOR_SUCCESS" "$1" "$COLOR_RESET" >&2
+}
+
+# Display help message
+show_help() {
+  printf "Usage: %s [OPTION]\n" "$0"
+  printf "Capture input and echo it back to stdout.\n\n"
+  printf "Options:\n"
+  printf "  -h, --help    Show this help message and exit\n\n"
+  printf "Example:\n"
+  printf "  %s              # Capture input interactively\n" "$0"
+  printf "  echo 'Hello' | %s  # Capture input from a pipe\n" "$0"
+  exit 0
+}
+
+# Check for help option
+case "$1" in
+-h | --help) show_help ;;
+esac
+
+if command -v bat >/dev/null 2>&1; then
+  CAT="bat"
+else
+  CAT="cat"
+fi
+
+# Check if rlwrap is available
+if command -v rlwrap >/dev/null 2>&1; then
+  RLWRAP="rlwrap $CAT"
+else
+  RLWRAP="$CAT"
+fi
+
+if [ -t 0 ]; then # Interactive mode
+  echoinfo "📋 Enter input and press Enter (Ctrl+D to finish):"
+  input_content=$($RLWRAP)
+else # Piped input
+  input_content=$($CAT)
 fi
 
 if [ -z "$input_content" ]; then
-  echoinfo "⚠️  No input received!"
-  exit 0
+  echowarn "⚠️  No input received!"
+  exit 1
 fi
 
-echoinfo "✅ Echoing the input to stdout!"
-echo "$input_content"
+echosuccess "✅ Echoing the input to stdout!"
+printf "%s\n" "$input_content"
