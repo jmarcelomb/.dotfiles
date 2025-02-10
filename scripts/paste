@@ -49,19 +49,11 @@ else
   CAT="cat"
 fi
 
-# Check if rlwrap is available
-if command -v rlwrap >/dev/null 2>&1; then
-  RLWRAP="rlwrap $CAT"
-else
-  RLWRAP="$CAT"
-fi
-
 if [ -t 0 ]; then # Interactive mode
   echoinfo "📋 Enter input and press Enter (Ctrl+D to finish):"
-  input_content=$($RLWRAP)
-else # Piped input
-  input_content=$($CAT)
 fi
+
+input_content=$($CAT)
 
 if [ -z "$input_content" ]; then
   echowarn "⚠️  No input received!"
