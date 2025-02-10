@@ -15,5 +15,5 @@ if [ -z "$input_content" ]; then
   exit 0
 fi
 
-echoinfo "✅ Echoing to stdout input!"
+echoinfo "✅ Echoing the input to stdout!"
 echo "$input_content"
