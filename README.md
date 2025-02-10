@@ -107,6 +107,12 @@ Use [uv](https://astral.sh/uv/) to manage Python virtual environments:
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
+Or using cargo:
+
+```sh
+cargo install --git https://github.com/astral-sh/uv uv
+```
+
 ---
 
 ## ⚡ Essential CLI Tools
