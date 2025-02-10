@@ -4,16 +4,16 @@
 echoinfo() { printf "\033[1;36m%s\033[0m\n" "$@" >&2; } # Cyan text
 
 if [ -t 0 ]; then # Check if input is from a terminal (not piped)
-  echoinfo "📋 Paste your clipboard contents here and press Enter (Ctrl+D to finish):"
-  clipboard_content=$(cat) # Capture full multi-line input
+  echoinfo "📋 Input content and press Enter (Ctrl+D to finish):"
+  input_content=$(cat) # Capture full multi-line input
 else
-  clipboard_content=$(cat) # Read from pipe
+  input_content=$(cat) # Read from pipe
 fi
 
-if [ -z "$clipboard_content" ]; then
-  echoinfo "⚠️ No input received!"
+if [ -z "$input_content" ]; then
+  echoinfo "⚠️  No input received!"
   exit 0
 fi
 
-echoinfo "✅ Echoing clipboard contents:"
-echo "$clipboard_content"
+echoinfo "✅ Echoing to stdout input!"
+echo "$input_content"
