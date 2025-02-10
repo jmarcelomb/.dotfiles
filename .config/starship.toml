@@ -6,8 +6,8 @@ description = "Indicate the shell was launched by `yazi`"
 variable = "YAZI_LEVEL"
 # 🦆: U+1f986 Duck
 # Alternatively: " ": U+E795 <Private Use>
-symbol = "🦆"
-format = '[ $symbol ]($style)'
+symbol = "🦆 "
+format = '[$symbol]($style)'
 
 [aws]
 symbol = "  "
