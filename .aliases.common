@@ -61,4 +61,3 @@ alias gwa="git worktree add"
 alias gwr="git worktree remove"
 alias gwls="git worktree list"
 ### End of git aliases
-
