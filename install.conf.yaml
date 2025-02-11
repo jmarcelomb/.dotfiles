@@ -10,6 +10,7 @@
     ~/.config/alacritty: .config/alacritty
     ~/.config/zellij/: .config/zellij
     ~/.config/yazi/: .config/yazi
+    ~/.config/direnv: .config/direnv
     ~/.config/git/: .config/git/
     ~/.config/starship.toml: .config/starship.toml
     ~/.config/i3: .config/i3/
