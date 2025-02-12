@@ -83,7 +83,8 @@ if [ -z "$input_content" ]; then
 fi
 
 # Copy to clipboard using ANSI OSC52 escape sequence
-printf "\e]52;c;%s\a" "$(echo -n "$input_content" | $BASE64_CMD | tr -d '\n')"
+CONTENT_BASE64="$(printf "%s" "$input_content" | $BASE64_CMD | tr -d '\n')"
+printf "\033]52;c;%s\a" "$CONTENT_BASE64"
 
 if [ -z "$input_content" ]; then
   echowarn "🧹 Cleaned the clipboard!"
