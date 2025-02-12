@@ -13,11 +13,10 @@ repos:
       - id: check-symlinks
       - id: destroyed-symlinks
       - id: detect-private-key
-  - repo: https://github.com/codespell-project/codespell
-    rev: v2.4.1
+  - repo: https://github.com/crate-ci/typos
+    rev: v1.29.5
     hooks:
-      - id: codespell
-        exclude: init.lua|remap.lua|marcelo.lua|noice.lua|lazy-lock.json
+      - id: typos
   - repo: https://github.com/gitleaks/gitleaks
     rev: v8.23.3
     hooks:
