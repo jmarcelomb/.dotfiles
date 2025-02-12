@@ -79,7 +79,7 @@ build_and_install_neovim() {
     log "Building Neovim..."
     cd "$NEOVIM_DIR"
     rm -rf build/  # Clear the CMake cache
-    make CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX"
+    make CMAKE_BUILD_TYPE=Release CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX"
     make install
     success "Neovim built and installed successfully."
 }
