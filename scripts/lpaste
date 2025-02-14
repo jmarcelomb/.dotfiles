@@ -1,0 +1,13 @@
+#!/bin/bash
+# ft=bash
+
+LPASTE_FILE="${LPASTE_FILE:-/tmp/last_paste}"
+
+if [ -f "$LPASTE_FILE" ]; then
+  LPASTE="$(cat "$LPASTE_FILE")"
+  export LPASTE
+  echo "$LPASTE"
+else
+  echo "⚠️  No last paste file found!" >&2
+  exit 1
+fi
