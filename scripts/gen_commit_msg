@@ -61,7 +61,7 @@ def generate_prompt(diff: str, context: str = "", use_emoji: bool = False):
         sys.exit(1)
 
     if context:
-        context = f"Take into account the following context: {context}."
+        context = f"Take into account the following context:\n<context>\n{context}\n<\\context>"
 
     identity = "You are to act as an author of a commit message in git."
 
@@ -95,7 +95,9 @@ Don't start it with 'This commit', just describe the changes.
 Use the present tense. Lines must not be longer than 74 characters. Use English for the commit message.
 {context}
 
+<diff>
 {diff}
+<\\diff>
 """
 
 
@@ -104,6 +106,9 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "-c", "--context", help="Extra context to feed to prompt.", type=str, default=""
+    )
+    parser.add_argument(
+        "-n", "--attempts", help="Number of generations asked.", type=int, default=3
     )
     parser.add_argument(
         "-m",
@@ -128,7 +133,7 @@ def main():
         print(prompt)
         sys.exit(0)
 
-    prompt_llm(prompt, model=args.model)
+    prompt_llm(prompt, attempts=args.attempts, model=args.model)
     sys.exit(0)
 
 
