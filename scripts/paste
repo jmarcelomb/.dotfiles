@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Check if the terminal supports colors
 if tput setaf 1 >/dev/null 2>&1; then
@@ -29,12 +29,18 @@ echosuccess() {
 # Display help message
 show_help() {
   printf "Usage: %s [OPTION]\n" "$0"
-  printf "Capture input and echo it back to stdout.\n\n"
+  printf "Capture input (interactively or from a pipe) and echo it back to stdout.\n"
+  printf "The input is also saved to /tmp/last_paste for future reference.\n\n"
   printf "Options:\n"
   printf "  -h, --help    Show this help message and exit\n\n"
-  printf "Example:\n"
-  printf "  %s              # Capture input interactively\n" "$0"
+  printf "Examples:\n"
+  printf "  %s              # Capture input interactively (type or paste text)\n" "$0"
   printf "  echo 'Hello' | %s  # Capture input from a pipe\n" "$0"
+  printf "  %s < file    # Capture input from a file\n" "$0"
+  printf "\nNotes:\n"
+  printf "  - If 'bat' is installed, it will be used for input handling.\n"
+  printf "  - If no input is provided, the script will exit with a warning.\n"
+  printf "  - The output is saved to /tmp/last_paste.\n"
   exit 0
 }
 
@@ -43,22 +49,31 @@ case "$1" in
 -h | --help) show_help ;;
 esac
 
+# Determine the appropriate cat command
 if command -v bat >/dev/null 2>&1; then
-  CAT="bat"
+  CAT_COMMAND="bat"
 else
-  CAT="cat"
+  CAT_COMMAND="cat"
 fi
 
+# Capture input
 if [ -t 0 ]; then # Interactive mode
   echoinfo "📋 Enter input and press Enter (Ctrl+D to finish):"
 fi
 
-input_content=$($CAT)
+input_content=$($CAT_COMMAND)
 
 if [ -z "$input_content" ]; then
   echowarn "⚠️  No input received!"
   exit 1
 fi
 
+# Save input to file and echo it back
+output_file="/tmp/last_paste"
+printf "%s\n" "$input_content" >"$output_file"
+
 echosuccess "✅ Echoing the input to stdout!"
 printf "%s\n" "$input_content"
+
+# Set up LPASTE environment variable and function
+export LPASTE_FILE="$output_file"
