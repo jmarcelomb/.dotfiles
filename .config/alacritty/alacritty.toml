@@ -20,10 +20,15 @@ style = "Italic"
 family = "SauceCodePro NFP Medium"
 style = "Regular"
 
-[keyboard]
-bindings = [
-  { key = "Return", mods = "Control|Shift", action = "SpawnNewInstance" },
-]
-
 [window]
 option_as_alt = "Both"
+
+[[keyboard.bindings]]
+action = "ToggleViMode"
+key = "Space"
+mods = "Control"
+
+[[keyboard.bindings]]
+action = "ToggleViMode"
+key = "Escape"
+mode = "Vi"
