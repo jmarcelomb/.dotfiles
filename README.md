@@ -1,6 +1,7 @@
 # .dotfiles
 
-👋🏻 Welcome to my `.dotfiles` repository!🏻
+👋🏻 Welcome to my `.dotfiles` repository
+
 This setup is designed to streamline the configuration of my development environment,
 including my shell, programming languages, and essential CLI tools.
 
@@ -98,7 +99,7 @@ cargo install --git https://github.com/astral-sh/uv uv
 Tools I currently use:
 
 - [zellij](https://github.com/zellij-org/zellij) - A terminal workspace with batteries included.
-- [bat](https://github.com/sharkdp/bat) - A `cat(1)` clone with syntax highlighting.
+- [bat](https://github.com/sharkdp/bat) - A `cat` clone with syntax highlighting.
 - [eza](https://github.com/eza-community/eza) - A modern replacement for `ls`.
 - [zoxide](https://github.com/ajeetdsouza/zoxide) - A smarter `cd` command.
 - [fd](https://github.com/sharkdp/fd) - A fast, user-friendly alternative to `find`.
