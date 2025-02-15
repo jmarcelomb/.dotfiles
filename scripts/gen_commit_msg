@@ -57,7 +57,7 @@ def prompt_llm(
     """
     messages = []
     for i in range(attempts):
-        logger.error("=> LLM generation attempt '%s'", i)
+        logger.info("=> LLM generation attempt '%s'", i)
         with Popen(
             ["ask", model, prompt], stdout=PIPE, bufsize=1, universal_newlines=True
         ) as p:
@@ -66,7 +66,7 @@ def prompt_llm(
 
             output = []
             for line in p.stdout:
-                logger.error(line.rstrip())
+                logger.info(line.rstrip())
                 output.append(line)
 
             captured_output = "".join(output).strip()
@@ -198,7 +198,7 @@ def main() -> None:
         prompt = generate_prompt(diff, args.context, use_emoji=args.emoji)
 
         if args.stdout:
-            logger.info(prompt)
+            print(prompt)
             sys.exit(0)
 
         commit_messages = prompt_llm(prompt, attempts=args.attempts, model=args.model)
