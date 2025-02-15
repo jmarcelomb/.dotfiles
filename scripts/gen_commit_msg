@@ -4,10 +4,11 @@ import os
 import subprocess
 import sys
 import argparse
+from subprocess import Popen, PIPE
 
 
-def get_git_diff():
-    """Returns the stagea git diff as a string."""
+def get_git_diff() -> str:
+    """Returns the staged git diff as a string."""
     custom_env = os.environ.copy()
     custom_env["GIT_PAGER"] = "cat"
     result = subprocess.run(
@@ -20,39 +21,69 @@ def get_git_diff():
     return result.stdout.strip()
 
 
-def prompt_llm(prompt: str, model="qwen2.5-coder:14b", attempts: int = 3):
-    messages: list[str] = []
+def prompt_llm(
+    prompt: str, model: str = "qwen2.5-coder:14b", attempts: int = 3
+) -> list[str]:
+    """
+    Sends a prompt to the specified language model and returns the generated messages.
+
+    Args:
+        prompt (str): The input prompt for the language model.
+        model (str): The name of the language model to use. Defaults to "qwen2.5-coder:14b".
+        attempts (int): The number of times to attempt generating a message. Defaults to 3.
+
+    Returns:
+        list[str]: A list of generated messages from the language model.
+    """
+    messages = []
     for _ in range(attempts):
-        result = subprocess.run(
-            ["ask", model, prompt],
-            capture_output=True,
-            text=True,
-            check=True,
-        )
-        messages.append(f"{result.stdout.strip()}\n")
+        with Popen(
+            ["ask", model, prompt], stdout=PIPE, bufsize=1, universal_newlines=True
+        ) as p:
+            if p.stdout is None:
+                raise RuntimeError(
+                    "Subprocess stdout is None. Check Popen configuration."
+                )
+            output = []
+            for line in p.stdout:
+                print(line, end="")
+                output.append(line)
 
+            captured_output = "".join(output).strip()
+            messages.append(f"{captured_output}\n")
+    return messages
+
+
+def commit(messages: list[str]) -> int:
+    """
+    Commits the staged changes with the provided commit messages.
+
+    Args:
+        messages (list[str]): A list of commit messages.
+    """
+    commit_message = ""
     for i, message in enumerate(messages):
-        print(f"===Commit message generated #{i} ===")
-        print(message)
-        print("=" * 40)  # Divider for readability
+        commit_message += f"#===Commit message generated #{i} ===\n"
+        commit_message += message
+        commit_message += f"#{'=' * 40}\n"
 
-    while True:
-        response = input("Press Enter or write y/yes to continue").strip()
-
-        if response == "" or response.lower() in ("y", "yes"):
-            break
-        print(f"Aborting commit.. Received '{response}'")
-        sys.exit(1)
-
-    subprocess.run(
-        ["git", "commit", "-e", "-m", "\n".join(messages)],
-        check=True,
+    res = subprocess.run(
+        ["git", "commit", "-s", "-e", "-m", commit_message], check=False
     )
+    return res.returncode
 
 
-def generate_prompt(diff: str, context: str = "", use_emoji: bool = False):
-    """Generates a commit message using a local instance of Ollama."""
+def generate_prompt(diff: str, context: str = "", use_emoji: bool = False) -> str:
+    """Generates a commit message using a local instance of Ollama.
 
+    Args:
+        diff (str): The git diff output to be converted into a commit message.
+        context (str): Extra context to feed to the prompt. Defaults to an empty string.
+        use_emoji (bool): Whether to use emojis in the commit message. Defaults to False.
+
+    Returns:
+        str: The generated commit message prompt.
+    """
     if not diff:
         print(
             "Error: The diff is empty. Please stage changes before running.",
@@ -101,7 +132,11 @@ Use the present tense. Lines must not be longer than 74 characters. Use English 
 """
 
 
-def main():
+def main() -> None:
+    """
+    Main function to execute the script. Parses command-line arguments, generates a prompt,
+    and either prints it or sends it to a language model for processing.
+    """
     default_model = "qwen2.5-coder:14b"
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -133,8 +168,9 @@ def main():
         print(prompt)
         sys.exit(0)
 
-    prompt_llm(prompt, attempts=args.attempts, model=args.model)
-    sys.exit(0)
+    commit_messages = prompt_llm(prompt, attempts=args.attempts, model=args.model)
+    ret = commit(commit_messages)
+    sys.exit(ret)
 
 
 if __name__ == "__main__":
