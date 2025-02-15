@@ -1,14 +1,30 @@
 #!/usr/bin/env python3
+"""Generate commit messages using a language model,
+or only print prompt if --stdout is given script"""
 
 import os
 import subprocess
 import sys
 import argparse
+import logging
 from subprocess import Popen, PIPE
+
+# Constants
+DEFAULT_MODEL = "qwen2.5-coder:14b"
+DEFAULT_ATTEMPTS = 3
+MAX_LINE_LENGTH = 74
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format="%(message)s")
+logger = logging.getLogger(__name__)
 
 
 def get_git_diff() -> str:
-    """Returns the staged git diff as a string."""
+    """Returns the staged git diff as a string.
+
+    Raises:
+        subprocess.CalledProcessError: If the git diff command fails.
+    """
     custom_env = os.environ.copy()
     custom_env["GIT_PAGER"] = "cat"
     result = subprocess.run(
@@ -22,35 +38,40 @@ def get_git_diff() -> str:
 
 
 def prompt_llm(
-    prompt: str, model: str = "qwen2.5-coder:14b", attempts: int = 3
+    prompt: str, model: str = DEFAULT_MODEL, attempts: int = DEFAULT_ATTEMPTS
 ) -> list[str]:
     """
     Sends a prompt to the specified language model and returns the generated messages.
 
     Args:
         prompt (str): The input prompt for the language model.
-        model (str): The name of the language model to use. Defaults to "qwen2.5-coder:14b".
-        attempts (int): The number of times to attempt generating a message. Defaults to 3.
+        model (str): The name of the language model to use. Defaults to DEFAULT_MODEL.
+        attempts (int): The number of times to attempt generating a message.
+        Defaults to DEFAULT_ATTEMPTS.
 
     Returns:
         list[str]: A list of generated messages from the language model.
+
+    Raises:
+        RuntimeError: If the LLM process fails.
     """
     messages = []
-    for _ in range(attempts):
+    for i in range(attempts):
+        logger.error("=> LLM generation attempt '%s'", i)
         with Popen(
             ["ask", model, prompt], stdout=PIPE, bufsize=1, universal_newlines=True
         ) as p:
             if p.stdout is None:
-                raise RuntimeError(
-                    "Subprocess stdout is None. Check Popen configuration."
-                )
+                continue
+
             output = []
             for line in p.stdout:
-                print(line, end="")
+                logger.error(line.rstrip())
                 output.append(line)
 
             captured_output = "".join(output).strip()
             messages.append(f"{captured_output}\n")
+
     return messages
 
 
@@ -60,21 +81,24 @@ def commit(messages: list[str]) -> int:
 
     Args:
         messages (list[str]): A list of commit messages.
+
+    Returns:
+        int: The return code of the git commit command.
     """
     commit_message = ""
     for i, message in enumerate(messages):
         commit_message += f"#===Commit message generated #{i} ===\n"
         commit_message += message
         commit_message += f"#{'=' * 40}\n"
-
-    res = subprocess.run(
+    result = subprocess.run(
         ["git", "commit", "-s", "-e", "-m", commit_message], check=False
     )
-    return res.returncode
+    return result.returncode
 
 
 def generate_prompt(diff: str, context: str = "", use_emoji: bool = False) -> str:
-    """Generates a commit message using a local instance of Ollama.
+    """
+    Generates a commit message prompt based on the git diff and optional context.
 
     Args:
         diff (str): The git diff output to be converted into a commit message.
@@ -83,13 +107,12 @@ def generate_prompt(diff: str, context: str = "", use_emoji: bool = False) -> st
 
     Returns:
         str: The generated commit message prompt.
+
+    Raises:
+        ValueError: If the diff is empty.
     """
     if not diff:
-        print(
-            "Error: The diff is empty. Please stage changes before running.",
-            file=sys.stderr,
-        )
-        sys.exit(1)
+        raise ValueError("The diff is empty. Please stage changes before running.")
 
     if context:
         context = f"Take into account the following context:\n<context>\n{context}\n<\\context>"
@@ -123,7 +146,7 @@ I'll send you an output of 'git diff --staged' command, and you are to convert i
 {commit_preface}
 Add a short description of WHY the changes are done after the commit message.
 Don't start it with 'This commit', just describe the changes.
-Use the present tense. Lines must not be longer than 74 characters. Use English for the commit message.
+Use the present tense. Lines must not be longer than {MAX_LINE_LENGTH} characters. Use English for the commit message.
 {context}
 
 <diff>
@@ -137,40 +160,54 @@ def main() -> None:
     Main function to execute the script. Parses command-line arguments, generates a prompt,
     and either prints it or sends it to a language model for processing.
     """
-    default_model = "qwen2.5-coder:14b"
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        description=(
+            "Generate commit messages using a language model,"
+            " or only print prompt if --stdout is given."
+        )
+    )
     parser.add_argument(
         "-c", "--context", help="Extra context to feed to prompt.", type=str, default=""
     )
     parser.add_argument(
-        "-n", "--attempts", help="Number of generations asked.", type=int, default=3
+        "-n",
+        "--attempts",
+        help="Number of generations asked.",
+        type=int,
+        default=DEFAULT_ATTEMPTS,
     )
     parser.add_argument(
         "-m",
         "--model",
-        help=f"Set model to use, default is {default_model}",
+        help=f"Set model to use, default is {DEFAULT_MODEL}",
         type=str,
-        default=default_model,
+        default=DEFAULT_MODEL,
     )
     parser.add_argument(
         "--stdout",
-        help="If given, echo's prompt to stdout instead of doing to ollama.",
+        help="If given, echo's prompt to stdout instead of sending it to the model.",
         action="store_true",
     )
     parser.add_argument(
         "-e", "--emoji", help="Uses emojis if the flag is given.", action="store_true"
     )
     args = parser.parse_args()
-    diff = get_git_diff()
-    prompt = generate_prompt(diff, args.context, use_emoji=args.emoji)
 
-    if args.stdout:
-        print(prompt)
-        sys.exit(0)
+    try:
+        diff = get_git_diff()
+        prompt = generate_prompt(diff, args.context, use_emoji=args.emoji)
 
-    commit_messages = prompt_llm(prompt, attempts=args.attempts, model=args.model)
-    ret = commit(commit_messages)
-    sys.exit(ret)
+        if args.stdout:
+            logger.info(prompt)
+            sys.exit(0)
+
+        commit_messages = prompt_llm(prompt, attempts=args.attempts, model=args.model)
+        ret = commit(commit_messages)
+        sys.exit(ret)
+
+    except (subprocess.CalledProcessError, ValueError, RuntimeError) as e:
+        logger.error("Error: %s", e)
+        sys.exit(1)
 
 
 if __name__ == "__main__":
