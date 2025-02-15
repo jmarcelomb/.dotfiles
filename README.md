@@ -1,23 +1,25 @@
 # .dotfiles
 
-Welcome to my `.dotfiles` repository!
+👋🏻 Welcome to my `.dotfiles` repository!🏻
 This setup is designed to streamline the configuration of my development environment,
-including shell, programming languages, and essential CLI tools.
+including my shell, programming languages, and essential CLI tools.
 
 <!--toc:start-->
 - [.dotfiles](#dotfiles)
   - [🚀 Quick Setup](#🚀-quick-setup)
   - [💻 Shell Setup](#💻-shell-setup)
-    - [Install zsh](#install-zsh)
+    - [Set Fish as the Default Shell](#set-fish-as-the-default-shell)
     - [Install Starship Prompt](#install-starship-prompt)
-    - [Set Zsh as Default Shell](#set-zsh-as-default-shell)
+    - [Set Zsh as the Default Shell](#set-zsh-as-the-default-shell)
   - [🦀 Rust Setup](#🦀-rust-setup)
   - [🐍 Python Setup](#🐍-python-setup)
     - [Install `uv`](#install-uv)
   - [⚡ Essential CLI Tools](#essential-cli-tools)
-  - [🔧 Additional (Not Actively Used)](#🔧-additional-not-actively-used)
-    - [TMux](#tmux)
-    - [i3 Window Manager](#i3-window-manager)
+    - [Handy scripts:](#handy-scripts)
+    - [Tools I'm keeping an eye on 👀:](#tools-im-keeping-an-eye-on-👀)
+    - [Alacritty](#alacritty)
+    - [cargo-update](#cargo-update)
+    - [cargo-binstall](#cargo-binstall)
   - [📝 Notes](#📝-notes)
     - [🌟 Feedback](#🌟-feedback)
 <!--toc:end-->
@@ -31,7 +33,6 @@ Clone the repository and initialize submodules:
 ```sh
 git clone https://github.com/jmarcelomb/.dotfiles.git
 cd .dotfiles
-git submodule update --init --recursive
 ./setup.sh
 ```
 
@@ -39,24 +40,9 @@ git submodule update --init --recursive
 
 ## 💻 Shell Setup
 
-Currently I'm using [fish](https://fishshell.com/) and zsh shells with (starship.rs)[starship.rs] prompt.
+I currently use [fish](https://fishshell.com/) and Bash/Zsh with the [Starship](https://starship.rs/) prompt.
 
-### How to install zsh
-
-Ubuntu:
-
-```sh
-sudo apt install git zsh -y
-```
-
-### How to install fish
-
-Ubuntu:
-
-```sh
-sudo apt install fish -y
-```
-### How to set fish as Default Shell
+### How to set Fish as the Default Shell
 
 ```sh
 echo $(which fish) | sudo tee -a /etc/shells
@@ -65,24 +51,16 @@ chsh -s $(which fish)
 
 ### Install Starship Prompt
 
-Install [Starship](https://starship.rs/) for a modern shell prompt:
+Install [Starship](https://starship.rs/) for a modern, customizable shell prompt:
 
 ```sh
 curl -sS https://starship.rs/install.sh | sh
 ```
 
-### How to set Zsh as Default Shell
-
-Change your default shell to Zsh:
+### How to set Zsh as the Default Shell
 
 ```sh
 chsh -s $(which zsh)
-```
-
-For users starting Zsh from Bash, ensure `.bashrc` switches to Zsh:
-
-```sh
-echo "exec zsh" > ~/.bashrc
 ```
 
 ---
@@ -101,13 +79,13 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 ### Install `uv`
 
-Use [uv](https://astral.sh/uv/) to manage Python virtual environments:
+Use [uv](https://astral.sh/uv/) to manage Python virtual environments and projects:
 
 ```sh
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-Or using cargo:
+Or install via Cargo:
 
 ```sh
 cargo install --git https://github.com/astral-sh/uv uv
@@ -117,11 +95,52 @@ cargo install --git https://github.com/astral-sh/uv uv
 
 ## ⚡ Essential CLI Tools
 
-Install useful CLI utilities via Cargo:
+Tools I currently use:
+
+- [zellij](https://github.com/zellij-org/zellij) - A terminal workspace with batteries included.
+- [bat](https://github.com/sharkdp/bat) - A `cat(1)` clone with syntax highlighting.
+- [eza](https://github.com/eza-community/eza) - A modern replacement for `ls`.
+- [zoxide](https://github.com/ajeetdsouza/zoxide) - A smarter `cd` command.
+- [fd](https://github.com/sharkdp/fd) - A fast, user-friendly alternative to `find`.
+- [ripgrep](https://github.com/BurntSushi/ripgrep) - A fast regex-based search tool.
+- [yazi](https://github.com/sxyazi/yazi) - A terminal file manager written in Rust.
+- [bottom](https://github.com/ClementTsang/bottom) - A cross-platform system monitor.
+- [git-delta](https://github.com/dandavison/delta) - A syntax-highlighting pager for Git.
+- [typos-cli](https://github.com/crate-ci/typos) - A source code spell checker.
+- [du-dust](https://github.com/bootandy/dust) - A more intuitive version of `du`.
+- [lazygit](https://github.com/jesseduffield/lazygit) - A simple terminal UI for Git.
+
+### Handy scripts:
+
+- [copy](./scripts/copy) - Puts stdin in the OSC52 register.
+- [paste](./scripts/paste) - Opens a text input for pasting.
+- [lpaste](./scripts/lpaste) - Outputs the last text input from `paste`.
+- [gen_commit_msg](./scripts/gen_commit_msg) - Uses local [Ollama](https://ollama.com/) or generate to standard output commit messages from `git diff`.
+
+### Tools I'm keeping an eye on 👀:
+
+- [television](https://github.com/alexpasmantier/television)
+- [tabiew](https://github.com/shshemi/tabiew)
+- [gitui](https://github.com/extrawurst/gitui)
+- [gpg-tui](https://github.com/orhun/gpg-tui)
+
+It is possible to install all current Rust tools via Cargo:
 
 ```sh
-cargo install zellij bat eza zoxide fd-find ripgrep du-dust bottom git-delta typos-cli yazi-fm yazi-cli
+cargo install zellij \
+              bat \
+              eza \
+              zoxide \
+              fd-find \
+              ripgrep \
+              yazi-fm yazi-cli \
+              bottom \
+              git-delta \
+              typos-cli \
+              du-dust
 ```
+
+---
 
 ### Alacritty
 
@@ -129,83 +148,53 @@ cargo install zellij bat eza zoxide fd-find ripgrep du-dust bottom git-delta typ
 cargo install alacritty
 ```
 
-### [cargo-update](https://github.com/nabijaczleweli/cargo-update):
+### cargo-update
 
-You can use [cargo-update](https://github.com/nabijaczleweli/cargo-update) to update the installed programs. You can install it using cargo:
+[cargo-update](https://github.com/nabijaczleweli/cargo-update) helps keep installed Rust tools up to date.
+
+Install it via Cargo:
 
 ```sh
 cargo install cargo-update
 ```
 
-And then to update all programs do:
+Update all installed Rust programs:
 
 ```sh
 cargo install-update -a
 ```
 
-### [cargo-binstall](https://github.com/cargo-bins/cargo-binstall)
+### cargo-binstall
 
-If you don't want to install compile the rust programs you can use [cargo-binstall](https://github.com/cargo-bins/cargo-binstall) to install only the binary of the respective program.
+If you prefer not to compile Rust programs from source, [cargo-binstall](https://github.com/cargo-bins/cargo-binstall) installs prebuilt binaries.
 
 Example:
+
 ```sh
 cargo binstall zellij
 ```
 
-You can install it using cargo:
+Install it via Cargo:
 
 ```sh
 cargo install cargo-binstall
 ```
 
-### Alternative to [lazygit](https://github.com/jesseduffield/lazygit)
-
-I'm still trying it out, but we can use the [gitui](https://github.com/extrawurst/gitui) rust program to replace lazygit so we can install almost all tools using cargo.
+I'm still testing it out, but [gitui](https://github.com/extrawurst/gitui) could be a potential `lazygit` replacement, making it possible to install almost everything using Cargo:
 
 ```sh
 cargo install gitui
-```
-
-### Yazi
-
-Install theme:
-
-```sh
-ya pack -a dangooddd/kanagawa
-```
-
----
-
-## 🔧 Additional (Not Actively Used)
-
-### TMux
-
-For terminal multiplexing, you can use `TMux`:
-
-```sh
-sudo apt-get install tmux
-git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-```
-
-### i3 Window Manager
-
-To install **i3** and its configuration tools:
-
-```sh
-sudo apt-get install lxappearance
 ```
 
 ---
 
 ## 📝 Notes
 
-- This repository is tailored to my personal development workflow but can be
-adapted for others.
-- Contributions and suggestions for improvements are welcome!
+- This repository is tailored to my personal development workflow but can be adapted for others.
+- Contributions and suggestions are always welcome!
 
 ---
 
 ### 🌟 Feedback
 
-Feel free to raise issues or open pull requests on [GitHub](https://github.com/jmarcelomb/.dotfiles).
-Let's make this setup even better together!
+If you have ideas for improvement, feel free to open an issue or a pull request on [GitHub](https://github.com/jmarcelomb/.dotfiles).
