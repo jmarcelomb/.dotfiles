@@ -54,6 +54,10 @@ if type -q zoxide
     zoxide init fish | source
 end
 
+if type -q uv
+    uv generate-shell-completion fish | source
+end
+
 # fzf key bindings and fuzzy completion
 if type -q fzf
     set -U FZF_DEFAULT_COMMAND "fd --no-ignore --hidden --strip-cwd-prefix --exclude .git"
