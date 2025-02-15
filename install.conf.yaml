@@ -8,6 +8,7 @@
     ~/scripts: scripts/
     ~/.config/nvim: .config/nvim
     ~/.config/alacritty: .config/alacritty
+    ~/.config/kitty: .config/kitty
     ~/.config/zellij/: .config/zellij
     ~/.config/yazi/: .config/yazi
     ~/.config/direnv: .config/direnv
@@ -24,7 +25,6 @@
     ~/.aliases.common: .aliases.common
     ~/.aliases.fish: .aliases.fish
     ~/.config/fish/: .config/fish/
-    ~/.tmux.conf: .tmux.conf
 
 # - create:
 #     - ~/.vim/undo-history
