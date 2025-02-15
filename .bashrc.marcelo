@@ -1,3 +1,5 @@
+# ft=sh
+
 # If you come from bash you might have to change your $PATH.
 export PATH=/usr/local/bin:$HOME/bin:/usr/local/bin:$HOME/.local/bin:$PATH
 export PATH=$HOME/Tools/fzf/bin:$PATH
@@ -50,6 +52,10 @@ fi
 
 if command -v zoxide >/dev/null 2>&1; then
   eval "$(zoxide init bash)"
+fi
+
+if command -v uv >/dev/null 2>&1; then
+  eval "$(uv generate-shell-completion bash)"
 fi
 
 if command -v yazi >/dev/null 2>&1; then
