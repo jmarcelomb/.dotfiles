@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # ft=bash
 
 LPASTE_FILE="${LPASTE_FILE:-/tmp/last_paste}"

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Check if the terminal supports colors
 if tput setaf 1 >/dev/null 2>&1; then
