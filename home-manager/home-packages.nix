@@ -6,18 +6,17 @@
 
     # CLI utils
     bc
-    htop
-    unzip
     wget
     curl
     wl-clipboard
     zip
+    unzip
     git
     zsh
     ghostty
+    kitty
 
     fzf
-    alacritty
     zoxide
     zellij
     yazi
@@ -36,5 +35,6 @@
     python311
     cargo
     gcc
+    gnumake
   ];
 }
