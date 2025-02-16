@@ -1,29 +1,8 @@
-# .dotfiles
+## 👋🏻 Welcome to my .dotfiles `rabbit hole`!
 
-👋🏻 Welcome to my `.dotfiles` repository
+This is where I'm always tweaking and changing something to have my config feeling like home.
 
-This setup is designed to streamline the configuration of my development environment,
-including my shell, programming languages, and essential CLI tools.
-
-<!--toc:start-->
-- [.dotfiles](#dotfiles)
-  - [🚀 Quick Setup](#🚀-quick-setup)
-  - [💻 Shell Setup](#💻-shell-setup)
-    - [Set Fish as the Default Shell](#set-fish-as-the-default-shell)
-    - [Install Starship Prompt](#install-starship-prompt)
-    - [Set Zsh as the Default Shell](#set-zsh-as-the-default-shell)
-  - [🦀 Rust Setup](#🦀-rust-setup)
-  - [🐍 Python Setup](#🐍-python-setup)
-    - [Install `uv`](#install-uv)
-  - [⚡ Essential CLI Tools](#essential-cli-tools)
-    - [Handy scripts:](#handy-scripts)
-    - [Tools I'm keeping an eye on 👀:](#tools-im-keeping-an-eye-on-👀)
-    - [Alacritty](#alacritty)
-    - [cargo-update](#cargo-update)
-    - [cargo-binstall](#cargo-binstall)
-  - [📝 Notes](#📝-notes)
-    - [🌟 Feedback](#🌟-feedback)
-<!--toc:end-->
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/jmarcelomb/.dotfiles/main.svg)](https://results.pre-commit.ci/latest/github/jmarcelomb/.dotfiles/main)
 
 ---
 
@@ -94,7 +73,7 @@ cargo install --git https://github.com/astral-sh/uv uv
 
 ---
 
-## ⚡ Essential CLI Tools
+## ⚡ CLI Tools
 
 Tools I currently use:
 
