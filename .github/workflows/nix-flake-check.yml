@@ -37,7 +37,7 @@ jobs:
       run: nix flake check
 
     - name: Nix Flake Checker
-      uses: DeterminateSystems/flake-checker-action@v5
+      uses: DeterminateSystems/flake-checker-action@v9
 
     # - name: Update Readme
     #   run: nix run github:erictossell/readme-py -- -fs -fi -hmd docs/readme/header.md -fmd docs/readme/footer.md
