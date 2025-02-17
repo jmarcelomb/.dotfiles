@@ -11,8 +11,8 @@ This is where I'm always tweaking and changing something to have my config feeli
 Clone the repository and initialize submodules:
 
 ```sh
-git clone https://github.com/jmarcelomb/.dotfiles.git
-cd .dotfiles
+git clone https://github.com/jmarcelomb/.dotfiles.git ~/.dotfiles
+cd ~/.dotfiles
 ./setup.sh
 ```
 
