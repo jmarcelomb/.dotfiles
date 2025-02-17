@@ -18,61 +18,6 @@ cd .dotfiles
 
 ---
 
-## 💻 Shell Setup
-
-I currently use [fish](https://fishshell.com/) and Bash/Zsh with the [Starship](https://starship.rs/) prompt.
-
-### How to set Fish as the Default Shell
-
-```sh
-echo $(which fish) | sudo tee -a /etc/shells
-chsh -s $(which fish)
-```
-
-### Install Starship Prompt
-
-Install [Starship](https://starship.rs/) for a modern, customizable shell prompt:
-
-```sh
-curl -sS https://starship.rs/install.sh | sh
-```
-
-### How to set Zsh as the Default Shell
-
-```sh
-chsh -s $(which zsh)
-```
-
----
-
-## 🦀 Rust Setup
-
-Install Rust using Rustup:
-
-```sh
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-```
-
----
-
-## 🐍 Python Setup
-
-### Install `uv`
-
-Use [uv](https://astral.sh/uv/) to manage Python virtual environments and projects:
-
-```sh
-curl -LsSf https://astral.sh/uv/install.sh | sh
-```
-
-Or install via Cargo:
-
-```sh
-cargo install --git https://github.com/astral-sh/uv uv
-```
-
----
-
 ## ⚡ CLI Tools
 
 Tools I currently use:
@@ -164,6 +109,61 @@ I'm still testing it out, but [gitui](https://github.com/extrawurst/gitui) could
 
 ```sh
 cargo install gitui
+```
+
+---
+
+## 💻 Shell Setup
+
+I currently use [fish](https://fishshell.com/) and Bash/Zsh with the [Starship](https://starship.rs/) prompt.
+
+### How to set Fish as the Default Shell
+
+```sh
+echo $(which fish) | sudo tee -a /etc/shells
+chsh -s $(which fish)
+```
+
+### Install Starship Prompt
+
+Install [Starship](https://starship.rs/) for a modern, customizable shell prompt:
+
+```sh
+curl -sS https://starship.rs/install.sh | sh
+```
+
+### How to set Zsh as the Default Shell
+
+```sh
+chsh -s $(which zsh)
+```
+
+---
+
+## 🦀 Rust Setup
+
+Install Rust using Rustup:
+
+```sh
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+---
+
+## 🐍 Python Setup
+
+### Install `uv`
+
+Use [uv](https://astral.sh/uv/) to manage Python virtual environments and projects:
+
+```sh
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+Or install via Cargo:
+
+```sh
+cargo install --git https://github.com/astral-sh/uv uv
 ```
 
 ---
