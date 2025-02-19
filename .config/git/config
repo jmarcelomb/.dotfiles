@@ -1,25 +1,37 @@
 [user]
   email = git@marceloborges.dev
   name = Marcelo Borges
+  signingKey = C15F623F7C2CE9FC
 
 [core]
   pager = delta
   editor = nvim -f
 
-[format]
-  signoff = true
+[init]
+  defaultBranch = main
 
-[interactive]
-  diffFilter = delta --color-only
+[commit]
+  gpgsign = true
 
 [delta]
   navigate = true  # use n and N to move between diff sections
   dark = true      # or light = true, or omit for auto-detection
 
-[merge]
-  conflictstyle = zdiff3
-[init]
-  defaultBranch = main
+[format]
+  signoff = true
 
 [push]
   autoSetupRemote = true
+
+[fetch]
+  prune = true
+
+[pull]
+  rebase = true
+
+[merge]
+  conflictstyle = zdiff3
+
+[interactive]
+  diffFilter = delta --color-only
+
