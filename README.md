@@ -22,10 +22,12 @@ cd ~/.dotfiles
 
 Tools I currently use:
 
+- [fzf](https://github.com/junegunn/fzf) - A general-purpose command-line fuzzy finder.
 - [zellij](https://github.com/zellij-org/zellij) - A terminal workspace with batteries included.
 - [bat](https://github.com/sharkdp/bat) - A `cat` clone with syntax highlighting.
 - [eza](https://github.com/eza-community/eza) - A modern replacement for `ls`.
 - [zoxide](https://github.com/ajeetdsouza/zoxide) - A smarter `cd` command.
+- [direnv](https://github.com/direnv/direnv) - Loads and unload environment variables depending on the current directory.
 - [fd](https://github.com/sharkdp/fd) - A fast, user-friendly alternative to `find`.
 - [ripgrep](https://github.com/BurntSushi/ripgrep) - A fast regex-based search tool.
 - [yazi](https://github.com/sxyazi/yazi) - A terminal file manager written in Rust.
@@ -45,6 +47,7 @@ Tools I currently use:
 ### Tools I'm keeping an eye on 👀:
 
 - [television](https://github.com/alexpasmantier/television)
+- [skim](https://github.com/skim-rs/skim)
 - [tabiew](https://github.com/shshemi/tabiew)
 - [gitui](https://github.com/extrawurst/gitui)
 - [gpg-tui](https://github.com/orhun/gpg-tui)
