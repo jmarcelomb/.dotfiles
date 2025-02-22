@@ -11,5 +11,6 @@
     ./nix.nix
     ./timezone.nix
     ./user.nix
+    ./gpg.nix
   ];
 }
