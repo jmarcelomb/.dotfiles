@@ -7,7 +7,6 @@
       "bump-patch-for-minor-pre-major": false,
       "draft": false,
       "prerelease": false,
-      "manifest-file": ".github/.release-please-manifest.json",
       "extra-files": [
         "README.md"
       ]
