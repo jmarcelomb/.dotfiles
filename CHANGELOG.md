@@ -22,7 +22,7 @@
 * enable macOS option as alt key in kitty config ([046e67e](https://github.com/jmarcelomb/.dotfiles/commit/046e67ed5e7802a2542bb7bac7b41c90cf3d40a1))
 * Enhance commit message generation script ([e6cb3d9](https://github.com/jmarcelomb/.dotfiles/commit/e6cb3d99bb747ccfa30f715215ee50207c0ee817))
 * enhance input handling script with color support and help option ([c7860be](https://github.com/jmarcelomb/.dotfiles/commit/c7860bec385a6a6ad880c65c7b31d5d6561271cf))
-* **fish:** add halp function for enhanced command assistance ([0c9a8a1](https://github.com/jmarcelomb/.dotfiles/commit/0c9a8a1268ffc9e9582291331e2077d537c6bf9b))
+* **fish:** add help function for enhanced command assistance ([0c9a8a1](https://github.com/jmarcelomb/.dotfiles/commit/0c9a8a1268ffc9e9582291331e2077d537c6bf9b))
 * **git:** re-adds gpgsign setting to git, and reorders ([5a0a72f](https://github.com/jmarcelomb/.dotfiles/commit/5a0a72fadd649df596b36d8fd85d5ab56c1330ba))
 * improve input script with color feedback and help functionality ([f215041](https://github.com/jmarcelomb/.dotfiles/commit/f215041236844c0d3fcfd17270a70c2ae087c6e3))
 * rename osc52 script to copy and add paste helper script ([c96904a](https://github.com/jmarcelomb/.dotfiles/commit/c96904a0909955787d7cce7b82ca804c781ffdfe))
