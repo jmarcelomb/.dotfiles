@@ -182,4 +182,4 @@ cargo install --git https://github.com/astral-sh/uv uv
 
 If you have ideas for improvement, feel free to open an issue or a pull request on [GitHub](https://github.com/jmarcelomb/.dotfiles).
 
-_version:_ v0.0.0
+ _version:_ v0.0.0 <!--x-release-please-version-->
