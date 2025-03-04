@@ -1,6 +1,8 @@
-# ft=sh
+# vim: ft=sh
 
-# If you come from bash you might have to change your $PATH.
+# Exit early if this is not an interactive shell
+[[ $- != *i* ]] && return
+
 export PATH=/usr/local/bin:$HOME/bin:/usr/local/bin:$HOME/.local/bin:$PATH
 export PATH=$HOME/Tools/fzf/bin:$PATH
 export PATH=$HOME/Tools/neovim/bin:$PATH
@@ -30,20 +32,20 @@ export FZF_ALT_C_OPTS="--preview 'eza --tree --color=always {} | head -200'"
 # - The first argument to the function ($1) is the base path to start traversal
 # - See the source code (completion.{bash,zsh}) for the details.
 _fzf_compgen_path() {
-    fd --hidden --exclude .git . "$1"
+  fd --hidden --exclude .git . "$1"
 }
 
 # Use fd to generate the list for directory completion
 _fzf_compgen_dir() {
-    fd --type=d --hidden --exclude .git . "$1"
+  fd --type=d --hidden --exclude .git . "$1"
 }
 #
 if command -v starship >/dev/null 2>&1; then
   eval "$(starship init bash)"
 fi
 
-if [[ "$(which cargo)" != "cargo not found" ]]; then
-. "$HOME/.cargo/env"
+if command -v cargo >/dev/null 2>&1; then
+  [ -f "$HOME/.cargo/env" ] && source "$HOME/.cargo/env"
 fi
 
 if command -v direnv >/dev/null 2>&1; then
