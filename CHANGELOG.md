@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.1.0](https://github.com/jmarcelomb/.dotfiles/compare/v1.0.0...v1.1.0) (2025-03-04)
+
+
+### Features
+
+* adds first chakra server nix config ([034cdb8](https://github.com/jmarcelomb/.dotfiles/commit/034cdb8f55aae054c7e073fb30b58f298e8f9110))
+
+
+### Bug Fixes
+
+* adds cron and needed changes for server ([5eb3f53](https://github.com/jmarcelomb/.dotfiles/commit/5eb3f53c8231436b9e7917057afdc748c3aaaedc))
+* adds mkdir -p ~/.config to setup.sh file ([e1d41af](https://github.com/jmarcelomb/.dotfiles/commit/e1d41afe881b79a8d32a42ce92eea5550fd945a6))
+* automatic current system ([f1700e3](https://github.com/jmarcelomb/.dotfiles/commit/f1700e38c469781d7fb8e1dc0235606414ff1af6))
+* bash.marcelo file type and removes cargo verbosity when not installed ([34af2cb](https://github.com/jmarcelomb/.dotfiles/commit/34af2cb1c30320555036a561a7bc288202ea38ac))
+* returns if .bashrc.marcelob is called in non-iteractive mode ([2548864](https://github.com/jmarcelomb/.dotfiles/commit/2548864e4bec691765d37e36614da7eb3a7aaff4))
+
 ## 1.0.0 (2025-03-03)
 
 
