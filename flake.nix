@@ -13,22 +13,27 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
   };
 
   outputs = { self, nixpkgs, nixpkgs-stable, home-manager, ... }@inputs:
     let
-      system = "aarch64-linux";
+      supportedSystems = [ "aarch64-linux" "x86_64-linux" ];
       homeStateVersion = "24.11";
       user = "hinata";
-      hosts = [{
-        hostname = "konoha";
-        stateVersion = "24.11";
-      }];
+      hosts = [
+        {
+          hostname = "konoha";
+          stateVersion = "24.11";
+        }
+        {
+          hostname = "chakra";
+          stateVersion = "24.11";
+        }
+      ];
 
-      makeSystem = { hostname, stateVersion }:
+      makeSystem = { hostname, stateVersion, system }:
         nixpkgs.lib.nixosSystem {
-          system = system;
+          inherit system;
           specialArgs = {
             inherit inputs stateVersion hostname user;
             pkgs-stable = import nixpkgs-stable {
@@ -42,21 +47,24 @@
 
     in {
       nixosConfigurations = nixpkgs.lib.foldl' (configs: host:
-        configs // {
-          "${host.hostname}" =
-            makeSystem { inherit (host) hostname stateVersion; };
-        }) { } hosts;
+        configs // nixpkgs.lib.genAttrs supportedSystems (system: {
+          "${host.hostname}-${system}" =
+            makeSystem { inherit (host) hostname stateVersion; inherit system; };
+        })
+      ) { } hosts;
 
-      homeConfigurations.${user} = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.${system};
-        extraSpecialArgs = { inherit inputs homeStateVersion user; };
+      homeConfigurations = nixpkgs.lib.genAttrs supportedSystems (system: {
+        ${user} = home-manager.lib.homeManagerConfiguration {
+          pkgs = nixpkgs.legacyPackages.${system};
+          extraSpecialArgs = { inherit inputs homeStateVersion user; };
 
-        modules = [ ./home-manager/home.nix ];
-      };
+          modules = [ ./home-manager/home.nix ];
+        };
+      });
+
       # Define a formatter for nix fmt
-      formatter = {
-        aarch64-linux = nixpkgs.legacyPackages.${system}.nixpkgs-fmt;
-        x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixpkgs-fmt;
-      };
+      formatter = nixpkgs.lib.genAttrs supportedSystems (system:
+        nixpkgs.legacyPackages.${system}.nixpkgs-fmt
+      );
     };
 }
