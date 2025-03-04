@@ -25,4 +25,3 @@
   system.stateVersion = stateVersion;
   services.openssh.enable = true;
 }
-
