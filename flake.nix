@@ -17,7 +17,7 @@
 
   outputs = { self, nixpkgs, nixpkgs-stable, home-manager, ... }@inputs:
     let
-      supportedSystems = [ "aarch64-linux" "x86_64-linux" ];
+      currentSystem = builtins.currentSystem or "x86_64-linux";
       homeStateVersion = "24.11";
       user = "hinata";
       hosts = [
@@ -47,24 +47,24 @@
 
     in {
       nixosConfigurations = nixpkgs.lib.foldl' (configs: host:
-        configs // nixpkgs.lib.genAttrs supportedSystems (system: {
-          "${host.hostname}-${system}" =
-            makeSystem { inherit (host) hostname stateVersion; inherit system; };
-        })
+        configs // {
+          "${host.hostname}" = makeSystem {
+            inherit (host) hostname stateVersion;
+            system = currentSystem;
+          };
+        }
       ) { } hosts;
 
-      homeConfigurations = nixpkgs.lib.genAttrs supportedSystems (system: {
+      homeConfigurations = {
         ${user} = home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages.${system};
+          pkgs = nixpkgs.legacyPackages.${currentSystem}; # Use the detected system
           extraSpecialArgs = { inherit inputs homeStateVersion user; };
 
           modules = [ ./home-manager/home.nix ];
         };
-      });
+      };
 
       # Define a formatter for nix fmt
-      formatter = nixpkgs.lib.genAttrs supportedSystems (system:
-        nixpkgs.legacyPackages.${system}.nixpkgs-fmt
-      );
+      formatter.${currentSystem} = nixpkgs.legacyPackages.${currentSystem}.nixpkgs-fmt;
     };
 }
