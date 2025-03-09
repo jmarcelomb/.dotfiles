@@ -16,7 +16,7 @@
 * automatic current system ([f1700e3](https://github.com/jmarcelomb/.dotfiles/commit/f1700e38c469781d7fb8e1dc0235606414ff1af6))
 * bash.marcelo file type and removes cargo verbosity when not installed ([34af2cb](https://github.com/jmarcelomb/.dotfiles/commit/34af2cb1c30320555036a561a7bc288202ea38ac))
 * enable default layout and pane frames in zellij config ([002a46e](https://github.com/jmarcelomb/.dotfiles/commit/002a46eb90895aed094ae98df0b410cecba7582c))
-* returns if .bashrc.marcelob is called in non-iteractive mode ([2548864](https://github.com/jmarcelomb/.dotfiles/commit/2548864e4bec691765d37e36614da7eb3a7aaff4))
+* returns if .bashrc.marcelob is called in non-interactive mode ([2548864](https://github.com/jmarcelomb/.dotfiles/commit/2548864e4bec691765d37e36614da7eb3a7aaff4))
 
 ## 1.0.0 (2025-03-03)
 
