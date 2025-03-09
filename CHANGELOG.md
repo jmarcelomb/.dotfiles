@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.1.0](https://github.com/jmarcelomb/.dotfiles/compare/v1.0.0...v1.1.0) (2025-03-09)
+
+
+### Features
+
+* adds chakra host, which is my home server ([7a7edb5](https://github.com/jmarcelomb/.dotfiles/commit/7a7edb5218b41691d8fa35eb95fb5c9a26f5bd6e))
+* adds first chakra server nix config ([034cdb8](https://github.com/jmarcelomb/.dotfiles/commit/034cdb8f55aae054c7e073fb30b58f298e8f9110))
+
+
+### Bug Fixes
+
+* adds cron and needed changes for server ([5eb3f53](https://github.com/jmarcelomb/.dotfiles/commit/5eb3f53c8231436b9e7917057afdc748c3aaaedc))
+* adds mkdir -p ~/.config to setup.sh file ([e1d41af](https://github.com/jmarcelomb/.dotfiles/commit/e1d41afe881b79a8d32a42ce92eea5550fd945a6))
+* automatic current system ([f1700e3](https://github.com/jmarcelomb/.dotfiles/commit/f1700e38c469781d7fb8e1dc0235606414ff1af6))
+* bash.marcelo file type and removes cargo verbosity when not installed ([34af2cb](https://github.com/jmarcelomb/.dotfiles/commit/34af2cb1c30320555036a561a7bc288202ea38ac))
+* enable default layout and pane frames in zellij config ([002a46e](https://github.com/jmarcelomb/.dotfiles/commit/002a46eb90895aed094ae98df0b410cecba7582c))
+* returns if .bashrc.marcelob is called in non-interactive mode ([2548864](https://github.com/jmarcelomb/.dotfiles/commit/2548864e4bec691765d37e36614da7eb3a7aaff4))
+
 ## 1.0.0 (2025-03-03)
 
 
