@@ -4,6 +4,12 @@ on = "!"
 run = 'shell "$SHELL" --block'
 desc = "Open shell here"
 
+# Opening nvim in cwd
+[[manager.prepend_keymap]]
+on = "<C-e>"
+run = 'shell "nvim ." --block'
+desc = "Open nvim in cwd"
+
 # Close input by once Esc press
 [[input.prepend_keymap]]
 on = "<Esc>"
