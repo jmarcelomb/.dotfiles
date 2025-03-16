@@ -4,6 +4,7 @@
   imports = [
     ./hardware-configuration.nix
     ./local-packages.nix
+    ./ssh.nix
     ../../nixos/modules
   ];
 
