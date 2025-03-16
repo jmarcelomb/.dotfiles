@@ -77,3 +77,8 @@ desc = "Toggle tree follow symlinks"
 on = "p"
 run = "plugin smart-paste"
 desc = "Paste into the hovered directory or CWD"
+
+[[manager.prepend_keymap]]
+on = "t"
+run = "plugin smart-tab"
+desc = "Create a tab and enter the hovered directory"
