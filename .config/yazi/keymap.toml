@@ -93,8 +93,17 @@ on = "<C-m>"
 run = "plugin toggle-pane max-preview"
 desc = "Maximize or restore the preview pane"
 
-# keymap.toml
 [[manager.prepend_keymap]]
 on = "<C-p>"
 run = "plugin toggle-pane min-preview"
 desc = "Show or hide the preview pane"
+
+[[manager.prepend_keymap]]
+on = "<S-Up>"
+run = "seek 5"
+desc = "Scroll preview up by 5 lines"
+
+[[manager.prepend_keymap]]
+on = "<S-Down>"
+run = "seek -5"
+desc = "Scroll preview down by 5 lines"
