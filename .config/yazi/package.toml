@@ -23,6 +23,11 @@ use = "Rolv-Apneseth/starship"
 rev = "d1cd0a3"
 hash = "d1fee6d0f74cb52d4e031dc6b9207f31"
 
+[[plugin.deps]]
+use = "yazi-rs/plugins:toggle-pane"
+rev = "cb6165b"
+hash = "812fd49667ab6823250f0411f8cf793a"
+
 [[flavor.deps]]
 use = "dangooddd/kanagawa"
 rev = "d98f0c3"
