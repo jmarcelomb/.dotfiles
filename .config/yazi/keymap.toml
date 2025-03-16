@@ -127,3 +127,8 @@ desc = "Search file by content (rg)"
 on = ["f", "a"]
 run = "plugin fr rga"
 desc = "Search file by content (rga)"
+
+[[manager.prepend_keymap]]
+on = "q"
+run = "plugin confirm-quit"
+desc = "Quit"
