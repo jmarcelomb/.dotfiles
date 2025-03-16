@@ -17,17 +17,18 @@
 
   outputs = { self, nixpkgs, nixpkgs-stable, home-manager, ... }@inputs:
     let
-      currentSystem = builtins.currentSystem or "x86_64-linux";
       homeStateVersion = "24.11";
       user = "hinata";
       hosts = [
         {
           hostname = "konoha";
           stateVersion = "24.11";
+          system = "aarch64-linux";
         }
         {
           hostname = "chakra";
           stateVersion = "24.11";
+          system = "x86_64-linux";
         }
       ];
 
@@ -49,22 +50,27 @@
       nixosConfigurations = nixpkgs.lib.foldl' (configs: host:
         configs // {
           "${host.hostname}" = makeSystem {
-            inherit (host) hostname stateVersion;
-            system = currentSystem;
+            inherit (host) hostname stateVersion system;
           };
         }
       ) { } hosts;
 
-      homeConfigurations = {
-        ${user} = home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages.${currentSystem}; # Use the detected system
-          extraSpecialArgs = { inherit inputs homeStateVersion user; };
+      homeConfigurations = nixpkgs.lib.foldl' (configs: host:
+        configs // {
+          "${host.hostname}" = home-manager.lib.homeManagerConfiguration {
+            pkgs = nixpkgs.legacyPackages.${host.system};
+            extraSpecialArgs = { inherit inputs homeStateVersion user; };
 
-          modules = [ ./home-manager/home.nix ];
-        };
-      };
+            modules = [ ./home-manager/home.nix ];
+          };
+        }
+      ) { } hosts;
 
       # Define a formatter for nix fmt
-      formatter.${currentSystem} = nixpkgs.legacyPackages.${currentSystem}.nixpkgs-fmt;
+      formatter = nixpkgs.lib.foldl' (configs: host:
+        configs // {
+          "${host.system}" = nixpkgs.legacyPackages.${host.system}.nixpkgs-fmt;
+        }
+      ) { } hosts;
     };
 }
