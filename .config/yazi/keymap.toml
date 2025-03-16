@@ -46,6 +46,11 @@ on = ["g", "i"]
 run = "plugin lazygit"
 desc = "run lazygit"
 
+[[manager.prepend_keymap]]
+on = ["g", "r"]
+desc = "Go to root of Git repository"
+run = 'shell -- ya emit cd "$(git rev-parse --show-toplevel)"'
+
 # Change mode keybind
 [[manager.prepend_keymap]]
 on = ["c", "m"]
