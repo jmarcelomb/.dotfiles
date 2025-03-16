@@ -1,7 +1,7 @@
 [user]
   email = git@marceloborges.dev
   name = Marcelo Borges
-  ; signingKey = 
+  ; signingKey =
 
 [core]
   pager = delta
