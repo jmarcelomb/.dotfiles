@@ -17,11 +17,11 @@ run = "close"
 desc = "Cancel input"
 
 # macOS: Preview files with the system Quick Look
-[[manager.prepend_keymap]]
-on = "<C-p>"
-run = '''
-  shell 'qlmanage -p "$@"'
-'''
+# [[manager.prepend_keymap]]
+# on = "<C-p>"
+# run = '''
+#   shell 'qlmanage -p "$@"'
+# '''
 
 # Make vertical moviments wrap around
 [[manager.prepend_keymap]]
@@ -87,3 +87,14 @@ desc = "Paste into the hovered directory or CWD"
 on = "t"
 run = "plugin smart-tab"
 desc = "Create a tab and enter the hovered directory"
+
+[[manager.prepend_keymap]]
+on = "<C-m>"
+run = "plugin toggle-pane max-preview"
+desc = "Maximize or restore the preview pane"
+
+# keymap.toml
+[[manager.prepend_keymap]]
+on = "<C-p>"
+run = "plugin toggle-pane min-preview"
+desc = "Show or hide the preview pane"
