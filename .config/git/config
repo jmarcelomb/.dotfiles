@@ -1,7 +1,7 @@
 [user]
   email = git@marceloborges.dev
   name = Marcelo Borges
-  ; signingKey =
+  signingKey = E75F348701DBB30B
 
 [core]
   pager = delta
@@ -10,8 +10,8 @@
 [init]
   defaultBranch = main
 
-; [commit]
-;   gpgsign = true
+[commit]
+  gpgsign = true
 
 [delta]
   navigate = true  # use n and N to move between diff sections
