@@ -1,3 +1,14 @@
+ci:
+  autofix_commit_msg: |
+    chore(pre-commit): apply automatic fixes
+
+    Auto-generated commit from pre-commit.ci.
+    See https://pre-commit.ci for details.
+  autoupdate_commit_msg: |
+    chore(pre-commit): update pre-commit hooks
+
+    Auto-update pre-commit hooks to the latest compatible versions.
+    See https://pre-commit.ci for details.
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
