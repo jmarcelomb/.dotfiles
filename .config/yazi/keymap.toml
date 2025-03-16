@@ -100,10 +100,20 @@ desc = "Show or hide the preview pane"
 
 [[manager.prepend_keymap]]
 on = "<S-Up>"
-run = "seek 5"
+run = "seek -5"
 desc = "Scroll preview up by 5 lines"
 
 [[manager.prepend_keymap]]
 on = "<S-Down>"
-run = "seek -5"
+run = "seek 5"
 desc = "Scroll preview down by 5 lines"
+
+[[manager.prepend_keymap]]
+on = ["g", "u"]
+run = "plugin parent-arrow -1"
+desc = "Go up in parent directory"
+
+[[manager.prepend_keymap]]
+on = ["g", "d"]
+run = "plugin parent-arrow 1"
+desc = "Go down in parent directory"
