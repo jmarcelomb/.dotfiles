@@ -28,6 +28,11 @@ use = "yazi-rs/plugins:toggle-pane"
 rev = "cb6165b"
 hash = "812fd49667ab6823250f0411f8cf793a"
 
+[[plugin.deps]]
+use = "lpnh/fr"
+rev = "92edf0b"
+hash = "b0edc5e9b7f44b2d3303e74f785d0bc9"
+
 [[flavor.deps]]
 use = "dangooddd/kanagawa"
 rev = "d98f0c3"

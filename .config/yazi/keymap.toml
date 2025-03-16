@@ -117,3 +117,13 @@ desc = "Go up in parent directory"
 on = ["g", "d"]
 run = "plugin parent-arrow 1"
 desc = "Go down in parent directory"
+
+[[manager.prepend_keymap]]
+on = ["f", "r"]
+run = "plugin fr rg"
+desc = "Search file by content (rg)"
+
+[[manager.prepend_keymap]]
+on = ["f", "a"]
+run = "plugin fr rga"
+desc = "Search file by content (rga)"
