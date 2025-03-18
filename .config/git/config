@@ -6,11 +6,27 @@
 [core]
   pager = delta
   editor = nvim -f
+  excludesfile = ~/.gitignore
+  ; fsmonitor = true
+  ; untrackedCache = true
+
+[help]
+  autocorrect = prompt
 
 [init]
   defaultBranch = main
 
+[tag]
+  sort = version:refname
+
+[branch]
+  sort = -committerdate
+
+[column]
+  ui = auto
+
 [commit]
+  verbose = true
   gpgsign = true
 
 [delta]
@@ -21,7 +37,9 @@
   signoff = true
 
 [push]
+  default = simple
   autoSetupRemote = true
+  followTags = true
 
 [fetch]
   prune = true
@@ -31,8 +49,23 @@
 [pull]
   rebase = true
 
+[rebase]
+  autoSquash = true
+  autoStash = true
+  updateRefs = true
+
 [merge]
   conflictstyle = zdiff3
 
 [interactive]
   diffFilter = delta --color-only
+
+[diff]
+  algorithm = histogram
+  colorMoved = plain
+  mnemonicPrefix = true
+  renames = true
+
+[rerere]
+  enabled = true
+  autoupdate = true
