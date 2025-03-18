@@ -36,5 +36,6 @@
     cargo
     gcc
     gnumake
+    nodejs_23
   ];
 }
