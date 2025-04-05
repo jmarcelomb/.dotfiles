@@ -8,12 +8,11 @@
     bc
     wget
     curl
-    wl-clipboard
     zip
     unzip
     git
     zsh
-    ghostty
+    # ghostty
     kitty
 
     fzf
