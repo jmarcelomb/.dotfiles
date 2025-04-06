@@ -9,7 +9,10 @@
       exec-on-workspace-change = [
         "/bin/bash"
         "-c"
-        "sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$(aerospace list-workspaces --focused)"
+        "sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE"
+      ];
+      on-focus-changed = [
+        "exec-and-forget sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$(aerospace list-workspaces --focused)"
       ];
 
       gaps = {
@@ -169,6 +172,10 @@
         {
           "if".app-id = "com.openai.chat";
           run = [ "move-node-to-workspace 9" ];
+        }
+        {
+          "if".app-id = "com.spotify.client";
+          run = [ "move-node-to-workspace S" ];
         }
       ];
     };

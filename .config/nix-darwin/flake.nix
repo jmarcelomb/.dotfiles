@@ -50,6 +50,7 @@
     };
 
     homeManagerConfiguration = { pkgs, ... }: let
+      isDarwin = pkgs.stdenv.isDarwin;
       common_pkgs = import ../../home-manager/common-home-packages.nix { inherit pkgs; };
     in {
       home.username = username;
@@ -59,9 +60,20 @@
       home.packages = common_pkgs.home.packages ++ (with pkgs; [
         neovim
         bat
-        spotify
         kitty
       ]);
+
+      home.sessionVariables = {
+        LANG = "en_US.UTF-8";
+        LC_CTYPE = "en_US.UTF-8";
+        LC_ALL = "en_US.UTF-8";
+        EDITOR = "nvim";
+      } // (
+        if isDarwin then {
+          # See: https://github.com/NixOS/nixpkgs/issues/390751
+          DISPLAY = "nixpkgs-390751";
+        } else {}
+      );
 
       imports = [
         ../../home-manager/modules/eza.nix
