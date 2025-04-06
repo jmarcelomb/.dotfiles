@@ -17,7 +17,6 @@
     ~/.config/i3: .config/i3/
     ~/.config/neovide/: .config/neovide/
     ~/.config/ghostty/: .config/ghostty/
-    ~/.config/aerospace/: .config/aerospace/
     ~/.config/sketchybar/: .config/sketchybar/
     ~/.config/nix-darwin/: .config/nix-darwin/
     ~/.zshrc: .zshrc
