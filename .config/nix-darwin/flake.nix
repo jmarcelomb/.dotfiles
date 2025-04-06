@@ -30,11 +30,11 @@
       users.users.${username} = {
         name = username;
         home = homeDirectory;
+        shell = pkgs.fish;
       };
 
       # Shell configuration
       programs.fish.enable = true;
-      services.aerospace.enable = true;
       services.sketchybar.enable = true;
 
       # Basic packages
@@ -45,6 +45,7 @@
       imports = [
         ./homebrew.nix
         (import ./system.nix { inherit pkgs self homeDirectory; })
+        ./aerospace.nix
       ];
     };
 
@@ -59,6 +60,7 @@
         neovim
         bat
         spotify
+        kitty
       ]);
 
       imports = [

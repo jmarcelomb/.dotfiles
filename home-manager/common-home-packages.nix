@@ -12,8 +12,6 @@
     unzip
     git
     zsh
-    # ghostty
-    kitty
 
     fzf
     zoxide
