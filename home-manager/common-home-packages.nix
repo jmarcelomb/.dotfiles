@@ -19,6 +19,7 @@
     zoxide
     zellij
     yazi
+    imagemagick
     ripgrep
     direnv
     fd
@@ -31,6 +32,7 @@
     lazygit
 
     # Coding stuff
+    vscode
     python311
     cargo
     gcc

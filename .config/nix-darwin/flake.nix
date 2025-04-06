@@ -1,5 +1,5 @@
 {
-  description = "Nix-Darwin configuration for mac-mini";
+  description = "Nix-Darwin configuration for MacOS";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -17,40 +17,35 @@
   let
     system = "aarch64-darwin";
     username = "jmmb";
-    userfullname = "jmarcelomb";
     homeDirectory = "/Users/${username}";
 
     configuration = { pkgs, ... }: {
       # System settings
       nix.settings.experimental-features = "nix-command flakes";
-      nixpkgs.hostPlatform = system;
-      system.configurationRevision = self.rev or self.dirtyRev or null;
-      system.stateVersion = 6;
+      nix.optimise.automatic = true;
 
+      nixpkgs.hostPlatform = system;
+      nixpkgs.config.allowUnfree = true;
       # User configuration
       users.users.${username} = {
         name = username;
         home = homeDirectory;
       };
 
-      # System defaults
-      system.defaults = {
-        dock.autohide = true;
-        dock.mru-spaces = false;
-        finder.AppleShowAllExtensions = true;
-        loginwindow.LoginwindowText = userfullname;
-        screencapture.location = "${homeDirectory}/Pictures/screenshots";
-        screensaver.askForPasswordDelay = 10;
-      };
-
       # Shell configuration
-      # programs.zsh.enable = true;
       programs.fish.enable = true;
+      services.aerospace.enable = true;
+      services.sketchybar.enable = true;
 
       # Basic packages
       # environment.systemPackages = with pkgs; [
       #   vim
       # ];
+
+      imports = [
+        ./homebrew.nix
+        (import ./system.nix { inherit pkgs self homeDirectory; })
+      ];
     };
 
     homeManagerConfiguration = { pkgs, ... }: let
@@ -63,6 +58,7 @@
       home.packages = common_pkgs.home.packages ++ (with pkgs; [
         neovim
         bat
+        spotify
       ]);
 
       imports = [
