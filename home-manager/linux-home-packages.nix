@@ -9,4 +9,3 @@ in {
     wl-clipboard
   ]);
 }
-
