@@ -8,18 +8,16 @@
     bc
     wget
     curl
-    wl-clipboard
     zip
     unzip
     git
     zsh
-    ghostty
-    kitty
 
     fzf
     zoxide
     zellij
     yazi
+    imagemagick
     ripgrep
     direnv
     fd
@@ -32,6 +30,7 @@
     lazygit
 
     # Coding stuff
+    vscode
     python311
     cargo
     gcc

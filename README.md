@@ -16,6 +16,12 @@ cd ~/.dotfiles
 ./setup.sh
 ```
 
+In MacOS with user jmmb:
+
+```sh
+nix run nix-darwin/master#darwin-rebuild -- switch --flake .config/nix-darwin/#mac-mini
+```
+
 ---
 
 ## ⚡ CLI Tools
