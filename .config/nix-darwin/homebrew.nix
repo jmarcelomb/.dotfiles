@@ -11,15 +11,20 @@
       "podman"
     ];
     casks = [
-      "chatgpt"
-      "font-sketchybar-app-font"
       "keycastr"
       "obs"
       "raycast"
+
+      "font-sketchybar-app-font"
       "sf-symbols"
-      "joplin"
+
+      "discord"
+      "spotify"
+
       "shottr"
       "podman-desktop"
+      "joplin"
+      "chatgpt"
 
       "google-chrome"
       "zen-browser"
