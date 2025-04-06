@@ -7,7 +7,6 @@
       cleanup = "uninstall";
     };
     brews = [
-      "sketchybar"
       "imagemagick"
       "podman"
     ];
@@ -18,11 +17,14 @@
       "obs"
       "raycast"
       "sf-symbols"
-      "google-chrome"
-      "zen-browser"
       "joplin"
       "shottr"
       "podman-desktop"
+
+      "google-chrome"
+      "zen-browser"
+
+      "ghostty"
     ];
   };
 }
