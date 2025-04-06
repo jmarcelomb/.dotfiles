@@ -7,6 +7,7 @@ export HISTIGNORE='*sudo -S*'
 
 # If you come from bash you might have to change your $PATH.
 export PATH=/usr/local/bin:$HOME/bin:/usr/local/bin:$HOME/.local/bin:$PATH
+export PATH=/etc/profiles/per-user/$USER/bin:$PATH
 export PATH=$HOME/Tools/fzf/bin:$PATH
 export PATH=$HOME/Tools/neovim/bin:$PATH
 export PATH=$HOME/go/bin:$PATH
@@ -40,7 +41,7 @@ zinit light zsh-users/zsh-completions
 zinit light zsh-users/zsh-autosuggestions
 
 if [[ "$(which cargo)" != "cargo not found" ]]; then
-. "$HOME/.cargo/env"
+  [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
 fi
 
 # Set up fzf key bindings and fuzzy completion
