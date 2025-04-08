@@ -49,6 +49,7 @@
             alt-8 = "workspace 8";
             alt-9 = "workspace 9";
             alt-0 = "workspace 10";
+            alt-b = "workspace B";
             alt-s = "workspace S";
 
             alt-shift-1 = [
@@ -91,6 +92,10 @@
               "move-node-to-workspace 10"
               "workspace 10"
             ];
+            alt-shift-b = [
+              "move-node-to-workspace B"
+              "workspace B"
+            ];
             alt-shift-s = [
               "move-node-to-workspace S"
               "workspace S"
@@ -123,6 +128,7 @@
         "8" = "main";
         "9" = "main";
         "10" = "main";
+        "B" = "main";
         "S" = "main";
       };
 
@@ -165,11 +171,27 @@
         }
         {
           "if".app-id = "com.hnc.Discord";
-          run = [ "move-node-to-workspace 0" ];
+          run = [ "move-node-to-workspace 10" ];
+        }
+        {
+          "if".app-id = "com.facebook.archon.developerID";
+          run = [ "move-node-to-workspace 10" ];
+        }
+        {
+          "if".app-id = "net.whatsapp.WhatsApp";
+          run = [ "move-node-to-workspace 10" ];
+        }
+        {
+          "if".app-id = "com.apple.MobileSMS";
+          run = [ "move-node-to-workspace 10" ];
         }
         {
           "if".app-id = "com.openai.chat";
           run = [ "move-node-to-workspace 9" ];
+        }
+        {
+          "if".app-id = "com.bambulab.bambu-studio";
+          run = [ "move-node-to-workspace B" ];
         }
         {
           "if".app-id = "com.spotify.client";

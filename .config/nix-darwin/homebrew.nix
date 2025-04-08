@@ -19,6 +19,8 @@
       "sf-symbols"
 
       "discord"
+      "whatsapp"
+      "messenger"
       "spotify"
 
       "shottr"
