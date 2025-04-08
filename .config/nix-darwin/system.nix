@@ -34,6 +34,8 @@
         orientation = "bottom";
         # make smaller (default 64)
         tilesize = 48;
+        wvous-tr-corner = 12;
+        wvous-tl-corner = 3;
       };
       trackpad = {
         Clicking = true;
