@@ -133,9 +133,7 @@
         }
         {
           "if".app-id = "net.cozic.joplin-desktop";
-          run = [
-            "move-node-to-workspace 9"
-          ];
+          run = [ "move-node-to-workspace 9" ];
         }
         {
           "if".app-id = "com.apple.Terminal";
@@ -150,6 +148,10 @@
           run = [ "move-node-to-workspace 2" ];
         }
         {
+          "if".app-id = "com.vmware.fusion";
+          run = [ "move-node-to-workspace 3" ];
+        }
+        {
           "if".app-id = "com.jgraph.drawio.desktop";
           run = [ "move-node-to-workspace 4" ];
         }
@@ -159,10 +161,6 @@
         }
         {
           "if".app-id = "com.obsproject.obs-studio";
-          run = [ "move-node-to-workspace 8" ];
-        }
-        {
-          "if".app-id = "com.github.tattn.VCam";
           run = [ "move-node-to-workspace 8" ];
         }
         {

@@ -30,6 +30,8 @@
       "zen-browser"
 
       "ghostty"
+
+      "bambu-studio"
     ];
   };
 }
