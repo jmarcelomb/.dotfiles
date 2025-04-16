@@ -17,6 +17,7 @@
     zoxide
     zellij
     yazi
+    glow
     imagemagick
     ripgrep
     direnv

@@ -30,7 +30,7 @@ function Status:name()
 	return " " .. h.name:gsub("\r", "?", 1)
 end
 
-require("git"):setup()
+-- require("git"):setup()
 
 require("eza-preview"):setup({
 	-- Determines the directory depth level to tree preview (default: 3)
