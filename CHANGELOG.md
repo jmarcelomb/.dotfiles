@@ -1,5 +1,45 @@
 # Changelog
 
+## [1.1.0](https://github.com/jmarcelomb/.dotfiles/compare/v1.0.0...v1.1.0) (2025-04-19)
+
+
+### Features
+
+* add Nix-Darwin configuration and restructure home packages ([e5ecfd6](https://github.com/jmarcelomb/.dotfiles/commit/e5ecfd6d33b0a90a167f17c835ec75b308d7c8b1))
+* adds chakra host, which is my home server ([7a7edb5](https://github.com/jmarcelomb/.dotfiles/commit/7a7edb5218b41691d8fa35eb95fb5c9a26f5bd6e))
+* adds first chakra server nix config ([034cdb8](https://github.com/jmarcelomb/.dotfiles/commit/034cdb8f55aae054c7e073fb30b58f298e8f9110))
+* adds nix-darwin bins to path & updates kitty font name ([93d1451](https://github.com/jmarcelomb/.dotfiles/commit/93d14510fb9fd10d5f1c5423c9a5ef5d75a5286e))
+* **git:** enhance git configuration with additional settings ([e7913e5](https://github.com/jmarcelomb/.dotfiles/commit/e7913e511a26d03f7defc4b534bd59e39f82014a))
+* **nix-darwin:** add new workspace and app configurations ([79163df](https://github.com/jmarcelomb/.dotfiles/commit/79163dffc96fa247621d22084d63ef58777a64e5))
+* **nix-darwin:** adds system, homebrewe and home manager, common-home-packages.nix ([1f93852](https://github.com/jmarcelomb/.dotfiles/commit/1f938520f98a603b39934ab957a29baf4efab1d1))
+* **nix:** adds home manager to flake & hardcoded system ([ad04b73](https://github.com/jmarcelomb/.dotfiles/commit/ad04b733ab26e0435882119bb7cdbbe3b1b0989b))
+* **nix:** adds home manager to flake & hardcoded system ([8f485ab](https://github.com/jmarcelomb/.dotfiles/commit/8f485ab0f31e9e9bcfe8084ba289715f070c712b))
+* **sketchybar:** updates icons to use lf symbols ([ad18f4b](https://github.com/jmarcelomb/.dotfiles/commit/ad18f4bc4824e66ceadcdf4dc90b9ba088947388))
+* update aerospace.nix and flake.nix configurations ([3137b27](https://github.com/jmarcelomb/.dotfiles/commit/3137b2738d78a8d2f584c8b63fb5132ddfacad4f))
+* update git config to prune tags and fetch all ([360ac33](https://github.com/jmarcelomb/.dotfiles/commit/360ac337057eed3bde30539877dbdc6ed8472916))
+* update workspace rules and add new Homebrew package ([b94885f](https://github.com/jmarcelomb/.dotfiles/commit/b94885f9c76ca1b730e7eb1fcca479eaa8910bc5))
+* **yazi:** add keymap to navigate to the root of Git repository ([51ee9a6](https://github.com/jmarcelomb/.dotfiles/commit/51ee9a604e31a328acbfcd301495fa642fb8faf9))
+* **yazi:** add keymap to open nvim in current working directory ([01942ce](https://github.com/jmarcelomb/.dotfiles/commit/01942ceb9f6998ed86e120525cd87c3f5fd06c22))
+* **yazi:** adds fr plugin enabling dynamic search using rg or fzf ([38e757c](https://github.com/jmarcelomb/.dotfiles/commit/38e757c90986fd95554fe44fe836b171485968fe))
+* **yazi:** adds gu and gd to go up and down in parent directory ([24779f9](https://github.com/jmarcelomb/.dotfiles/commit/24779f9dc648cc2defbaee789a872151abe6eb59))
+* **yazi:** adds keymap for confirm-quit ([b166095](https://github.com/jmarcelomb/.dotfiles/commit/b166095fe6f4e08fbb4443d554ccc1b8fcf68208))
+* **yazi:** adds shift up and shift down to move preview ([6aebbfe](https://github.com/jmarcelomb/.dotfiles/commit/6aebbfe2fa3c669c433bcda8e7dc3feb25fb653d))
+* **yazi:** adds smart tab plugin ([5ac0f5c](https://github.com/jmarcelomb/.dotfiles/commit/5ac0f5cbf4ea504e33ea257758b36567e5d88087))
+* **yazi:** adds toggle-plane plugin allowing maximing & toggle preview ([a1deca2](https://github.com/jmarcelomb/.dotfiles/commit/a1deca27e64ed5f841772c9e95b4b040b2c3c3ee))
+* **yazi:** confirm quit when multiple tabs are enabled ([082e685](https://github.com/jmarcelomb/.dotfiles/commit/082e685b5304b8779f384ad8330e15246293885d))
+* **zellij:** uncomment default_shell to set fish as the default shell ([e5b42f4](https://github.com/jmarcelomb/.dotfiles/commit/e5b42f4a369362dfe935c5a144d069db84c10429))
+
+
+### Bug Fixes
+
+* adds cron and needed changes for server ([5eb3f53](https://github.com/jmarcelomb/.dotfiles/commit/5eb3f53c8231436b9e7917057afdc748c3aaaedc))
+* adds mkdir -p ~/.config to setup.sh file ([e1d41af](https://github.com/jmarcelomb/.dotfiles/commit/e1d41afe881b79a8d32a42ce92eea5550fd945a6))
+* automatic current system ([f1700e3](https://github.com/jmarcelomb/.dotfiles/commit/f1700e38c469781d7fb8e1dc0235606414ff1af6))
+* bash.marcelo file type and removes cargo verbosity when not installed ([34af2cb](https://github.com/jmarcelomb/.dotfiles/commit/34af2cb1c30320555036a561a7bc288202ea38ac))
+* enable default layout and pane frames in zellij config ([002a46e](https://github.com/jmarcelomb/.dotfiles/commit/002a46eb90895aed094ae98df0b410cecba7582c))
+* returns if .bashrc.marcelob is called in non-interactive mode ([2548864](https://github.com/jmarcelomb/.dotfiles/commit/2548864e4bec691765d37e36614da7eb3a7aaff4))
+* update paths for sketchybar and aerospace commands ([1e40a0f](https://github.com/jmarcelomb/.dotfiles/commit/1e40a0f5a2a10e80f21e1292e01e2a6a844e3aa0))
+
 ## 1.0.0 (2025-03-03)
 
 
