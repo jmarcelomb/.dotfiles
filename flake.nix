@@ -13,9 +13,15 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Add Rust overlay
+    rust-overlay = {
+      url = "github:oxalica/rust-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, ... }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, rust-overlay, ... }@inputs:
     let
       homeStateVersion = "24.11";
       user = "hinata";
@@ -32,6 +38,8 @@
         }
       ];
 
+      overlays = [ rust-overlay.overlays.default ];
+
       makeSystem = { hostname, stateVersion, system }:
         nixpkgs.lib.nixosSystem {
           inherit system;
@@ -40,6 +48,7 @@
             pkgs-stable = import nixpkgs-stable {
               inherit system;
               config.allowUnfree = true;
+              overlays = overlays;
             };
           };
 
@@ -58,7 +67,10 @@
       homeConfigurations = nixpkgs.lib.foldl' (configs: host:
         configs // {
           "${host.hostname}" = home-manager.lib.homeManagerConfiguration {
-            pkgs = nixpkgs.legacyPackages.${host.system};
+            pkgs = import nixpkgs {
+              inherit (host) system;
+              overlays = overlays;
+            };
             extraSpecialArgs = { inherit inputs homeStateVersion user; };
 
             modules = [ ./home-manager/home.nix ];
