@@ -11,13 +11,18 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+   rust-overlay = {
+     url = "github:oxalica/rust-overlay";
+     inputs.nixpkgs.follows = "nixpkgs";
+   };
   };
 
-  outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager }:
+  outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager, rust-overlay }:
   let
     system = "aarch64-darwin";
     username = "jmmb";
     homeDirectory = "/Users/${username}";
+    overlays = [ rust-overlay.overlays.default ];
 
     configuration = { pkgs, ... }: {
       # System settings
@@ -26,6 +31,7 @@
 
       nixpkgs.hostPlatform = system;
       nixpkgs.config.allowUnfree = true;
+      nixpkgs.overlays = overlays;
       # User configuration
       users.users.${username} = {
         name = username;
@@ -56,6 +62,7 @@
       home.username = username;
       home.homeDirectory = homeDirectory;
       home.stateVersion = "24.11";
+      nixpkgs.overlays = overlays;
 
       home.packages = common_pkgs.home.packages ++ (with pkgs; [
         neovim

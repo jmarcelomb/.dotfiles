@@ -33,7 +33,7 @@
     # Coding stuff
     vscode
     python311
-    cargo
+    rust-bin.stable.latest.default
     gcc
     gnumake
     nodejs_23
