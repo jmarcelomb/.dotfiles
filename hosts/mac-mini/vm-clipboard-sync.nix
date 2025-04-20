@@ -5,13 +5,13 @@
     script = ''
       # Log startup for debugging purposes
       echo "Starting clipboard sync at $(date)" >> /tmp/vm-clipboard-sync.log
-      
+
       # Get the user's display
       export DISPLAY=:0
-      
+
       # Ensure we have access to the user's environment
       . ${homeDirectory}/.zshrc > /dev/null 2>&1 || true
-      
+
       # Run the fswatcher command
       ${homeDirectory}/.cargo/bin/fswatcher \
         '${homeDirectory}/Virtual Machines.localized/Share/clipboard.txt' \
