@@ -1,4 +1,4 @@
-{ pkgs, self, homeDirectory }:
+{ self, homeDirectory, ... }:
 {
   system = {
     stateVersion = 6;
