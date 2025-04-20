@@ -60,6 +60,12 @@
           modules = [ ./hosts/${hostname}/configuration.nix ];
         };
 
+      # Define supported systems
+      supportedSystems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
+      
+      # Function to generate attributes for each system
+      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
+      
     in {
       nixosConfigurations = {
         konoha = makeNixosSystem {
@@ -93,5 +99,10 @@
           system = "aarch64-darwin";
         };
       };
+
+      # Add formatters for all supported systems
+      formatter = forAllSystems (system: let
+        pkgs = nixpkgs.legacyPackages.${system};
+      in pkgs.nixpkgs-fmt);
     };
 }
