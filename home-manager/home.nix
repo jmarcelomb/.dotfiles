@@ -1,7 +1,7 @@
 { pkgs, homeStateVersion, user, homeDirectory, ... }:
 let
   sharedEnv = import ../hosts/shared-env.nix { inherit pkgs; };
-  isDarwin = pkgs.stdenv.isDarwin;
+  inherit (pkgs.stdenv) isDarwin;
 in
 {
   imports = [
@@ -11,7 +11,7 @@ in
 
   home = {
     username = user;
-    homeDirectory = homeDirectory;
+    inherit homeDirectory;
     stateVersion = homeStateVersion;
     sessionVariables = sharedEnv.userVariables;
   };
