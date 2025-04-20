@@ -15,4 +15,6 @@ in
     stateVersion = homeStateVersion;
     sessionVariables = sharedEnv.userVariables;
   };
+
+  programs.home-manager.enable = true;
 }

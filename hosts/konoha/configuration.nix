@@ -4,6 +4,8 @@
   imports = [
     ./hardware-configuration.nix
     ./local-packages.nix
+    ./ssh.nix
+    ../../nixos/modules/default.nix
   ];
 
   networking.hostName = hostname;

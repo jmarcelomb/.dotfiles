@@ -1,6 +1,6 @@
 { pkgs, ... }:
 let
-  sharedEnv = import ../shared-env.nix { inherit nixpkgs; };
+  sharedEnv = import ../../hosts/shared-env.nix { inherit pkgs; };
 in
 {
   environment.sessionVariables = sharedEnv.systemVariables;
