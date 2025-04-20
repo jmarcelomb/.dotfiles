@@ -16,10 +16,16 @@ cd ~/.dotfiles
 ./setup.sh
 ```
 
-In MacOS with user jmmb:
+In `MacOS` with user `jmmb`:
 
 ```sh
 nix run nix-darwin/master#darwin-rebuild -- switch --flake .config/nix-darwin/#mac-mini
+```
+
+Or in `NixOS` with user `hinata`:
+
+```sh
+sudo nixos-rebuild switch --flake .#konoha
 ```
 
 ---

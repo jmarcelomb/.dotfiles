@@ -1,10 +1,7 @@
+{ pkgs, ... }:
+let
+  sharedEnv = import ../../hosts/shared-env.nix { inherit pkgs; };
+in
 {
-  environment.sessionVariables = rec {
-    TERMINAL = "kitty";
-    EDITOR = "nvim";
-    XDG_BIN_HOME = "$HOME/.local/bin";
-    PATH = [
-      "${XDG_BIN_HOME}"
-    ];
-  };
+  environment.sessionVariables = sharedEnv.systemVariables;
 }
