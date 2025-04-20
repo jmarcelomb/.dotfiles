@@ -22,6 +22,7 @@
     ripgrep
     direnv
     fd
+    bat
     typos
     typos-lsp
     bottom
@@ -33,7 +34,6 @@
     # Coding stuff
     vscode
     python311
-    rust-bin.stable.latest.default
     gcc
     gnumake
     nodejs_23
