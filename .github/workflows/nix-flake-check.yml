@@ -42,4 +42,4 @@ jobs:
     - name: Commit
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
-        ommit_message: "chore: apply flake auto lint/format"
+        omit_message: "chore: apply flake auto lint/format"
