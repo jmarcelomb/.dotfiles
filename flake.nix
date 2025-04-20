@@ -26,10 +26,14 @@
       makeDarwinSystem = { hostname, user, homeDirectory, system }:
         let
           overlays = [ rust-overlay.overlays.default ];
-          pkgs = import nixpkgs { inherit system overlays; };
+          pkgs = import nixpkgs {
+            inherit system overlays;
+            config.allowUnfree = true;
+          };
         in
         nix-darwin.lib.darwinSystem {
           inherit system;
+          specialArgs = { inherit rust-overlay; };
           modules = [
             (import ./hosts/${hostname}/configuration.nix {
               inherit pkgs nixpkgs self hostname homeStateVersion user homeDirectory system;
@@ -37,6 +41,10 @@
             home-manager.darwinModules.home-manager {
               home-manager.useGlobalPkgs = false;
               home-manager.useUserPackages = true;
+              home-manager.sharedModules = [{
+                nixpkgs.overlays = overlays;
+              }];
+
               home-manager.users.${user} = import ./home-manager/home.nix {
                 inherit pkgs user homeDirectory homeStateVersion;
               };

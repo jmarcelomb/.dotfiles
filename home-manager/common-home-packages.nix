@@ -31,9 +31,13 @@
     gitui
     lazygit
 
+    alacritty
+    kitty
+
     # Coding stuff
     vscode
     python311
+    rust-bin.stable.latest.default
     gcc
     gnumake
     nodejs_23
