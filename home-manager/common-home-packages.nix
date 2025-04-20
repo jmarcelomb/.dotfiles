@@ -22,6 +22,7 @@
     ripgrep
     direnv
     fd
+    bat
     typos
     typos-lsp
     bottom
@@ -29,6 +30,9 @@
     delta
     gitui
     lazygit
+
+    alacritty
+    kitty
 
     # Coding stuff
     vscode

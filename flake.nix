@@ -1,88 +1,108 @@
 {
-  description = "My system configuration";
+  description = "Unified system configuration for nix-darwin, chakra, and konoha";
 
   inputs = {
-    # Default to the nixos-unstable branch
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-
-    # Latest stable branch of nixpkgs, used for version rollback
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.11";
-
-    # Use the master branch of home-manager
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    # Add Rust overlay
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-darwin = {
+      url = "github:LnL7/nix-darwin";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, rust-overlay, ... }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, rust-overlay, nix-darwin, ... }@inputs:
     let
       homeStateVersion = "24.11";
-      user = "hinata";
-      hosts = [
-        {
-          hostname = "konoha";
-          stateVersion = "24.11";
-          system = "aarch64-linux";
-        }
-        {
-          hostname = "chakra";
-          stateVersion = "24.11";
-          system = "x86_64-linux";
-        }
-      ];
 
-      overlays = [ rust-overlay.overlays.default ];
+      # Function to create nix-darwin configurations
+      makeDarwinSystem = { hostname, user, homeDirectory, system }:
+        let
+          overlays = [ rust-overlay.overlays.default ];
+          pkgs = import nixpkgs {
+            inherit system overlays;
+            config.allowUnfree = true;
+          };
+        in
+        nix-darwin.lib.darwinSystem {
+          inherit system;
+          specialArgs = { inherit rust-overlay; };
+          modules = [
+            (import ./hosts/${hostname}/configuration.nix {
+              inherit pkgs nixpkgs self hostname homeStateVersion user homeDirectory system;
+            })
+            home-manager.darwinModules.home-manager {
+              home-manager.useGlobalPkgs = false;
+              home-manager.useUserPackages = true;
+              home-manager.sharedModules = [{
+                nixpkgs.overlays = overlays;
+              }];
 
-      makeSystem = { hostname, stateVersion, system }:
+              home-manager.users.${user} = import ./home-manager/home.nix {
+                inherit pkgs user homeDirectory homeStateVersion;
+              };
+            }
+          ];
+        };
+
+      # Function to create NixOS configurations
+      makeNixosSystem = { hostname, user, homeDirectory, stateVersion, system }:
         nixpkgs.lib.nixosSystem {
           inherit system;
-          specialArgs = {
-            inherit inputs stateVersion hostname user;
-            pkgs-stable = import nixpkgs-stable {
-              inherit system;
-              config.allowUnfree = true;
-              overlays = overlays;
-            };
-          };
-
+          specialArgs = { inherit inputs stateVersion hostname user homeDirectory; };
           modules = [ ./hosts/${hostname}/configuration.nix ];
         };
 
+      # Define supported systems
+      supportedSystems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
+
+      # Function to generate attributes for each system
+      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
+
     in {
-      nixosConfigurations = nixpkgs.lib.foldl' (configs: host:
-        configs // {
-          "${host.hostname}" = makeSystem {
-            inherit (host) hostname stateVersion system;
-          };
-        }
-      ) { } hosts;
+      nixosConfigurations = {
+        konoha = makeNixosSystem {
+          hostname = "konoha";
+          user = "hinata";
+          homeDirectory = "/home/hinata";
+          stateVersion = "24.11";
+          system = "aarch64-linux";
+        };
+        chakra = makeNixosSystem {
+          hostname = "chakra";
+          user = "hinata";
+          homeDirectory = "/home/hinata";
+          stateVersion = "24.11";
+          system = "x86_64-linux";
+        };
+      };
 
-      homeConfigurations = nixpkgs.lib.foldl' (configs: host:
-        configs // {
-          "${host.hostname}" = home-manager.lib.homeManagerConfiguration {
-            pkgs = import nixpkgs {
-              inherit (host) system;
-              overlays = overlays;
-            };
-            extraSpecialArgs = { inherit inputs homeStateVersion user; };
+      darwinConfigurations = {
+        "mac-mini" = makeDarwinSystem {
+          hostname = "mac-mini";
+          user = "jmmb";
+          homeDirectory = "/Users/jmmb";
+          system = "aarch64-darwin";
+        };
 
-            modules = [ ./home-manager/home.nix ];
-          };
-        }
-      ) { } hosts;
+        "work-macbook" = makeDarwinSystem {
+          hostname = "work-macbook";
+          user = "jmmb";
+          homeDirectory = "/Users/jmmb";
+          system = "aarch64-darwin";
+        };
+      };
 
-      # Define a formatter for nix fmt
-      formatter = nixpkgs.lib.foldl' (configs: host:
-        configs // {
-          "${host.system}" = nixpkgs.legacyPackages.${host.system}.nixpkgs-fmt;
-        }
-      ) { } hosts;
+      # Add formatters for all supported systems
+      formatter = forAllSystems (system: let
+        pkgs = nixpkgs.legacyPackages.${system};
+      in pkgs.nixpkgs-fmt);
     };
 }

@@ -1,19 +1,17 @@
-{ pkgs, stateVersion, hostname, ... }:
+{ pkgs, stateVersion, hostname, user, ... }:
 
 {
   imports = [
     ./hardware-configuration.nix
     ./local-packages.nix
     ./ssh.nix
-    ../../nixos/modules
+    ../../nixos/modules/default.nix
   ];
 
-  environment.systemPackages = [ pkgs.home-manager ];
-
   networking.hostName = hostname;
-
   system.stateVersion = stateVersion;
 
+  # Host-specific settings
   virtualisation.vmware.guest.enable = true;
 
   systemd.services.mount-vmhgfs = {
@@ -29,7 +27,6 @@
     };
   };
 
-  # Ensure the /mnt/hgfs directory exists
   system.activationScripts.mkHGFSDir = ''
     mkdir -p /mnt/hgfs
   '';
