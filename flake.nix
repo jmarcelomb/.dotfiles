@@ -65,7 +65,7 @@
         nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = { inherit inputs stateVersion hostname user homeDirectory isServer; };
-          modules = [ 
+          modules = [
             ./hosts/${hostname}/configuration.nix
             home-manager.nixosModules.home-manager {
               home-manager.useGlobalPkgs = false;
