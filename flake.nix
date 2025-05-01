@@ -70,9 +70,11 @@
             home-manager.nixosModules.home-manager {
               home-manager.useGlobalPkgs = false;
               home-manager.useUserPackages = true;
+              home-manager.sharedModules = [{
+                nixpkgs.overlays = overlays;
+              }];
               home-manager.users.${user} = import ./home-manager/home.nix {
-                pkgs = nixpkgs.legacyPackages.${system};
-                inherit user homeDirectory homeStateVersion isServer;
+                inherit pkgs user homeDirectory homeStateVersion isServer;
               };
             }
           ];
