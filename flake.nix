@@ -57,7 +57,17 @@
         nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = { inherit inputs stateVersion hostname user homeDirectory isServer; };
-          modules = [ ./hosts/${hostname}/configuration.nix ];
+          modules = [ 
+            ./hosts/${hostname}/configuration.nix
+            home-manager.nixosModules.home-manager {
+              home-manager.useGlobalPkgs = false;
+              home-manager.useUserPackages = true;
+              home-manager.users.${user} = import ./home-manager/home.nix {
+                pkgs = nixpkgs.legacyPackages.${system};
+                inherit user homeDirectory homeStateVersion isServer;
+              };
+            }
+          ];
         };
 
       # Define supported systems
