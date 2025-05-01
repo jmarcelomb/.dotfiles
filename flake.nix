@@ -22,10 +22,12 @@
     let
       homeStateVersion = "24.11";
 
+      # Shared overlays
+      overlays = [ rust-overlay.overlays.default ];
+
       # Function to create nix-darwin configurations
       makeDarwinSystem = { hostname, user, isServer, homeDirectory, system }:
         let
-          overlays = [ rust-overlay.overlays.default ];
           pkgs = import nixpkgs {
             inherit system overlays;
             config.allowUnfree = true;
@@ -54,16 +56,34 @@
 
       # Function to create NixOS configurations
       makeNixosSystem = { hostname, user, isServer, homeDirectory, stateVersion, system }:
+        let
+          pkgs = import nixpkgs {
+            inherit system overlays;
+            config.allowUnfree = true;
+          };
+        in
         nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = { inherit inputs stateVersion hostname user homeDirectory isServer; };
-          modules = [ ./hosts/${hostname}/configuration.nix ];
+          modules = [ 
+            ./hosts/${hostname}/configuration.nix
+            home-manager.nixosModules.home-manager {
+              home-manager.useGlobalPkgs = false;
+              home-manager.useUserPackages = true;
+              home-manager.sharedModules = [{
+                nixpkgs.overlays = overlays;
+              }];
+              home-manager.users.${user} = import ./home-manager/home.nix {
+                inherit pkgs user homeDirectory homeStateVersion isServer;
+              };
+            }
+          ];
         };
 
       # Define supported systems
       supportedSystems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
 
-      # Function to generate attributes for each system
+      # Function to generate attributes for all supported systems
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
 
     in {
