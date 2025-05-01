@@ -1,4 +1,4 @@
-{ pkgs, stateVersion, hostname, ... }:
+{ pkgs, stateVersion, hostname, inputs, ... }:
 
 {
   imports = [
@@ -14,6 +14,7 @@
     ../../nixos/modules/user.nix
 
     ./modules/cron.nix
+    (import ./modules/auto-upgrade.nix { inherit inputs; })
   ];
 
   # Bootloader.
