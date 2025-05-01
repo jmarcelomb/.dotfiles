@@ -1,45 +1,60 @@
-{ pkgs, ... }: {
+{ pkgs, isServer, ... }: {
   nixpkgs.config.allowUnfree = true;
 
-  home.packages = with pkgs; [
-    firefox
+  # Define package groups
+  home.packages = with pkgs; let
+    cliUtils = [
+      bc
+      wget
+      curl
+      zip
+      unzip
+      git
+      zsh
+      fzf
+      zoxide
+      ripgrep
+      direnv
+      fd
+      bat
+      bottom
+      dust
+      delta
+      yazi
+    ];
 
-    # CLI utils
-    bc
-    wget
-    curl
-    zip
-    unzip
-    git
-    zsh
+    serverUtils = [
+    ];
 
-    fzf
-    zoxide
-    zellij
-    yazi
-    glow
-    imagemagick
-    ripgrep
-    direnv
-    fd
-    bat
-    typos
-    typos-lsp
-    bottom
-    dust
-    delta
-    gitui
-    lazygit
+    devTools = [
+      firefox
 
-    alacritty
-    kitty
+      vscode
+      python311
+      rust-bin.stable.latest.default
+      bacon
+      gcc
+      gnumake
+      nodejs_23
 
-    # Coding stuff
-    vscode
-    python311
-    rust-bin.stable.latest.default
-    gcc
-    gnumake
-    nodejs_23
-  ];
+      alacritty
+      kitty
+
+      imagemagick
+      glow
+
+      gitui
+      lazygit
+
+      typos
+      typos-lsp
+    ];
+
+    miscTools = [
+      zellij
+    ];
+  in
+    cliUtils
+    ++ miscTools
+    ++ (if isServer then serverUtils else devTools);
 }
