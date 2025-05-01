@@ -14,6 +14,7 @@
     ../../nixos/modules/user.nix
 
     ./modules/cron.nix
+    ./modules/auto-upgrade.nix
   ];
 
   # Bootloader.
