@@ -23,7 +23,7 @@
       homeStateVersion = "24.11";
 
       # Function to create nix-darwin configurations
-      makeDarwinSystem = { hostname, user, homeDirectory, system }:
+      makeDarwinSystem = { hostname, user, isServer, homeDirectory, system }:
         let
           overlays = [ rust-overlay.overlays.default ];
           pkgs = import nixpkgs {
@@ -46,17 +46,17 @@
               }];
 
               home-manager.users.${user} = import ./home-manager/home.nix {
-                inherit pkgs user homeDirectory homeStateVersion;
+                inherit pkgs user homeDirectory homeStateVersion isServer;
               };
             }
           ];
         };
 
       # Function to create NixOS configurations
-      makeNixosSystem = { hostname, user, homeDirectory, stateVersion, system }:
+      makeNixosSystem = { hostname, user, isServer, homeDirectory, stateVersion, system }:
         nixpkgs.lib.nixosSystem {
           inherit system;
-          specialArgs = { inherit inputs stateVersion hostname user homeDirectory; };
+          specialArgs = { inherit inputs stateVersion hostname user homeDirectory isServer; };
           modules = [ ./hosts/${hostname}/configuration.nix ];
         };
 
@@ -74,6 +74,7 @@
           homeDirectory = "/home/hinata";
           stateVersion = "24.11";
           system = "aarch64-linux";
+          isServer = false;
         };
         chakra = makeNixosSystem {
           hostname = "chakra";
@@ -81,6 +82,7 @@
           homeDirectory = "/home/hinata";
           stateVersion = "24.11";
           system = "x86_64-linux";
+          isServer = true;
         };
       };
 
@@ -90,6 +92,7 @@
           user = "jmmb";
           homeDirectory = "/Users/jmmb";
           system = "aarch64-darwin";
+          isServer = false;
         };
 
         "work-macbook" = makeDarwinSystem {
@@ -97,6 +100,7 @@
           user = "jmmb";
           homeDirectory = "/Users/jmmb";
           system = "aarch64-darwin";
+          isServer = false;
         };
       };
 
