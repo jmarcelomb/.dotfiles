@@ -21,6 +21,8 @@
       dust
       delta
       yazi
+
+      helix
     ];
 
     serverUtils = [

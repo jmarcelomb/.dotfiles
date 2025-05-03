@@ -7,6 +7,7 @@
 - link:
     ~/scripts: scripts/
     ~/.config/nvim: .config/nvim
+    ~/.config/helix: .config/helix
     ~/.config/alacritty: .config/alacritty
     ~/.config/kitty: .config/kitty
     ~/.config/zellij/: .config/zellij
