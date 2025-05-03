@@ -54,6 +54,7 @@
 
     miscTools = [
       zellij
+      bitwarden
     ];
   in
     cliUtils
