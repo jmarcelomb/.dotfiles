@@ -1,6 +1,7 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   fonts.fontconfig.enable = true;
   home.packages = [
-    pkgs.source-code-pro
+    pkgs.nerd-fonts.sauce-code-pro
   ];
 }

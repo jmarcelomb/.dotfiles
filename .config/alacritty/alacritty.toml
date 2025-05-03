@@ -5,19 +5,19 @@ import = ["~/.dotfiles/.config/alacritty/themes/themes/one_dark.toml"]
 size = 12.0
 
 [font.bold]
-family = "SauceCodePro NFP Medium"
+family = "SauceCodePro Nerd Font Mono"
 style = "Bold"
 
 [font.bold_italic]
-family = "SauceCodePro NFP Medium"
+family = "SauceCodePro Nerd Font Mono"
 style = "Bold Italic"
 
 [font.italic]
-family = "SauceCodePro NFP Medium"
+family = "SauceCodePro Nerd Font Mono"
 style = "Italic"
 
 [font.normal]
-family = "SauceCodePro NFP Medium"
+family = "SauceCodePro Nerd Font Mono"
 style = "Regular"
 
 [window]
