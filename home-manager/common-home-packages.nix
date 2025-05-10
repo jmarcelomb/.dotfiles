@@ -39,7 +39,7 @@
       bacon
       gcc
       gnumake
-      nodejs_23
+      nodejs_24
 
       alacritty
       kitty
