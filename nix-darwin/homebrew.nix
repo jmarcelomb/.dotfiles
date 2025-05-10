@@ -34,6 +34,7 @@
       "ghostty"
 
       "bambu-studio"
+      "insta360-studio"
     ];
   };
 }
