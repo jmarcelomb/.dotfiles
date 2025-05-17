@@ -20,6 +20,7 @@ in
   environment.variables = sharedEnv.systemVariables;
 
   networking.hostName = hostname;
+  system.primaryUser = user;
 
   services.sketchybar.enable = true;
   programs.fish.enable = true;
