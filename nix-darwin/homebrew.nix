@@ -35,6 +35,8 @@
 
       "bambu-studio"
       "insta360-studio"
+
+      "vlc"
     ];
   };
 }
