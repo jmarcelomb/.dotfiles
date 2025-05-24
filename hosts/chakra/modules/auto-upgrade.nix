@@ -11,5 +11,10 @@
     ];
     dates = "02:00";
     randomizedDelaySec = "45min";
+    system.autoUpgrade.postUpgrade = ''
+      cd ${inputs.self.outPath}
+      git pull --rebase
+      git push
+    '';
   };
 }
