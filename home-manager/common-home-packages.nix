@@ -40,6 +40,7 @@
       gcc
       gnumake
       nodejs_24
+      zig
 
       alacritty
       kitty
