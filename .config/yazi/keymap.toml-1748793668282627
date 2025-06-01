@@ -1,11 +1,11 @@
 # Dropping to the shell
-[[mgr.prepend_keymap]]
+[[manager.prepend_keymap]]
 on = "!"
 run = 'shell "$SHELL" --block'
 desc = "Open shell here"
 
 # Opening nvim in cwd
-[[mgr.prepend_keymap]]
+[[manager.prepend_keymap]]
 on = "<C-e>"
 run = 'shell "nvim ." --block'
 desc = "Open nvim in cwd"
@@ -24,94 +24,94 @@ desc = "Cancel input"
 # '''
 
 # Lazygit keybind
-[[mgr.prepend_keymap]]
+[[manager.prepend_keymap]]
 on = ["g", "i"]
 run = "plugin lazygit"
 desc = "run lazygit"
 
-[[mgr.prepend_keymap]]
+[[manager.prepend_keymap]]
 on = ["g", "r"]
 desc = "Go to root of Git repository"
 run = 'shell -- ya emit cd "$(git rev-parse --show-toplevel)"'
 
 # Change mode keybind
-[[mgr.prepend_keymap]]
+[[manager.prepend_keymap]]
 on = ["c", "m"]
 run = "plugin chmod"
 desc = "Chmod on selected files"
 
 # eza-preview
-[[mgr.prepend_keymap]]
+[[manager.prepend_keymap]]
 on = ["E"]
 run = "plugin eza-preview"
 desc = "Toggle tree/list dir preview"
 
-[[mgr.prepend_keymap]]
+[[manager.prepend_keymap]]
 on = ["-"]
 run = "plugin eza-preview --args='--inc-level'"
 desc = "Increment tree level"
 
-[[mgr.prepend_keymap]]
+[[manager.prepend_keymap]]
 on = ["_"]
 run = "plugin eza-preview --args='--dec-level'"
 desc = "Decrement tree level"
 
-[[mgr.prepend_keymap]]
+[[manager.prepend_keymap]]
 on = ["$"]
 run = "plugin eza-preview --args='--toggle-follow-symlinks'"
 desc = "Toggle tree follow symlinks"
 
-[[mgr.prepend_keymap]]
+[[manager.prepend_keymap]]
 on = "p"
 run = "plugin smart-paste"
 desc = "Paste into the hovered directory or CWD"
 
-[[mgr.prepend_keymap]]
+[[manager.prepend_keymap]]
 on = "t"
 run = "plugin smart-tab"
 desc = "Create a tab and enter the hovered directory"
 
-[[mgr.prepend_keymap]]
+[[manager.prepend_keymap]]
 on = "<C-m>"
 run = "plugin toggle-pane max-preview"
 desc = "Maximize or restore the preview pane"
 
-[[mgr.prepend_keymap]]
+[[manager.prepend_keymap]]
 on = "<C-p>"
 run = "plugin toggle-pane min-preview"
 desc = "Show or hide the preview pane"
 
-[[mgr.prepend_keymap]]
+[[manager.prepend_keymap]]
 on = "<S-Up>"
 run = "seek -5"
 desc = "Scroll preview up by 5 lines"
 
-[[mgr.prepend_keymap]]
+[[manager.prepend_keymap]]
 on = "<S-Down>"
 run = "seek 5"
 desc = "Scroll preview down by 5 lines"
 
-[[mgr.prepend_keymap]]
+[[manager.prepend_keymap]]
 on = ["g", "u"]
 run = "plugin parent-arrow -1"
 desc = "Go up in parent directory"
 
-[[mgr.prepend_keymap]]
+[[manager.prepend_keymap]]
 on = ["g", "d"]
 run = "plugin parent-arrow 1"
 desc = "Go down in parent directory"
 
-[[mgr.prepend_keymap]]
+[[manager.prepend_keymap]]
 on = ["f", "r"]
 run = "plugin fr rg"
 desc = "Search file by content (rg)"
 
-[[mgr.prepend_keymap]]
+[[manager.prepend_keymap]]
 on = ["f", "a"]
 run = "plugin fr rga"
 desc = "Search file by content (rga)"
 
-[[mgr.prepend_keymap]]
+[[manager.prepend_keymap]]
 on = ["g", "c"]
 run = "plugin vcs-files"
 desc = "Show Git file changes"
