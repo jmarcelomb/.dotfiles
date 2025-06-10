@@ -19,6 +19,7 @@
       "sf-symbols"
 
       "discord"
+      "element"
       "whatsapp"
       "messenger"
       "spotify"
@@ -37,6 +38,8 @@
       "insta360-studio"
 
       "vlc"
+
+      "transmission"
     ];
   };
 }
