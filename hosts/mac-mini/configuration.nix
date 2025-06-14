@@ -1,6 +1,6 @@
 { self, pkgs, nixpkgs, user, homeStateVersion, hostname, homeDirectory, system, ... }:
 let
-  sharedEnv = import ../shared-env.nix { inherit pkgs; }
+  sharedEnv = import ../shared-env.nix { inherit pkgs; };
 in
 {
   imports = [
