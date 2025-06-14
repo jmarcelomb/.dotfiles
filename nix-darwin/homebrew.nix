@@ -30,7 +30,6 @@
       "chatgpt"
 
       "google-chrome"
-      "zen-browser"
 
       "ghostty"
 
