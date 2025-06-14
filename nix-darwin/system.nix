@@ -22,6 +22,7 @@
         InitialKeyRepeat = 20;
         KeyRepeat = 1;
       };
+      NSGlobalDomain."com.apple.keyboard.fnState" = true;
       finder = {
         AppleShowAllFiles = true;
         AppleShowAllExtensions = true;
