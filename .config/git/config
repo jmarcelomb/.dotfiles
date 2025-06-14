@@ -1,7 +1,7 @@
 [user]
-  email = git@marceloborges.dev
+  email = marcelo.borges@synopsys.com
   name = Marcelo Borges
-  ; signingKey =
+  signingKey = 7800209268DE9927
 
 [core]
   pager = delta
@@ -28,7 +28,7 @@
 
 [commit]
   verbose = true
-  ; gpgsign = true
+  gpgsign = true
 
 [delta]
   navigate = true  # use n and N to move between diff sections
