@@ -1,14 +1,14 @@
 { self, pkgs, nixpkgs, user, homeStateVersion, hostname, homeDirectory, system, ... }:
 let
-  sharedEnv = import ../shared-env.nix { inherit pkgs; }
+  sharedEnv = import ../shared-env.nix { inherit pkgs; };
 in
 {
   imports = [
     (import ../../nix-darwin/system.nix { inherit self homeDirectory; })
-    (import ./vm-clipboard-sync.nix { inherit user homeDirectory; })
     ../../nix-darwin/homebrew.nix
     ../../nix-darwin/aerospace.nix
     ../../nixos/modules/gpg.nix
+    ./local-packages.nix
   ];
 
   nix.settings.experimental-features = "nix-command flakes";

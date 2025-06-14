@@ -18,7 +18,7 @@
       "font-sketchybar-app-font"
       "sf-symbols"
 
-      "discord"
+      # "discord"
       "element"
       "whatsapp"
       "messenger"

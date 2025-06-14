@@ -51,6 +51,7 @@
             alt-0 = "workspace 10";
             alt-b = "workspace B";
             alt-s = "workspace S";
+            alt-t = "workspace T";
 
             alt-shift-1 = [
               "move-node-to-workspace 1"
@@ -100,6 +101,10 @@
               "move-node-to-workspace S"
               "workspace S"
             ];
+            alt-shift-t = [
+              "move-node-to-workspace T"
+              "workspace T"
+            ];
 
             alt-r = "mode resize";
           };
@@ -130,6 +135,7 @@
         "10" = "main";
         "B" = "main";
         "S" = "main";
+        "T" = "main";
       };
 
       on-window-detected = [
@@ -196,6 +202,14 @@
         {
           "if".app-id = "com.spotify.client";
           run = [ "move-node-to-workspace S" ];
+        }
+        {
+          "if".app-id = "com.microsoft.teams2";
+          run = [ "move-node-to-workspace T" ];
+        }
+        {
+          "if".app-id = "com.microsoft.onenote.mac";
+          run = [ "move-node-to-workspace 9" ];
         }
       ];
     };
