@@ -61,7 +61,7 @@ require("eza-preview"):setup({
   -- Show target file info instead of symlink info (default: false)
   dereference = false,
 
-  -- Show hidden files (default: true) 
+  -- Show hidden files (default: true)
   all = true
 })
 
@@ -73,7 +73,7 @@ require("eza-preview"):setup({})
 
 - `plugin eza-preview` - Toggle between tree and list modes
 - `plugin eza-preview inc-level` - Increase tree depth level
-- `plugin eza-preview dec-level` - Decrease tree depth level  
+- `plugin eza-preview dec-level` - Decrease tree depth level
 - `plugin eza-preview toggle-follow-symlinks` - Toggle symlink following
 - `plugin eza-preview toggle-hidden` - Toggle hidden file visibility
 
@@ -84,4 +84,3 @@ Feel free to contribute by opening issues or submitting pull requests!
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
