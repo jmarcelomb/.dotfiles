@@ -5,7 +5,7 @@
 
 # Get the app names for the given workspace
 WORKSPACE="$1"
-APPS=$(aerospace list-windows --workspace "$WORKSPACE" | awk -F'|' 'NF > 1 {gsub(/^ +| +$/, "", $2); print $2}' | paste -sd ', ' -)
+APPS=$(aerospace list-windows --workspace "$WORKSPACE" | awk -F'|' 'NF > 1 {gsub(/^ +| +$/, "", $2); gsub(/Microsoft /, "", $2); print $2}' | paste -sd ', ' -)
 
 # Check if APPS is empty and clear the label for empty workspaces
 if [ -z "$APPS" ]; then
