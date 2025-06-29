@@ -39,6 +39,9 @@
 
             alt-shift-space = "layout floating tiling";
 
+            alt-tab = "workspace-back-and-forth";
+            alt-shift-tab = "move-workspace-to-monitor --wrap-around next";
+
             alt-1 = "workspace 1";
             alt-2 = "workspace 2";
             alt-3 = "workspace 3";
@@ -106,6 +109,12 @@
               "workspace T"
             ];
 
+
+            alt-shift-semicolon = "mode service";
+
+            alt-slash = "layout tiles horizontal vertical";
+            alt-comma = "layout accordion horizontal vertical";
+
             alt-r = "mode resize";
           };
         };
@@ -116,8 +125,33 @@
             j = "resize height +50";
             k = "resize height -50";
             l = "resize width +50";
+            left = "resize width -50";
+            down = "resize height +50";
+            up = "resize height -50";
+            right = "resize width +50";
             enter = "mode main";
             esc = "mode main";
+          };
+        };
+
+        service = {
+          binding = {
+            esc = ["reload-config" "mode main"];
+            r = ["flatten-workspace-tree" "mode main"]; # reset layout
+            f = ["layout floating tiling" "mode main"]; # Toggle between floating and tiling layout
+            backspace = ["close-all-windows-but-current" "mode main"];
+
+            # sticky is not yet supported https://github.com/nikitabobko/AeroSpace/issues/2
+            #s = ["layout sticky tiling" "mode main"];
+
+            alt-shift-h = ["join-with left" "mode main"];
+            alt-shift-j = ["join-with down" "mode main"];
+            alt-shift-k = ["join-with up" "mode main"];
+            alt-shift-l = ["join-with right" "mode main"];
+            alt-shift-left = ["join-with left" "mode main"];
+            alt-shift-down = ["join-with down" "mode main"];
+            alt-shift-up = ["join-with up" "mode main"];
+            alt-shift-right = ["join-with right" "mode main"];
           };
         };
       };
@@ -128,14 +162,14 @@
         "3" = "main";
         "4" = "main";
         "5" = "main";
-        "6" = "main";
-        "7" = "main";
-        "8" = "main";
-        "9" = "main";
-        "10" = "main";
-        "B" = "main";
-        "S" = "main";
-        "T" = "main";
+        "6" = "secondary";
+        "7" = "secondary";
+        "8" = "secondary";
+        "9" = "secondary";
+        "10" = "secondary";
+        "B" = "secondary";
+        "S" = "secondary";
+        "T" = "secondary";
       };
 
       on-window-detected = [
@@ -162,10 +196,6 @@
         {
           "if".app-id = "com.vmware.fusion";
           run = [ "move-node-to-workspace 3" ];
-        }
-        {
-          "if".app-id = "com.jgraph.drawio.desktop";
-          run = [ "move-node-to-workspace 4" ];
         }
         {
           "if".app-id = "com.microsoft.VSCode";
@@ -205,6 +235,10 @@
         }
         {
           "if".app-id = "com.microsoft.teams2";
+          run = [ "move-node-to-workspace T" ];
+        }
+        {
+          "if".app-id = "us.zoom.xos";
           run = [ "move-node-to-workspace T" ];
         }
         {
