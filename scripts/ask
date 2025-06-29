@@ -1,14 +1,7 @@
 #!/usr/bin/env bash
 
-model="qwen2.5-coder:14b"
-
-if [[ $# -gt 1 ]]; then
-    model="$1"
-    shift
+if ! uv tool list | grep -q "llm"; then
+  uv tool install llm --with llm-github-copilot
 fi
 
-if [[ $# -eq 0 ]]; then
-    ollama run --nowordwrap "$model"
-else
-    ollama run --nowordwrap "$model" "$@"
-fi
+llm -m github_copilot "$@"

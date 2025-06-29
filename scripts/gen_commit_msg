@@ -59,7 +59,7 @@ def prompt_llm(
     for i in range(attempts):
         logger.info("=> LLM generation attempt '%s'", i)
         with Popen(
-            ["ask", model, prompt], stdout=PIPE, bufsize=1, universal_newlines=True
+            ["ask", prompt], stdout=PIPE, bufsize=1, universal_newlines=True
         ) as p:
             if p.stdout is None:
                 continue
