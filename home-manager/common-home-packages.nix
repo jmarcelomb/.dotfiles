@@ -38,6 +38,7 @@
       rust-analyzer
       bacon
       gcc
+      lldb
       gnumake
       nodejs_24
       zig
@@ -57,7 +58,6 @@
 
     miscTools = [
       zellij
-      bitwarden
     ];
   in
     cliUtils
