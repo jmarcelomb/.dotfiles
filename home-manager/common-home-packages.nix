@@ -40,7 +40,7 @@
       gcc
       lldb
       gnumake
-      nodejs_24
+      nodejs_22
       zig
 
       alacritty
