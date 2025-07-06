@@ -8,7 +8,6 @@
     };
     brews = [
       "imagemagick"
-      "podman"
     ];
     casks = [
       "keycastr"
@@ -25,7 +24,7 @@
       "spotify"
 
       "shottr"
-      "podman-desktop"
+      "docker-desktop"
       "joplin"
       "chatgpt"
 
