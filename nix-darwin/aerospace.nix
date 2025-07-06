@@ -178,6 +178,14 @@
           run = [ "move-node-to-workspace 1" ];
         }
         {
+          "if".app-id = "com.apple.Safari";
+          run = [ "move-node-to-workspace 1" ];
+        }
+        {
+          "if".app-id = "com.kagi.kagimacOS";
+          run = [ "move-node-to-workspace 1" ];
+        }
+        {
           "if".app-id = "net.cozic.joplin-desktop";
           run = [ "move-node-to-workspace 9" ];
         }
@@ -230,6 +238,9 @@
           run = [ "move-node-to-workspace B" ];
         }
         {
+          "if".app-id = "com.bitwarden.desktop";
+          run = [ "move-node-to-workspace B" ];
+        }        {
           "if".app-id = "com.spotify.client";
           run = [ "move-node-to-workspace S" ];
         }
