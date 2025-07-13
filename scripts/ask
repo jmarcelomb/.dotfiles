@@ -4,4 +4,4 @@ if ! uv tool list | grep -q "llm"; then
   uv tool install llm --with llm-github-copilot
 fi
 
-llm -m github_copilot "$@"
+llm -m github_copilot "$*"
