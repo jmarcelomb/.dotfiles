@@ -11,7 +11,7 @@ from subprocess import Popen, PIPE
 
 # Constants
 DEFAULT_MODEL = "qwen2.5-coder:14b"
-DEFAULT_ATTEMPTS = 3
+DEFAULT_ATTEMPTS = 1
 MAX_LINE_LENGTH = 74
 
 # Configure logging
@@ -57,7 +57,7 @@ def prompt_llm(
     """
     messages = []
     for i in range(attempts):
-        logger.info("=> LLM generation attempt '%s'", i)
+        # logger.info("=> LLM generation attempt '%s'", i)
         with Popen(
             ["ask", prompt], stdout=PIPE, bufsize=1, universal_newlines=True
         ) as p:
@@ -87,9 +87,11 @@ def commit(messages: list[str]) -> int:
     """
     commit_message = ""
     for i, message in enumerate(messages):
-        commit_message += f"#===Commit message generated #{i} ===\n"
+        if DEFAULT_ATTEMPTS > 1:
+            commit_message += f"#===Commit message generated #{i} ===\n"
         commit_message += message
-        commit_message += f"#{'=' * 40}\n"
+        if DEFAULT_ATTEMPTS > 1:
+            commit_message += f"#{'=' * 40}\n"
     result = subprocess.run(
         ["git", "commit", "-s", "-e", "-m", commit_message], check=False
     )
