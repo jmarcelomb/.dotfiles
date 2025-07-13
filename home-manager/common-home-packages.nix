@@ -31,6 +31,7 @@
     devTools = [
       firefox
 
+      coreutils
       vscode
       python311
       uv
