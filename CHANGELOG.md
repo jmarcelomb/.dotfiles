@@ -69,7 +69,7 @@
 * **konoha:** update disk and swap device configurations ([9b219a2](https://github.com/jmarcelomb/.dotfiles/commit/9b219a215411be7e2cef6596ed86d98eca62c9f1))
 * missing ; in mac-mini config ([cd01cfe](https://github.com/jmarcelomb/.dotfiles/commit/cd01cfe4956bbc2f58c1ad70d6046b20a2a835ce))
 * remove nix-darwin dangling symlink ([69e5efc](https://github.com/jmarcelomb/.dotfiles/commit/69e5efc947dbe2c972b891a0504a598de5294bcd))
-* returns if .bashrc.marcelob is called in non-iteractive mode ([2548864](https://github.com/jmarcelomb/.dotfiles/commit/2548864e4bec691765d37e36614da7eb3a7aaff4))
+* returns if .bashrc.marcelob is called in non-interactive mode ([2548864](https://github.com/jmarcelomb/.dotfiles/commit/2548864e4bec691765d37e36614da7eb3a7aaff4))
 * **scripts:** correct argument handling and reduce default attempts ([2457509](https://github.com/jmarcelomb/.dotfiles/commit/24575092c22cb616ecdd287171cddca7735d3725))
 * sketchybar font & changes battery icons to sf symbols ([852ac1c](https://github.com/jmarcelomb/.dotfiles/commit/852ac1c4b02e207db8d5bf9c2a85bae00a778608))
 * **style:** update font family in terminal configurations ([f9e9733](https://github.com/jmarcelomb/.dotfiles/commit/f9e973381d47a7e890ad8dc01bcbd100119cb06e))
