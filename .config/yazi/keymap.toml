@@ -22,6 +22,10 @@ desc = "Cancel input"
 # run = '''
 #   shell 'qlmanage -p "$@"'
 # '''
+#
+# [[mgr.prepend_keymap]]
+# on = "y"
+# run = ['shell -- cat "$@" | pbcopy', "yank"]
 
 # Lazygit keybind
 [[mgr.prepend_keymap]]
