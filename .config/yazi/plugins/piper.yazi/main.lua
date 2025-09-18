@@ -1,4 +1,4 @@
---- @since 25.5.31
+--- @since 25.9.15
 
 local M = {}
 
@@ -48,7 +48,7 @@ function M:seek(job) require("code"):seek(job) end
 function M.format(job, lines)
 	local format = job.args.format
 	if format ~= "url" then
-		local s = table.concat(lines, ""):gsub("\t", string.rep(" ", rt.preview.tab_size))
+		local s = table.concat(lines, ""):gsub("\r", ""):gsub("\t", string.rep(" ", rt.preview.tab_size))
 		return ui.Text.parse(s):area(job.area)
 	end
 
@@ -57,7 +57,7 @@ function M.format(job, lines)
 
 		local icon = File({
 			url = Url(lines[i]),
-			cha = Cha { kind = lines[i]:sub(-1) == "/" and 1 or 0 },
+			cha = Cha { mode = tonumber(lines[i]:sub(-1) == "/" and "40700" or "100644", 8) },
 		}):icon()
 
 		if icon then
