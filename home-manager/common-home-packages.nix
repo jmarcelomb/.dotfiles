@@ -59,6 +59,7 @@
 
     miscTools = [
       zellij
+      tmux
     ];
   in
     cliUtils
