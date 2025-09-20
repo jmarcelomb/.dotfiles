@@ -1,5 +1,8 @@
-font-family = SauceCodePro Nerd Font
-font-size = 12
-theme = catppuccin-frappe
+font-family = SauceCodePro NFM
+font-size = 16
+theme = Catppuccin Frappe
 font-feature = -liga
+
 macos-option-as-alt = true
+keybind = alt+left=unbind
+keybind = alt+right=unbind
