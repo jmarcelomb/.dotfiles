@@ -33,10 +33,11 @@ alias e="nvim"
 # Git aliases
 alias gs="git status"
 
+alias gr='git rev-parse --show-toplevel > /dev/null && cd $(git rev-parse --show-toplevel)'
+
 alias ga="git add"
 alias gA="git add -A"
 
-alias gr="git restore"
 alias grs="git restore --staged"
 
 alias gc="git commit -s"
