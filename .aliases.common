@@ -28,7 +28,8 @@ alias ....="cd ../../../"
 alias vim="nvim"
 alias v="nvim"
 alias edit="nvim"
-alias e="nvim"
+alias e="$EDITOR"
+alias avante='nvim -c "lua vim.defer_fn(function()require(\"avante.api\").zen_mode()end, 100)"'
 
 # Git aliases
 alias gs="git status"
