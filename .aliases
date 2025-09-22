@@ -1,3 +1,4 @@
+# vim: ft=sh
 
 # Check if eza exists and alias ls to eza
 if command -v eza >/dev/null 2>&1; then
