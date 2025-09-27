@@ -16,4 +16,9 @@ if command -v bat >/dev/null 2>&1; then
   alias less='bat --paging=always'
 fi
 
-source ~/.aliases.common
+alias bathelp='bat --plain --language=help'
+help() {
+  "$@" --help 2>&1 | bathelp
+}
+
+source "$HOME/.aliases.common"
