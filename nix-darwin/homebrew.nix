@@ -32,8 +32,6 @@
 
       "ghostty"
 
-      "bambu-studio"
-      "insta360-studio"
       "inkscape"
 
       "vlc"
