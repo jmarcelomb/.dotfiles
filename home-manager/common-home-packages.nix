@@ -43,6 +43,7 @@
       gnumake
       nodejs_22
       zig
+      go
 
       alacritty
       kitty
