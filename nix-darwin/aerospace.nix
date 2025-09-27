@@ -173,6 +173,7 @@
       };
 
       on-window-detected = [
+        # Command: osascript -e 'id of app "AppName"'
         {
           "if".app-id = "app.zen-browser.zen";
           run = [ "move-node-to-workspace 1" ];
@@ -199,6 +200,10 @@
         }
         {
           "if".app-id = "net.kovidgoyal.kitty";
+          run = [ "move-node-to-workspace 2" ];
+        }
+        {
+          "if".app-id = "com.mitchellh.ghostty";
           run = [ "move-node-to-workspace 2" ];
         }
         {
