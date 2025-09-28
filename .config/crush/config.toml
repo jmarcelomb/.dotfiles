@@ -1,0 +1,8 @@
+# Default provider to use
+provider = "copilot"
+
+[providers.copilot]
+type = "openai"
+base_url = "http://localhost:4141/v1"
+model = "claude-sonnet-4"   # or gpt-5, gpt-4o, etc.
+api_key = "not-needed" # copilot-api doesn’t require one, but Crush expects a value
