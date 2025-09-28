@@ -32,7 +32,6 @@
       firefox
 
       coreutils
-      # vscode
       python311
       uv
       rust-bin.stable.latest.default
