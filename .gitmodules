@@ -12,3 +12,6 @@
 [submodule ".plugins/fzf-tab-completion"]
 	path = .plugins/fzf-tab-completion
 	url = https://github.com/lincheney/fzf-tab-completion.git
+[submodule ".config/tmux/plugins/tpm"]
+	path = .config/tmux/plugins/tpm
+	url = https://github.com/tmux-plugins/tpm
