@@ -26,6 +26,7 @@
     ~/.aliases.fish: .aliases.fish
     ~/.config/fish/: .config/fish/
     ~/.config/tmux/: .config/tmux/
+    ~/.config/crush/: .config/crush/
 
 # - create:
 #     - ~/.vim/undo-history

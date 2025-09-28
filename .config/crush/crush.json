@@ -1,0 +1,316 @@
+{
+  "$schema": "https://charm.land/crush.json",
+  "lsp": {
+    "python": {
+      "command": "ty",
+      "args": [
+        "server"
+      ]
+    }
+  },
+  "options": {
+    "attribution": {
+      "co_authored_by": false,
+      "generated_with": false
+    }
+  },
+  "providers": {
+    "local": {
+      "type": "openai",
+      "base_url": "http://localhost:4141/v1",
+      "api_key": "not-needed",
+      "models": [
+        {
+          "id": "gpt-4.1",
+          "name": "copilot-gpt-4.1",
+          "cost_per_1m_in": 0.0,
+          "cost_per_1m_out": 0.0,
+          "cost_per_1m_in_cached": 0.0,
+          "cost_per_1m_out_cached": 0.0,
+          "context_window": 128000,
+          "default_max_tokens": 4000
+        },
+        {
+          "id": "gpt-5-mini",
+          "name": "copilot-gpt-5-mini",
+          "cost_per_1m_in": 0.0,
+          "cost_per_1m_out": 0.0,
+          "cost_per_1m_in_cached": 0.0,
+          "cost_per_1m_out_cached": 0.0,
+          "context_window": 128000,
+          "default_max_tokens": 4000
+        },
+        {
+          "id": "gpt-5",
+          "name": "copilot-gpt-5",
+          "cost_per_1m_in": 0.0,
+          "cost_per_1m_out": 0.0,
+          "cost_per_1m_in_cached": 0.0,
+          "cost_per_1m_out_cached": 0.0,
+          "context_window": 128000,
+          "default_max_tokens": 4000
+        },
+        {
+          "id": "gpt-3.5-turbo",
+          "name": "copilot-gpt-3.5-turbo",
+          "cost_per_1m_in": 0.0,
+          "cost_per_1m_out": 0.0,
+          "cost_per_1m_in_cached": 0.0,
+          "cost_per_1m_out_cached": 0.0,
+          "context_window": 16385,
+          "default_max_tokens": 2000
+        },
+        {
+          "id": "gpt-3.5-turbo-0613",
+          "name": "copilot-gpt-3.5-turbo-0613",
+          "cost_per_1m_in": 0.0,
+          "cost_per_1m_out": 0.0,
+          "cost_per_1m_in_cached": 0.0,
+          "cost_per_1m_out_cached": 0.0,
+          "context_window": 16385,
+          "default_max_tokens": 2000
+        },
+        {
+          "id": "gpt-4o-mini",
+          "name": "copilot-gpt-4o-mini",
+          "cost_per_1m_in": 0.0,
+          "cost_per_1m_out": 0.0,
+          "cost_per_1m_in_cached": 0.0,
+          "cost_per_1m_out_cached": 0.0,
+          "context_window": 128000,
+          "default_max_tokens": 4000
+        },
+        {
+          "id": "gpt-4o-mini-2024-07-18",
+          "name": "copilot-gpt-4o-mini-2024-07-18",
+          "cost_per_1m_in": 0.0,
+          "cost_per_1m_out": 0.0,
+          "cost_per_1m_in_cached": 0.0,
+          "cost_per_1m_out_cached": 0.0,
+          "context_window": 128000,
+          "default_max_tokens": 4000
+        },
+        {
+          "id": "gpt-4",
+          "name": "copilot-gpt-4",
+          "cost_per_1m_in": 0.0,
+          "cost_per_1m_out": 0.0,
+          "cost_per_1m_in_cached": 0.0,
+          "cost_per_1m_out_cached": 0.0,
+          "context_window": 8192,
+          "default_max_tokens": 3000
+        },
+        {
+          "id": "gpt-4-0613",
+          "name": "copilot-gpt-4-0613",
+          "cost_per_1m_in": 0.0,
+          "cost_per_1m_out": 0.0,
+          "cost_per_1m_in_cached": 0.0,
+          "cost_per_1m_out_cached": 0.0,
+          "context_window": 8192,
+          "default_max_tokens": 3000
+        },
+        {
+          "id": "gpt-4-0125-preview",
+          "name": "copilot-gpt-4-0125-preview",
+          "cost_per_1m_in": 0.0,
+          "cost_per_1m_out": 0.0,
+          "cost_per_1m_in_cached": 0.0,
+          "cost_per_1m_out_cached": 0.0,
+          "context_window": 128000,
+          "default_max_tokens": 4000
+        },
+        {
+          "id": "gpt-4o",
+          "name": "copilot-gpt-4o",
+          "cost_per_1m_in": 0.0,
+          "cost_per_1m_out": 0.0,
+          "cost_per_1m_in_cached": 0.0,
+          "cost_per_1m_out_cached": 0.0,
+          "context_window": 128000,
+          "default_max_tokens": 4000
+        },
+        {
+          "id": "gpt-4o-2024-11-20",
+          "name": "copilot-gpt-4o-2024-11-20",
+          "cost_per_1m_in": 0.0,
+          "cost_per_1m_out": 0.0,
+          "cost_per_1m_in_cached": 0.0,
+          "cost_per_1m_out_cached": 0.0,
+          "context_window": 128000,
+          "default_max_tokens": 4000
+        },
+        {
+          "id": "gpt-4o-2024-05-13",
+          "name": "copilot-gpt-4o-2024-05-13",
+          "cost_per_1m_in": 0.0,
+          "cost_per_1m_out": 0.0,
+          "cost_per_1m_in_cached": 0.0,
+          "cost_per_1m_out_cached": 0.0,
+          "context_window": 128000,
+          "default_max_tokens": 4000
+        },
+        {
+          "id": "gpt-4-o-preview",
+          "name": "copilot-gpt-4-o-preview",
+          "cost_per_1m_in": 0.0,
+          "cost_per_1m_out": 0.0,
+          "cost_per_1m_in_cached": 0.0,
+          "cost_per_1m_out_cached": 0.0,
+          "context_window": 128000,
+          "default_max_tokens": 4000
+        },
+        {
+          "id": "gpt-4o-2024-08-06",
+          "name": "copilot-gpt-4o-2024-08-06",
+          "cost_per_1m_in": 0.0,
+          "cost_per_1m_out": 0.0,
+          "cost_per_1m_in_cached": 0.0,
+          "cost_per_1m_out_cached": 0.0,
+          "context_window": 128000,
+          "default_max_tokens": 4000
+        },
+        {
+          "id": "o3-mini",
+          "name": "copilot-o3-mini",
+          "cost_per_1m_in": 0.0,
+          "cost_per_1m_out": 0.0,
+          "cost_per_1m_in_cached": 0.0,
+          "cost_per_1m_out_cached": 0.0,
+          "context_window": 128000,
+          "default_max_tokens": 4000
+        },
+        {
+          "id": "o3-mini-2025-01-31",
+          "name": "copilot-o3-mini-2025-01-31",
+          "cost_per_1m_in": 0.0,
+          "cost_per_1m_out": 0.0,
+          "cost_per_1m_in_cached": 0.0,
+          "cost_per_1m_out_cached": 0.0,
+          "context_window": 128000,
+          "default_max_tokens": 4000
+        },
+        {
+          "id": "o3-mini-paygo",
+          "name": "copilot-o3-mini-paygo",
+          "cost_per_1m_in": 0.0,
+          "cost_per_1m_out": 0.0,
+          "cost_per_1m_in_cached": 0.0,
+          "cost_per_1m_out_cached": 0.0,
+          "context_window": 128000,
+          "default_max_tokens": 4000
+        },
+        {
+          "id": "gpt-41-copilot",
+          "name": "copilot-gpt-41-copilot",
+          "cost_per_1m_in": 0.0,
+          "cost_per_1m_out": 0.0,
+          "cost_per_1m_in_cached": 0.0,
+          "cost_per_1m_out_cached": 0.0,
+          "context_window": 128000,
+          "default_max_tokens": 4000
+        },
+        {
+          "id": "text-embedding-ada-002",
+          "name": "copilot-text-embedding-ada-002",
+          "cost_per_1m_in": 0.0,
+          "cost_per_1m_out": 0.0,
+          "cost_per_1m_in_cached": 0.0,
+          "cost_per_1m_out_cached": 0.0,
+          "context_window": 8192,
+          "default_max_tokens": 1000
+        },
+        {
+          "id": "text-embedding-3-small",
+          "name": "copilot-text-embedding-3-small",
+          "cost_per_1m_in": 0.0,
+          "cost_per_1m_out": 0.0,
+          "cost_per_1m_in_cached": 0.0,
+          "cost_per_1m_out_cached": 0.0,
+          "context_window": 8192,
+          "default_max_tokens": 1000
+        },
+        {
+          "id": "text-embedding-3-small-inference",
+          "name": "copilot-text-embedding-3-small-inference",
+          "cost_per_1m_in": 0.0,
+          "cost_per_1m_out": 0.0,
+          "cost_per_1m_in_cached": 0.0,
+          "cost_per_1m_out_cached": 0.0,
+          "context_window": 8192,
+          "default_max_tokens": 1000
+        },
+        {
+          "id": "claude-3.5-sonnet",
+          "name": "copilot-claude-3.5-sonnet",
+          "cost_per_1m_in": 0.0,
+          "cost_per_1m_out": 0.0,
+          "cost_per_1m_in_cached": 0.0,
+          "cost_per_1m_out_cached": 0.0,
+          "context_window": 200000,
+          "default_max_tokens": 4000
+        },
+        {
+          "id": "claude-3.7-sonnet",
+          "name": "copilot-claude-3.7-sonnet",
+          "cost_per_1m_in": 0.0,
+          "cost_per_1m_out": 0.0,
+          "cost_per_1m_in_cached": 0.0,
+          "cost_per_1m_out_cached": 0.0,
+          "context_window": 200000,
+          "default_max_tokens": 4000
+        },
+        {
+          "id": "claude-3.7-sonnet-thought",
+          "name": "copilot-claude-3.7-sonnet-thought",
+          "cost_per_1m_in": 0.0,
+          "cost_per_1m_out": 0.0,
+          "cost_per_1m_in_cached": 0.0,
+          "cost_per_1m_out_cached": 0.0,
+          "context_window": 200000,
+          "default_max_tokens": 4000
+        },
+        {
+          "id": "claude-sonnet-4",
+          "name": "copilot-claude-sonnet-4",
+          "cost_per_1m_in": 0.0,
+          "cost_per_1m_out": 0.0,
+          "cost_per_1m_in_cached": 0.0,
+          "cost_per_1m_out_cached": 0.0,
+          "context_window": 200000,
+          "default_max_tokens": 4000
+        },
+        {
+          "id": "gemini-2.0-flash-001",
+          "name": "copilot-gemini-2.0-flash-001",
+          "cost_per_1m_in": 0.0,
+          "cost_per_1m_out": 0.0,
+          "cost_per_1m_in_cached": 0.0,
+          "cost_per_1m_out_cached": 0.0,
+          "context_window": 200000,
+          "default_max_tokens": 4000
+        },
+        {
+          "id": "gemini-2.5-pro",
+          "name": "copilot-gemini-2.5-pro",
+          "cost_per_1m_in": 0.0,
+          "cost_per_1m_out": 0.0,
+          "cost_per_1m_in_cached": 0.0,
+          "cost_per_1m_out_cached": 0.0,
+          "context_window": 200000,
+          "default_max_tokens": 4000
+        },
+        {
+          "id": "gpt-4.1-2025-04-14",
+          "name": "copilot-gpt-4.1-2025-04-14",
+          "cost_per_1m_in": 0.0,
+          "cost_per_1m_out": 0.0,
+          "cost_per_1m_in_cached": 0.0,
+          "cost_per_1m_out_cached": 0.0,
+          "context_window": 128000,
+          "default_max_tokens": 4000
+        }
+      ]
+    }
+  }
+}
