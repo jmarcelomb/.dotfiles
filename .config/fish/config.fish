@@ -62,12 +62,12 @@ end
 # fzf key bindings and fuzzy completion
 if type -q fzf
     fzf --fish | source
-    set -U FZF_DEFAULT_OPTS "--bind 'f2:toggle-preview' --no-height --no-reverse"
+    set -U FZF_DEFAULT_OPTS "--bind 'f2:toggle-preview'"
     set -U FZF_DEFAULT_COMMAND "fd --no-ignore --hidden --strip-cwd-prefix --exclude .git"
     set -U FZF_CTRL_T_COMMAND $FZF_DEFAULT_COMMAND
     set -U FZF_ALT_C_COMMAND "fd --no-ignore --type=d --hidden --strip-cwd-prefix --exclude .git"
 
-    set -U FZF_CTRL_T_OPTS "--preview 'bat -n --color=always --line-range :500 {}'"
+    set -U FZF_CTRL_T_OPTS "--no-height --no-reverse --preview 'bat -n --color=always --line-range :500 {}'"
     set -U FZF_ALT_C_OPTS "--preview 'eza --tree --color=always {} | head -200'"
     # set -U FZF_CTRL_R_OPTS "--no-sort --exact"
 end
