@@ -32,6 +32,7 @@
       firefox
 
       coreutils
+      gnused
       python311
       uv
       rust-bin.stable.latest.default
