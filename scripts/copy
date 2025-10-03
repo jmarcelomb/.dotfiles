@@ -1,93 +1,66 @@
 #!/bin/sh
 
-# Check if the terminal supports colors
+# Setup colors if supported
 if tput setaf 1 >/dev/null 2>&1; then
-  COLOR_INFO="$(tput setaf 4)"    # Bright Blue for general info
-  COLOR_WARN="$(tput setaf 3)"    # Yellow for warnings
-  COLOR_SUCCESS="$(tput setaf 2)" # Green for success
-  COLOR_ERROR="$(tput setaf 1)"   # Red for errors
-  COLOR_RESET="$(tput sgr0)"
-else
-  COLOR_INFO=""
-  COLOR_WARN=""
-  COLOR_SUCCESS=""
-  COLOR_ERROR=""
-  COLOR_RESET=""
+  C_INFO="$(tput setaf 4)"
+  C_WARN="$(tput setaf 3)"
+  C_OK="$(tput setaf 2)"
+  C_ERR="$(tput setaf 1)"
+  C_RST="$(tput sgr0)"
 fi
 
-# Function to print messages with appropriate colors
-echoinfo() {
-  printf "%s%s%s\n" "$COLOR_INFO" "$1" "$COLOR_RESET" >&2
-}
+# Color print functions
+info() { printf "%s%s%s\n" "$C_INFO" "$1" "$C_RST" >&2; }
+warn() { printf "%s%s%s\n" "$C_WARN" "$1" "$C_RST" >&2; }
+ok() { printf "%s%s%s\n" "$C_OK" "$1" "$C_RST" >&2; }
+err() { printf "%s%s%s\n" "$C_ERR" "$1" "$C_RST" >&2; }
 
-echowarn() {
-  printf "%s%s%s\n" "$COLOR_WARN" "$1" "$COLOR_RESET" >&2
-}
-
-echosuccess() {
-  printf "%s%s%s\n" "$COLOR_SUCCESS" "$1" "$COLOR_RESET" >&2
-}
-
-echoerror() {
-  printf "%s%s%s\n" "$COLOR_ERROR" "$1" "$COLOR_RESET" >&2
-}
-
-# Display help message
-show_help() {
-  printf "Usage: %s [OPTION]\n" "$0"
-  printf "Copy input text to the clipboard using OSC52 escape sequence.\n\n"
-  printf "Options:\n"
-  printf "  -h, --help    Show this help message and exit\n\n"
-  printf "Example:\n"
-  printf "  echo 'Hello' | %s  # Copy 'Hello' to the clipboard\n" "$0"
-  printf "  %s                # Enter interactive mode to copy text\n" "$0"
+# Help
+[ "$1" = "-h" ] || [ "$1" = "--help" ] && {
+  printf "Usage: %s [OPTION]\nCopy input text to clipboard.\n\n" "$0"
+  printf "Options:\n  -h, --help    Show help\n\n"
+  printf "Examples:\n  echo 'Hello' | %s\n  %s  # interactive mode\n" "$0" "$0"
   exit 0
 }
 
-# Check for help option
-case "$1" in
--h | --help) show_help ;;
-esac
-
-# Check if base64 exists and determine correct flag (-w0 for GNU, -b0 for BSD/macOS)
-if ! command -v base64 >/dev/null 2>&1; then
-  echoerror "❌ Error: base64 command not found."
-  exit 1
-fi
-
-if command -v bat >/dev/null 2>&1; then
-  CAT="bat"
-else
-  CAT="cat"
-fi
-
-if echo test | base64 -w0 >/dev/null 2>&1; then
-  BASE64_CMD="base64 -w0"
-elif echo test | base64 -b0 >/dev/null 2>&1; then
-  BASE64_CMD="base64 -b0"
-else
-  echoerror "❌ Error: Unsupported base64 version."
-  exit 1
-fi
-
-# Detect if input is interactive or piped
+# Read input
 if [ -t 0 ]; then
-  echoinfo "📋 Enter text to copy (Ctrl+D to finish):"
-  input_content=$($CAT)
-else
-  input_content=$($CAT)
+  info "📋 Enter text (Ctrl+D to finish):"
 fi
 
-if [ -z "$input_content" ]; then
-  echowarn "⚠️  Empty input received!"
+input=$(cat)
+
+[ -z "$input" ] && warn "⚠️  Empty input!"
+
+# Copy to clipboard
+if command -v fish_clipboard_copy >/dev/null 2>&1; then
+  printf "%s" "$input" | fish_clipboard_copy
+elif command -v pbcopy >/dev/null 2>&1; then
+  printf "%s" "$input" | pbcopy
+else
+  # OSC52 fallback
+  if ! command -v base64 >/dev/null 2>&1; then
+    err "❌ base64 not found"
+    exit 1
+  fi
+
+  # Detect base64 flags
+  if echo test | base64 -w0 >/dev/null 2>&1; then
+    b64_flag="-w0"
+  elif echo test | base64 -b0 >/dev/null 2>&1; then
+    b64_flag="-b0"
+  else
+    err "❌ Unsupported base64"
+    exit 1
+  fi
+
+  content_b64=$(printf "%s" "$input" | base64 $b64_flag | tr -d '\n')
+  printf "\033]52;c;%s\a" "$content_b64"
 fi
 
-# Copy to clipboard using ANSI OSC52 escape sequence
-CONTENT_BASE64="$(printf "%s" "$input_content" | $BASE64_CMD | tr -d '\n')"
-printf "\033]52;c;%s\a" "$CONTENT_BASE64"
-
-if [ -z "$input_content" ]; then
-  echowarn "🧹 Cleaned the clipboard!"
+# Status message
+if [ -z "$input" ]; then
+  warn "🧹 Cleaned clipboard!"
 else
-  echosuccess "✅ Text copied to clipboard!"
+  ok "✅ Copied to clipboard!"
 fi
