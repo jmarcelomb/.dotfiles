@@ -1,7 +1,9 @@
 font-family = SauceCodePro NFM
-font-size = 16
+font-size = 15
 theme = Catppuccin Frappe
 font-feature = -liga
+
+background-opacity = 0.97
 
 macos-option-as-alt = true
 keybind = alt+left=unbind
