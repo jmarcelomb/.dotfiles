@@ -1,5 +1,5 @@
 function ask -d "Interactive AI assistant. Use -p/--prompt to prepend text to piped input, -q/--quiet for direct output, -h/--help for usage info"
-    argparse p/prompt= q/quiet h/help i/interactive -- $argv
+    argparse p/prompt=? q/quiet h/help i/interactive -- $argv
     or return 1
 
     # Set up cleanup for spinner on exit/interrupt
@@ -31,12 +31,29 @@ function ask -d "Interactive AI assistant. Use -p/--prompt to prepend text to pi
         read -z piped_input
     end
 
+    set -l skip_piped_display false
+    # Handle prompt flag - if set but empty, prompt for it interactively
     if set -q _flag_prompt; and set -q piped_input
-        set piped_input "$_flag_prompt\n$piped_input"
-    end
-
-    # Simple decision logic
-    if test (count $argv) -gt 0
+        if test -z "$_flag_prompt"
+            # Show piped content and prompt for additional context
+            if not set -q _flag_quiet
+                echo -n (set_color blue)"Piped:"(set_color normal)
+                echo ""
+                echo -n "$piped_input"
+                echo ""
+            end
+            printf "%sprompt>%s " (set_color green) (set_color normal)
+            read -z user_prompt </dev/tty
+            set -l skip_piped_display true
+            echo ""
+            if test -n "$user_prompt"
+                set piped_input (printf "<context>\n%s\n</context>\n\n<query>\n%s\n</query>" "$piped_input" "$user_prompt")
+            end
+        else
+            set piped_input (printf "<instructions>\n%s\n</instructions>\n\n<context>\n%s\n</context>" "$_flag_prompt" "$piped_input")
+        end
+        # Simple decision logic
+    else if test (count $argv) -gt 0
         # Direct message from arguments
         set -l message (string join " " $argv)
         set -l response (command ~/scripts/ask "$message")
@@ -75,15 +92,15 @@ function ask -d "Interactive AI assistant. Use -p/--prompt to prepend text to pi
     set -l chat_history
 
     # Handle initial message for interactive mode
-    set -l initial_message "$_flag_prompt"
-    if set -q _flag_interactive; and set -q piped_input; and test -n "$piped_input"
+    set -l initial_message
+    if set -q piped_input; and test -n "$piped_input"
         set initial_message "$piped_input"
     else if test (count $argv) -gt 0
         set initial_message (string join " " $argv)
     end
 
     if set -q initial_message; and test -n "$initial_message"
-        if not set -q _flag_quiet
+        if not set -q _flag_quiet; and not test skip_piped_display
             echo -n (set_color blue)"Piped:"(set_color normal)" $initial_message"
         end
 
@@ -126,9 +143,9 @@ function ask -d "Interactive AI assistant. Use -p/--prompt to prepend text to pi
     end
 
     # Interactive loop
-    if not set -q _flag_quiet
-        echo "Type your message, press Ctrl+D to send. Press Ctrl+D on empty line to quit."
-    end
+    # if not set -q _flag_quiet
+    #     echo "Type your message, press Ctrl+D to send. Press Ctrl+D on empty line to quit."
+    # end
 
     while true
         printf "%sask>%s " (set_color blue) (set_color normal)
@@ -170,8 +187,14 @@ function ask -d "Interactive AI assistant. Use -p/--prompt to prepend text to pi
             continue
         end
 
-        # Build full prompt
-        set -l full_prompt (string join \n $chat_history "You: $query")
+        # Build full prompt with conversation history
+        set -l full_prompt
+        if test (count $chat_history) -gt 0
+            set -l history_text (string join \n $chat_history)
+            set full_prompt (printf "<conversation_history>\n%s\n</conversation_history>\n\n<query>\n%s\n</query>" "$history_text" "$query")
+        else
+            set full_prompt "$query"
+        end
         echo ""
 
         # Start spinner
