@@ -13,10 +13,14 @@ if [ -z "$selection" ]; then
   fish_cmd+="ask -i; "
   fish_cmd+="tmux detach-client"
 
+  # Create detached session with status off
+  tmux new-session -d -s "$session_name" 'tmux set status off; fish -c "'"$fish_cmd"'"'
+
+  # Attach to it in popup
   tmux display-popup \
     -w 90% \
     -h 80% \
-    -E "tmux new-session -s '$session_name' 'fish -c \"$fish_cmd\"'"
+    -E "tmux attach-session -t '$session_name'"
 else
   # Create a temporary file to avoid shell escaping issues
   temp_file=$(mktemp)
@@ -43,8 +47,12 @@ EOF
   # Create a new tmux session in popup
   session_name="ai-ask-$(date +%s)"
 
+  # Create detached session with status off
+  tmux new-session -d -s "$session_name" 'tmux set status off; '"$script_file"' '"$temp_file"'; rm '"$script_file"''
+
+  # Attach to it in popup
   tmux display-popup \
     -w 70% \
     -h 80% \
-    -E "tmux new-session -s '$session_name' '$script_file $temp_file; rm $script_file'"
+    -E "tmux attach-session -t '$session_name'"
 fi
