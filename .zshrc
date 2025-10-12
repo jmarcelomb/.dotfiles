@@ -76,6 +76,14 @@ if command -v zoxide >/dev/null 2>&1; then
   eval "$(zoxide init zsh)"
 fi
 
+if command -v uv >/dev/null 2>&1; then
+  eval "$(uv generate-shell-completion bash)"
+fi
+
+if command -v glow >/dev/null 2>&1; then
+  eval "$(glow completion bash)"
+fi
+
 if command -v yazi >/dev/null 2>&1; then
   function y() {
     local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
