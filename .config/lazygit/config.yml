@@ -1,0 +1,36 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/jesseduffield/lazygit/master/schema/config.json
+disableStartupPopups: true
+notARepository: skip
+promptToReturnFromSubprocess: false
+
+gui:
+  showBottomLine: false
+  showCommandLog: false
+
+git:
+  branchLogCmd: 'git log --graph --color=always --date=human --format="%C(#e3c78a)%h%C(#ff5d5d)%d%C(reset) - %C(#36c692)(%ad)%C(reset) %s %C(#80a0ff){%an}%C(reset)" {{branchName}} --'
+  paging:
+    colorArg: always
+    pager: delta --dark --paging=never --line-numbers --hyperlinks --hyperlinks-file-link-format="lazygit-edit://{path}:{line}"
+
+customCommands:
+  - key: C
+    context: "files, global"
+    command: "gen_commit_msg"
+    description: "Generate commit message using AI"
+    output: terminal
+  - key: T
+    context: "files, global"
+    command: |
+      bash -c '
+      CONFIG_FILE="$XDG_CONFIG_HOME/lazygit/config.yml"
+      if grep "^ *pager:.*delta" "$CONFIG_FILE" | grep -q -- "--side-by-side"; then
+        sed -i "/^ *pager:.*delta/ s/ --side-by-side//" "$CONFIG_FILE"
+        echo "Side-by-side: OFF"
+      else
+        sed -i "/^ *pager:.*delta --dark/s/$/ --side-by-side/" "$CONFIG_FILE"
+        echo "Side-by-side: ON"
+      fi
+      '
+    description: "Toggle delta side-by-side view"
+    output: terminal
