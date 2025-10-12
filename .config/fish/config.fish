@@ -59,6 +59,10 @@ if type -q uv
     uv generate-shell-completion fish | source
 end
 
+if type -q glow
+    glow completion fish | source
+end
+
 # fzf key bindings and fuzzy completion
 if type -q fzf
     fzf --fish | source
