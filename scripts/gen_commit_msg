@@ -57,7 +57,7 @@ def prompt_llm(
     """
     messages = []
     for i in range(attempts):
-        # logger.info("=> LLM generation attempt '%s'", i)
+        logger.debug("=> LLM generation attempt '%s'", i)
         with Popen(
             ["ask", prompt], stdout=PIPE, bufsize=1, universal_newlines=True
         ) as p:
@@ -66,7 +66,7 @@ def prompt_llm(
 
             output = []
             for line in p.stdout:
-                logger.info(line.rstrip())
+                logger.debug(line.rstrip())
                 output.append(line)
 
             captured_output = "".join(output).strip()
@@ -100,61 +100,54 @@ def commit(messages: list[str]) -> int:
 
 def generate_prompt(diff: str, context: str = "", use_emoji: bool = False) -> str:
     """
-    Generates a commit message prompt based on the git diff and optional context.
+    Generate a high-quality prompt for commit message generation.
 
     Args:
-        diff (str): The git diff output to be converted into a commit message.
-        context (str): Extra context to feed to the prompt. Defaults to an empty string.
-        use_emoji (bool): Whether to use emojis in the commit message. Defaults to False.
+        diff (str): The staged git diff output.
+        context (str): Any extra context for the LLM.
+        use_emoji (bool): Whether to request GitMoji convention.
 
     Returns:
-        str: The generated commit message prompt.
+        str: The final prompt for the language model.
 
     Raises:
-        ValueError: If the diff is empty.
+        ValueError: If diff is empty.
     """
     if not diff:
         raise ValueError("The diff is empty. Please stage changes before running.")
 
-    if context:
-        context = f"Take into account the following context:\n<context>\n{context}\n<\\context>"
-
-    identity = "You are to act as an author of a commit message in git."
-
-    commit_preface = (
-        """Use GitMoji convention to preface the commit. Here are some help to choose the right emoji:
-🐛, Fix a bug;
-✨, Introduce new features;
-📝, Add or update documentation;
-🚀, Deploy stuff;
-✅, Add, update, or pass tests;
-♻️, Refactor code;
-⬆️, Upgrade dependencies;
-🔧, Add or update configuration files;
-🌐, Internationalization and localization;
-💡, Add or update comments in source code;
-"""
+    type_instructions = (
+        "Use GitMoji to preface the commit, e.g.: 🐛 fix, ✨ feat, 📝 docs, ♻️ refactor, 🔧 config, etc.\n"
         if use_emoji
-        else """
-Do not preface the commit with anything, except for the conventional commit keywords (in lower case):
-fix, feat, build, chore, ci, docs, style, refactor, perf, test.
-"""
+        else "Do not preface with emoji. Use one of: feat, fix, docs, style, refactor, test, chore, ci, perf, build.\n"
     )
 
-    return f"""
-{identity} Your mission is to create clean and comprehensive commit messages
-as per the Conventional Commit Convention and explain WHAT were the changes and mainly WHY the changes were done.
-I'll send you an output of 'git diff --staged' command, and you are to convert it into a commit message.
-{commit_preface}
-Add a short description of WHY the changes are done after the commit message.
-Don't start it with 'This commit', just describe the changes.
-Use the present tense. Lines must not be longer than {MAX_LINE_LENGTH} characters. Use English for the commit message.
-{context}
+    commit_rules = (
+        "Follow Conventional Commits: <type>[optional scope]: <description>.\n"
+        "Types: feat, fix, docs, style, refactor, perf, test, build, chore, ci.\n"
+        "Scope (in parentheses) only if relevant.\n"
+        "For breaking changes, add ! or BREAKING CHANGE: footer.\n"
+        "Description must be imperative, lower case, no period.\n"
+        "Body explains what and why. Include footers as needed.\n"
+        f"Line length ≤ {MAX_LINE_LENGTH}.\n"
+        "Output commit message only—no extra commentary, code blocks, or 'this commit ...' statements. Use English."
+    )
 
-<diff>
-{diff}
-<\\diff>
-"""
+    context_block = (
+        f"Extra context:\n<context>\n{context}\n</context>\n" if context else ""
+    )
+
+    prompt = (
+        "You are a commit message generator powered by the Conventional Commits specification.\n"
+        "Convert the following git diff into a concise, best-practice commit message.\n"
+        f"{type_instructions}"
+        f"{commit_rules}\n"
+        f"{context_block}"
+        "<diff>\n"
+        f"{diff}\n"
+        "</diff>"
+    )
+    return prompt.strip()
 
 
 def main() -> None:
@@ -187,7 +180,7 @@ def main() -> None:
     )
     parser.add_argument(
         "--stdout",
-        help="If given, echo's prompt to stdout instead of sending it to the model.",
+        help="If given, echoes prompt to stdout instead of sending it to the model.",
         action="store_true",
     )
     parser.add_argument(
