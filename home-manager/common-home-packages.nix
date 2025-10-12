@@ -61,6 +61,8 @@
     miscTools = [
       zellij
       tmux
+      sesh
+      gawk
     ];
   in
     cliUtils
