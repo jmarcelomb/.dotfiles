@@ -27,6 +27,7 @@
     ~/.config/fish/: .config/fish/
     ~/.config/tmux/: .config/tmux/
     ~/.config/crush/: .config/crush/
+    ~/.config/lazygit: .config/lazygit/
 
 # - create:
 #     - ~/.vim/undo-history
