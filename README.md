@@ -8,6 +8,9 @@ This is where I'm always tweaking and changing something to have my config feeli
 
 ## 🚀 Quick Setup
 
+<details>
+<summary>Click to expand setup instructions</summary>
+
 Clone the repository and initialize submodules:
 
 ```sh
@@ -33,6 +36,8 @@ For **server configurations** (chakra):
 ```sh
 sudo nixos-rebuild switch --flake .#chakra
 ```
+
+</details>
 
 ---
 
