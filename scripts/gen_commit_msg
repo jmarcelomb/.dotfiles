@@ -129,7 +129,7 @@ def generate_prompt(diff: str, context: str = "", use_emoji: bool = False) -> st
         "For breaking changes, add ! or BREAKING CHANGE: footer.\n"
         "Description must be imperative, lower case, no period.\n"
         "Body explains what and why. Include footers as needed.\n"
-        f"Line length ≤ {MAX_LINE_LENGTH}.\n"
+        f"Line length <= {MAX_LINE_LENGTH}.\n"
         "Output commit message only—no extra commentary, code blocks, or 'this commit ...' statements. Use English."
     )
 
