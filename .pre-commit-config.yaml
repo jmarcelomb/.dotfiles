@@ -14,8 +14,18 @@ repos:
     rev: v6.0.0
     hooks:
       - id: end-of-file-fixer
+        exclude: |
+          (?x)(
+              ^\.config/yazi/plugins/|
+              ^\.config/yazi/flavors/
+          )
       - id: mixed-line-ending
       - id: trailing-whitespace
+        exclude: |
+          (?x)(
+              ^\.config/yazi/plugins/|
+              ^\.config/yazi/flavors/
+          )
       - id: check-merge-conflict
       - id: check-yaml
       - id: check-json
@@ -28,6 +38,9 @@ repos:
     rev: v1
     hooks:
       - id: typos
+        args:
+          - --force-exclude
+        exclude: .config/yazi/plugins/|.config/tmux/tmux.conf
   - repo: https://github.com/gitleaks/gitleaks
     rev: v8.28.0
     hooks:

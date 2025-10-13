@@ -1,2 +1,12 @@
+[default]
+extend-ignore-re = [
+  # Custom ignore regex patterns: https://github.com/crate-ci/typos/blob/master/docs/reference.md#example-configurations
+  ".*(?:#|--|//|/*).*(?:spellchecker|typos):\\s?ignore[^\\n]*\\n",
+  ".*(?:spellchecker|typos):\\s?ignore-next-line[^\\n]*\\n[^\\n]*",
+]
+
+[default.extend-words]
+synopsys = "synopsys"
+
 [files]
-extend-exclude = ["halp.fish"]
+extend-exclude = [".config/yazi/plugins/"]
