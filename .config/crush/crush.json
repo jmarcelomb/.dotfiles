@@ -16,7 +16,7 @@
   },
   "providers": {
     "local": {
-      "type": "openai",
+      "type": "openai-compat",
       "base_url": "http://localhost:4141/v1",
       "api_key": "not-needed",
       "models": [
