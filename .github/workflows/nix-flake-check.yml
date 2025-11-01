@@ -40,7 +40,7 @@ jobs:
       uses: DeterminateSystems/flake-checker-action@v12
 
     - name: Commit
-      uses: stefanzweifel/git-auto-commit-action@v6
+      uses: stefanzweifel/git-auto-commit-action@v7
       with:
         commit_message: "chore: apply flake auto lint/format"
         skip_checkout: true
