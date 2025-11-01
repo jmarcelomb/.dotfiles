@@ -136,7 +136,7 @@ Advanced search functionality with predefined patterns and regex support:
 ### tmux-open - Smart Opening
 Opens highlighted content intelligently:
 - **Files**: PDFs, docs, images open in default viewers
-- **URLs**: Links open in default browser  
+- **URLs**: Links open in default browser
 - **Code**: Use `Ctrl-o` to open files in $EDITOR
 - **Search**: `Shift-s` googles highlighted text
 - **Cross-platform**: Works on Linux, macOS, Windows (Cygwin)
@@ -204,7 +204,7 @@ Smart color-coding that responds to window state:
 # Current window number colors
 @catppuccin_window_current_number_color "#{?window_zoomed_flag,#{@them_yellow},#{@them_mauve}}"
 
-# Inactive window number colors  
+# Inactive window number colors
 @catppuccin_window_number_color "#{?window_zoomed_flag,#{@them_yellow},#{@them_overlay_2}}"
 ```
 
@@ -216,13 +216,13 @@ Smart color-coding that responds to window state:
 
 ### Status Line Customization
 - **Minimal design**: Only shows essential info (application + session)
-- **Clean window titles**: Just window names, no extra clutter  
+- **Clean window titles**: Just window names, no extra clutter
 - **Top positioning**: Status bar at top for better visibility
 - **Extended lengths**: More space for longer session/window names
 
 ### Visual Feedback Features
 - 🟡 **Yellow window numbers**: Window has a maximized/zoomed pane
-- 🟣 **Mauve window numbers**: Current active window (normal state)  
+- 🟣 **Mauve window numbers**: Current active window (normal state)
 - ⚪ **Gray window numbers**: Inactive windows (normal state)
 - 🔘 **Dark gray pane background**: Indicates copy mode is active
 
