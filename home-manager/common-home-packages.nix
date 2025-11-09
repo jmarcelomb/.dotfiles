@@ -12,6 +12,7 @@
       git
       zsh
       fzf
+      atuin
       zoxide
       ripgrep
       direnv
