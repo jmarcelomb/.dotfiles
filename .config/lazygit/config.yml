@@ -2,17 +2,14 @@
 disableStartupPopups: true
 notARepository: skip
 promptToReturnFromSubprocess: false
-
 gui:
   showBottomLine: false
   showCommandLog: false
-
 git:
   branchLogCmd: 'git log --graph --color=always --date=human --format="%C(#e3c78a)%h%C(#ff5d5d)%d%C(reset) - %C(#36c692)(%ad)%C(reset) %s %C(#80a0ff){%an}%C(reset)" {{branchName}} --'
-  paging:
-    colorArg: always
-    pager: delta --dark --paging=never --line-numbers --hyperlinks --hyperlinks-file-link-format="lazygit-edit://{path}:{line}"
-
+  pagers:
+    - colorArg: always
+      pager: delta --dark --paging=never --line-numbers --hyperlinks --hyperlinks-file-link-format="lazygit-edit://{path}:{line}"
 customCommands:
   - key: C
     context: "files, global"
