@@ -32,6 +32,7 @@ set PATH $HOME/Tools/fzf/bin $PATH
 set PATH $HOME/Tools/neovim/bin $PATH
 set PATH $HOME/go/bin $PATH
 set PATH $HOME/.cargo/bin $PATH
+set PATH $HOME/.atuin/bin $PATH
 set PATH $HOME/scripts $PATH
 
 # Export the updated PATH
@@ -76,6 +77,9 @@ if type -q fzf
     # set -U FZF_CTRL_R_OPTS "--no-sort --exact"
 end
 
+if type -q atuin
+    atuin init fish | source
+end
 # Custom function for yazi
 function y
     set tmp (mktemp -t "yazi-cwd.XXXXXX")
