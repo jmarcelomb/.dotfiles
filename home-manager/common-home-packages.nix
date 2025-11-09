@@ -22,6 +22,9 @@
       delta
       yazi
 
+      # gitui
+      lazygit
+
       helix
     ];
 
@@ -50,9 +53,6 @@
 
       imagemagick
       glow
-
-      gitui
-      lazygit
 
       typos
       typos-lsp
