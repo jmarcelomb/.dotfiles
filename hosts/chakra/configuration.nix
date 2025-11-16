@@ -28,9 +28,9 @@
 
   # NFS client support
   services.rpcbind.enable = true;
-  
+
   # Mount NFS share from TrueNAS server for backups
-  fileSystems."/mnt/nas/chakra" = {
+  fileSystems."/mnt/nfs-chakra" = {
     device = "truenas.home:/mnt/nas/chakra";
     fsType = "nfs";
     options = [ "nfsvers=4" "rw" "soft" "intr" ];
