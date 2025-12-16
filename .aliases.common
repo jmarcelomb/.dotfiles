@@ -33,6 +33,9 @@ alias gt="glow -t"
 # lazygit aliases
 alias lg="lazygit"
 
+# opencode aliases
+alias oc="opencode"
+
 # Directory navigation aliases
 alias ..="cd .."
 alias ...="cd ../.."
