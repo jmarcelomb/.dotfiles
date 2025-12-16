@@ -27,6 +27,7 @@
     ~/.config/fish/: .config/fish/
     ~/.config/atuin/: .config/atuin/
     ~/.config/tmux/: .config/tmux/
+    ~/.config/opencode/: .config/opencode/
     ~/.config/crush/: .config/crush/
     ~/.config/lazygit: .config/lazygit/
 

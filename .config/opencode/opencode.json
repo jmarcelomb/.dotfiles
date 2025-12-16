@@ -1,0 +1,15 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "lsp": {
+    "ty-python": {
+      "command": [
+        "ty",
+        "server"
+      ],
+      "extensions": [
+        ".py",
+        ".pyi"
+      ]
+    }
+  }
+}
