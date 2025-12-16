@@ -23,7 +23,7 @@
         outer = {
           left = 0;
           bottom = 0;
-          top = 30;
+          top = [{ monitor."Built-in Retina Display" = 0; } 30];
           right = 0;
         };
       };
