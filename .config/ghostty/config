@@ -3,8 +3,12 @@ font-size = 15
 theme = Catppuccin Frappe
 font-feature = -liga
 
-background-opacity = 0.97
+background-opacity = 0.90
 
+window-decoration = none
 macos-option-as-alt = true
+macos-titlebar-style = hidden
+
 keybind = alt+left=unbind
 keybind = alt+right=unbind
+keybind = ctrl+t=unbind
