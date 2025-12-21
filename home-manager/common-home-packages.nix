@@ -3,19 +3,34 @@
 
   # Define package groups
   home.packages = with pkgs; let
+    # Core CLI utilities (available everywhere)
     cliUtils = [
+      # System utilities
+      coreutils
+      gnused
+      gawk
       bc
+
+      # Network tools
       wget
       curl
+
+      # Archive tools
       zip
       unzip
+
+      # Version control
       git
+
+      # Shell & navigation
       zsh
       fzf
       atuin
       zoxide
-      ripgrep
       direnv
+
+      # Modern CLI tools
+      ripgrep
       fd
       bat
       bottom
@@ -23,47 +38,55 @@
       delta
       yazi
 
-      # gitui
-      lazygit
-
+      # Editor
       helix
     ];
 
+    miscTools = [
+      tmux
+      zellij
+      sesh
+    ];
+
+    # Server-specific utilities
     serverUtils = [
     ];
 
+    # Development tools (dev machines only)
     devTools = [
+      # GUI applications
       firefox
+      alacritty
+      kitty
 
-      coreutils
-      gnused
+      # Programming languages & toolchains
       python311
       uv
       rust-bin.stable.latest.default
       rust-analyzer
-      bacon
-      gcc
-      lldb
-      gnumake
       nodejs_22
       zig
       go
 
-      alacritty
-      kitty
+      # Compilers & build tools
+      gcc
+      lldb
+      gnumake
 
-      imagemagick
-      glow
-
+      # Dev utilities & testing
+      bacon
+      hyperfine
       typos
       typos-lsp
-    ];
 
-    miscTools = [
-      zellij
-      tmux
-      sesh
-      gawk
+      # Dev workflow tools
+      lazygit
+      lazydocker
+
+      # Data & document tools
+      tabiew
+      glow
+      imagemagick
     ];
   in
     cliUtils
