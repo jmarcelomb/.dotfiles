@@ -1,0 +1,7 @@
+# Ignore all plugins and flavors (managed by package.toml)
+plugins/*
+flavors/
+
+# Keep custom plugins
+!plugins/parent-arrow.yazi/
+!plugins/smart-tab.yazi/
