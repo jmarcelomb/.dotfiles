@@ -1,5 +1,5 @@
 if ! status is-interactive
-
+    return
 end
 
 # Remove default Fish greeting
@@ -23,23 +23,22 @@ set fish_cursor_replace_one underscore
 set fish_vi_force_cursor
 
 # PATH setup
-set PATH /usr/local/bin $PATH
-set PATH /opt/homebrew/bin $PATH
-set PATH /etc/profiles/per-user/$USER/bin $PATH
-set PATH $HOME/bin $PATH
-set PATH $HOME/.local/bin $PATH
-set PATH $HOME/Tools/fzf/bin $PATH
-set PATH $HOME/Tools/neovim/bin $PATH
-set PATH $HOME/go/bin $PATH
-set PATH $HOME/.cargo/bin $PATH
-set PATH $HOME/.atuin/bin $PATH
-set PATH $HOME/scripts $PATH
-
-# Export the updated PATH
-set -Ux PATH $PATH
+fish_add_path --prepend --move \
+    /usr/local/bin \
+    /opt/homebrew/bin \
+    /etc/profiles/per-user/$USER/bin \
+    $HOME/bin \
+    $HOME/.local/bin \
+    $HOME/scripts \
+    $HOME/Tools/fzf/bin \
+    $HOME/Tools/neovim/bin \
+    $HOME/go/bin \
+    $HOME/.cargo/bin \
+    $HOME/.atuin/bin \
+    $HOME/.opencode/bin
 
 # Default editor
-set -Ux EDITOR nvim
+set -gx EDITOR nvim
 
 # Starship prompt initialization
 if type -q starship
@@ -67,32 +66,22 @@ end
 # fzf key bindings and fuzzy completion
 if type -q fzf
     fzf --fish | source
-    set -U FZF_DEFAULT_OPTS "--bind 'f2:toggle-preview'"
-    set -U FZF_DEFAULT_COMMAND "fd --no-ignore --hidden --strip-cwd-prefix --exclude .git"
-    set -U FZF_CTRL_T_COMMAND $FZF_DEFAULT_COMMAND
-    set -U FZF_ALT_C_COMMAND "fd --no-ignore --type=d --hidden --strip-cwd-prefix --exclude .git"
+    set -gx FZF_DEFAULT_OPTS "--bind 'f2:toggle-preview'"
+    set -gx FZF_DEFAULT_COMMAND "fd --no-ignore --hidden --strip-cwd-prefix --exclude .git"
+    set -gx FZF_CTRL_T_COMMAND $FZF_DEFAULT_COMMAND
+    set -gx FZF_ALT_C_COMMAND "fd --no-ignore --type=d --hidden --strip-cwd-prefix --exclude .git"
 
-    set -U FZF_CTRL_T_OPTS "--no-height --no-reverse --preview 'bat -n --color=always --line-range :500 {}'"
-    set -U FZF_ALT_C_OPTS "--preview 'eza --tree --color=always {} | head -200'"
-    # set -U FZF_CTRL_R_OPTS "--no-sort --exact"
+    set -gx FZF_CTRL_T_OPTS "--no-height --no-reverse --preview 'bat -n --color=always --line-range :500 {}'"
+    set -gx FZF_ALT_C_OPTS "--preview 'eza --tree --color=always {} | head -200'"
+
+    if ! type -q atuin
+        set -gx FZF_CTRL_R_OPTS "--no-sort --exact"
+    end
 end
 
 if type -q atuin
     atuin init fish | source
 end
-# Custom function for yazi
-function y
-    set tmp (mktemp -t "yazi-cwd.XXXXXX")
-    yazi $argv --cwd-file="$tmp"
-    if set cwd (command cat -- "$tmp"); and test -n "$cwd"; and test "$cwd" != "$PWD"
-        cd -- "$cwd"
-    end
-    rm -f -- "$tmp"
-end
 
 # Source additional configurations
-for config_file in ~/.aliases.fish
-    if test -f $config_file
-        source $config_file
-    end
-end
+test -f ~/.aliases.fish && source ~/.aliases.fish
