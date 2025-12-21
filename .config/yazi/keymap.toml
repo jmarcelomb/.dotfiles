@@ -1,3 +1,24 @@
+# Wraparound navigation (built-in)
+[[mgr.prepend_keymap]]
+on = "k"
+run = "arrow prev"
+desc = "Move cursor up (with wraparound)"
+
+[[mgr.prepend_keymap]]
+on = "j"
+run = "arrow next"
+desc = "Move cursor down (with wraparound)"
+
+[[mgr.prepend_keymap]]
+on = "<Up>"
+run = "arrow prev"
+desc = "Move cursor up (with wraparound)"
+
+[[mgr.prepend_keymap]]
+on = "<Down>"
+run = "arrow next"
+desc = "Move cursor down (with wraparound)"
+
 # Dropping to the shell
 [[mgr.prepend_keymap]]
 on = "!"

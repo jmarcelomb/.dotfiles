@@ -1,47 +1,47 @@
 [[plugin.deps]]
 use = "Lil-Dank/lazygit"
-rev = "8f37dc5"
-hash = "ee71543790f0ce3951161045a3787abd"
+rev = "a90fc71"
+hash = "894e801b788d0fca94627b58f8c9e1d4"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:chmod"
-rev = "d1c8baa"
-hash = "8ad3e90b079190b4905f24a44f4ca06b"
+rev = "19dc890"
+hash = "5b2eb0cc2050cec1e4de83cfa51a5b90"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:git"
-rev = "d1c8baa"
-hash = "63b6c222bf2103b3023389dde5e2ecfe"
+rev = "19dc890"
+hash = "27ca02f49fd236b5cc7bf03c243859fe"
 
 [[plugin.deps]]
 use = "Rolv-Apneseth/starship"
-rev = "a63550b"
-hash = "c2021386289a0cbb3e152a052f67c177"
+rev = "eca1861"
+hash = "e519d894e94ded741e06aae4d4775981"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:toggle-pane"
-rev = "d1c8baa"
+rev = "19dc890"
 hash = "8a7c58225816a163a6e8730c0adafbc8"
 
 [[plugin.deps]]
 use = "lpnh/fr"
-rev = "3d32e55"
-hash = "f7ab219b58675582ef855a9414dbc659"
+rev = "a60466e"
+hash = "ae6f2fb9ea03527e3a367a9faf2690ac"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:vcs-files"
-rev = "d1c8baa"
+rev = "19dc890"
 hash = "4ee57085277d616acfa0ef1fef37dc00"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-paste"
-rev = "d1c8baa"
+rev = "19dc890"
 hash = "75fd60b2df7115e0a6ca31a6a804d320"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:piper"
-rev = "d1c8baa"
-hash = "a20327710c3a8d37ee0972128dcb6a31"
+rev = "19dc890"
+hash = "b26d542e75151835d7bc885f6dda74cb"
 
 [[flavor.deps]]
 use = "dangooddd/kanagawa"
