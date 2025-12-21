@@ -1,0 +1,6 @@
+# Work configuration variables
+# Copy this to work_config.fish and fill in your actual values
+
+set -gx KBM_SVC_USERNAME "your-service-username"
+set -gx KBM_PROD_SERVER_01 "your-prod-server.example.com"
+set -gx KBM_DEV_SERVER_01 "your-dev-server.example.com"
