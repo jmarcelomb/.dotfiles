@@ -51,4 +51,17 @@
   };
   # Set your time zone.
   time.timeZone = "Europe/Lisbon";
+
+  # LaunchAgent to set CapsLock delay on boot
+  launchd.user.agents.capslock-delay = {
+    serviceConfig = {
+      ProgramArguments = [
+        "/usr/bin/hidutil"
+        "property"
+        "--set"
+        "{\"CapsLockDelayOverride\":0}"
+      ];
+      RunAtLoad = true;
+    };
+  };
 }
