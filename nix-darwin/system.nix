@@ -19,7 +19,7 @@
         # multiply each by 15 to get milliseconds
         # result: 300ms ti start and 66.6... repeats per second
         # second
-        InitialKeyRepeat = 20;
+        InitialKeyRepeat = 10;
         KeyRepeat = 1;
       };
       spaces.spans-displays = true;
@@ -30,7 +30,7 @@
         _FXShowPosixPathInTitle = true;
       };
       dock = {
-        autohide = true;
+        autohide = false;
         show-recents = false;
         launchanim = false;
         orientation = "bottom";
