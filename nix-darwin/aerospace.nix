@@ -55,6 +55,7 @@
             alt-b = "workspace B";
             alt-s = "workspace S";
             alt-t = "workspace T";
+            alt-n = "workspace N";
 
             alt-shift-1 = [
               "move-node-to-workspace 1"
@@ -108,7 +109,10 @@
               "move-node-to-workspace T"
               "workspace T"
             ];
-
+            alt-shift-n = [
+              "move-node-to-workspace N"
+              "workspace N"
+            ];
 
             alt-shift-semicolon = "mode service";
 
@@ -170,6 +174,7 @@
         "B" = "secondary";
         "S" = "secondary";
         "T" = "secondary";
+        "N" = "secondary";
       };
 
       on-window-detected = [
@@ -188,7 +193,7 @@
         }
         {
           "if".app-id = "net.cozic.joplin-desktop";
-          run = [ "move-node-to-workspace 9" ];
+          run = [ "move-node-to-workspace N" ];
         }
         {
           "if".app-id = "com.apple.Terminal";
@@ -251,6 +256,9 @@
         }
         {
           "if".app-id = "com.microsoft.teams2";
+          run = [ "move-node-to-workspace T" ];
+        }{
+          "if".app-id = "com.apple.reminders";
           run = [ "move-node-to-workspace T" ];
         }
         {

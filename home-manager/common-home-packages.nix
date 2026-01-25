@@ -55,7 +55,7 @@
     # Development tools (dev machines only)
     devTools = [
       # GUI applications
-      firefox
+      # firefox
       alacritty
       kitty
 

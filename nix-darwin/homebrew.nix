@@ -10,6 +10,7 @@
       "imagemagick"
     ];
     casks = [
+      "veracrypt"
       "keycastr"
       "obs"
       "raycast"
@@ -21,6 +22,7 @@
       "element"
       "whatsapp"
       "messenger"
+      "telegram"
       "spotify"
 
       "shottr"
