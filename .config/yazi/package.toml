@@ -1,17 +1,17 @@
 [[plugin.deps]]
 use = "Lil-Dank/lazygit"
-rev = "a90fc71"
-hash = "894e801b788d0fca94627b58f8c9e1d4"
+rev = "0e56060"
+hash = "ab2e66065a94cca4886b303518e44bd8"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:chmod"
-rev = "19dc890"
-hash = "5b2eb0cc2050cec1e4de83cfa51a5b90"
+rev = "75f6f72"
+hash = "8da0b15a97b5dfd13941d1ecc617ac7c"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:git"
 rev = "19dc890"
-hash = "27ca02f49fd236b5cc7bf03c243859fe"
+hash = "94081eed9bc9fe176715c33b0db55d35"
 
 [[plugin.deps]]
 use = "Rolv-Apneseth/starship"
@@ -45,5 +45,5 @@ hash = "b26d542e75151835d7bc885f6dda74cb"
 
 [[flavor.deps]]
 use = "dangooddd/kanagawa"
-rev = "a0b1d9d"
-hash = "abfb0b2371259b2c8adfc7b617c3d7e5"
+rev = "04985d1"
+hash = "c69a63981e254a3a06a11c2bf0e6af1d"
