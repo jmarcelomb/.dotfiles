@@ -50,6 +50,9 @@
       # File manager (GNOME Files/Nautilus)
       nautilus
 
+      # Password manager
+      bitwarden-desktop
+
       # GNOME components for consistent experience
       gnome-calculator
       gnome-system-monitor
@@ -74,6 +77,10 @@
 
   # Home-manager configuration for Sway
   home-manager.users.${user} = { pkgs, ... }: {
+    imports = [
+      ./waybar.nix
+    ];
+
     wayland.windowManager.sway = {
       enable = true;
       config = rec {
@@ -201,6 +208,12 @@
           "Print" = "exec ${pkgs.grim}/bin/grim - | ${pkgs.swappy}/bin/swappy -f -";
           # Alt+Shift+S: Select area -> swappy
           "${modifier}+Shift+s" = "exec ${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\" - | ${pkgs.swappy}/bin/swappy -f -";
+
+          # Volume control (capped at 200%)
+          "XF86AudioRaiseVolume" = "exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+ --limit 2.0";
+          "XF86AudioLowerVolume" = "exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-";
+          "XF86AudioMute" = "exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
+          "XF86AudioMicMute" = "exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle";
         };
 
         # Resize mode
@@ -343,97 +356,6 @@
           { command = "swaymsg workspace number 1"; }
         ];
       };
-    };
-
-    # Waybar configuration
-    programs.waybar = {
-      enable = true;
-      settings = {
-        mainBar = {
-          layer = "top";
-          position = "top";
-          height = 30;
-
-          modules-left = [ "sway/workspaces" "sway/mode" ];
-          modules-center = [ "sway/window" ];
-          modules-right = [ "network" "cpu" "memory" "battery" "clock" ];
-
-          "sway/workspaces" = {
-            disable-scroll = true;
-            all-outputs = false;
-            format = "{name}";
-          };
-
-          "sway/mode" = {
-            format = "{}";
-          };
-
-          clock = {
-            format = "{:%H:%M %m/%d}";
-            tooltip-format = "{:%Y-%m-%d | %H:%M:%S}";
-          };
-
-          cpu = {
-            format = "CPU {usage}%";
-          };
-
-          memory = {
-            format = "MEM {}%";
-          };
-
-          battery = {
-            format = "{capacity}% {icon}";
-            format-icons = [ "" "" "" "" "" ];
-          };
-
-          network = {
-            format-wifi = "{essid} ";
-            format-ethernet = "Wired ";
-            format-disconnected = "Disconnected ";
-          };
-        };
-      };
-
-      style = ''
-        * {
-          font-family: monospace;
-          font-size: 13px;
-        }
-
-        window#waybar {
-          background-color: #1e1e2e;
-          color: #cdd6f4;
-        }
-
-        #workspaces button {
-          padding: 0 8px;
-          color: #cdd6f4;
-          background-color: transparent;
-          border: none;
-        }
-
-        #workspaces button.focused {
-          background-color: #45475a;
-        }
-
-        #workspaces button.urgent {
-          background-color: #f38ba8;
-        }
-
-        #mode {
-          background-color: #f9e2af;
-          color: #1e1e2e;
-          padding: 0 10px;
-        }
-
-        #clock,
-        #battery,
-        #cpu,
-        #memory,
-        #network {
-          padding: 0 10px;
-        }
-      '';
     };
 
     # SwayNotificationCenter - using defaults, can be customized later
