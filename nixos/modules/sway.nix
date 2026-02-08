@@ -181,8 +181,9 @@
           # Service mode (Alt+Shift+;)
           "${modifier}+Shift+semicolon" = "mode service";
 
-          # Close window (Alt+Shift+q)
+          # Close window (Alt+Shift+q or Alt+W)
           "${modifier}+Shift+q" = "kill";
+          "${modifier}+w" = "kill";
 
           # Reload configuration
           "${modifier}+Shift+c" = "reload";
