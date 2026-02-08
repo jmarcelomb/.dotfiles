@@ -21,11 +21,11 @@
     # Wayland utilities
     wl-clipboard
     wlr-randr
-    
+
     # Notification utilities
     libnotify     # Provides notify-send for testing notifications
   ];
-  
+
   # Enable dconf for GTK settings
   programs.dconf.enable = true;
 
