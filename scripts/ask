@@ -4,7 +4,7 @@ if ! uv tool list | grep -q "llm"; then
   uv tool install llm --with llm-github-copilot
 fi
 
-MODEL="github_copilot/claude-sonnet-4"
+MODEL="github_copilot/gpt-4.1"
 
 if command -v glow >/dev/null 2>&1; then
   llm -m "$MODEL" "$*" | glow
