@@ -4,7 +4,7 @@
     ./bluetooth.nix
     ./boot.nix
     ./env.nix
-    ./gnome.nix
+    ./sway.nix
     ./home-manager.nix
     ./mime.nix
     ./net.nix
