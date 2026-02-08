@@ -33,8 +33,8 @@
       # Application launcher
       vicinae
 
-      # Notification daemon
-      mako
+      # Notification center
+      swaynotificationcenter
 
       # Status bar
       waybar
@@ -190,8 +190,11 @@
           # Application launcher (Alt+Space)
           "${modifier}+space" = "exec ${pkgs.vicinae}/bin/vicinae toggle";
 
-          # Clipboard history (Ctrl+Shift+V)
-          # "Ctrl+Shift+v" = "exec ${pkgs.vicinae}/bin/vicinae 'vicinae://extensions/vicinae/clipboard/history'";
+          # Notification center (Alt+N)
+          "${modifier}+n" = "exec ${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw";
+
+          # Clipboard history (Alt+V)
+          "${modifier}+v" = "exec ${pkgs.vicinae}/bin/vicinae 'vicinae://extensions/vicinae/clipboard/history'";
         };
 
         # Resize mode (matching Aerospace resize mode)
@@ -306,8 +309,8 @@
           { command = "systemctl --user import-environment PATH DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP XDG_SESSION_TYPE"; }
           { command = "hash dbus-update-activation-environment 2>/dev/null && dbus-update-activation-environment --systemd PATH DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP XDG_SESSION_TYPE"; }
 
-          # Notification daemon
-          { command = "${pkgs.mako}/bin/mako"; }
+          # Notification center
+          { command = "${pkgs.swaynotificationcenter}/bin/swaync"; }
 
           # Waybar status bar
           { command = "${pkgs.waybar}/bin/waybar"; }
@@ -421,17 +424,8 @@
       '';
     };
 
-    # Mako notification daemon configuration
-    services.mako = {
-      enable = true;
-      settings = {
-        background-color = "#1e1e2e";
-        text-color = "#cdd6f4";
-        border-color = "#89b4fa";
-        border-radius = 5;
-        default-timeout = 5000;
-      };
-    };
+    # SwayNotificationCenter - using defaults, can be customized later
+    # Config files will be at ~/.config/swaync/ if you want to customize
 
     # Vicinae application launcher service
     systemd.user.services.vicinae = {

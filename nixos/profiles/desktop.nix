@@ -21,6 +21,9 @@
     # Wayland utilities
     wl-clipboard
     wlr-randr
+    
+    # Notification utilities
+    libnotify     # Provides notify-send for testing notifications
   ];
 
   # Printing support (optional, can be disabled per-host)
