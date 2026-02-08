@@ -42,6 +42,7 @@
       # Screenshot/screencast
       grim
       slurp
+      swappy
 
       # Terminal
       ghostty
@@ -163,7 +164,6 @@
           "${modifier}+Shift+9" = "move container to workspace number 9; workspace number 9";
           "${modifier}+Shift+0" = "move container to workspace number 10; workspace number 10";
           "${modifier}+Shift+b" = "move container to workspace B; workspace B";
-          "${modifier}+Shift+s" = "move container to workspace S; workspace S";
           "${modifier}+Shift+t" = "move container to workspace T; workspace T";
 
           # Layout switching (Alt+/)
@@ -195,6 +195,12 @@
 
           # Clipboard history (Alt+V)
           "${modifier}+v" = "exec ${pkgs.vicinae}/bin/vicinae 'vicinae://extensions/vicinae/clipboard/history'";
+
+          # Screenshots
+          # Print: Full screen -> swappy
+          "Print" = "exec ${pkgs.grim}/bin/grim - | ${pkgs.swappy}/bin/swappy -f -";
+          # Alt+Shift+S: Select area -> swappy
+          "${modifier}+Shift+s" = "exec ${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\" - | ${pkgs.swappy}/bin/swappy -f -";
         };
 
         # Resize mode (matching Aerospace resize mode)
