@@ -1,3 +1,4 @@
+# Chakra - Headless server system
 { pkgs, lib, stateVersion, hostname, inputs, ... }:
 
 {

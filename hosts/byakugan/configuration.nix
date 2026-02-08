@@ -1,28 +1,31 @@
+# Byakugan - Desktop NixOS system
 { pkgs, stateVersion, hostname, user, ... }:
 
 {
   imports = [
+    # Hardware
     ./hardware-configuration.nix
-    ./local-packages.nix
-    ./ssh.nix
-    ../../nixos/modules/default.nix
+    ../../nixos/hardware/bootloader.nix
+    ../../nixos/hardware/nfs-client.nix  # Just enable NFS support, no mounts
+
+    # Profiles
+    ../../nixos/profiles/base.nix
+    ../../nixos/profiles/desktop.nix
+
+    # Additional modules
+    ../../nixos/modules/home-manager.nix
+    ../../nixos/modules/net.nix
+    ../../nixos/modules/nix.nix
+    ../../nixos/modules/timezone.nix
+    ../../nixos/modules/boot.nix
   ];
 
-  # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  # Host-specific configuration
+  # (Most config comes from profiles above)
 
-  networking.hostName = hostname;
-  system.stateVersion = stateVersion;
-
-  services.openssh.enable = true;
-
-  # NFS client support
-  services.rpcbind.enable = true;
-
-  # Mount NFS share from TrueNAS server for backups
-  # fileSystems."/mnt/nfs-chakra" = {
-  #   device = "truenas.home:/mnt/nas/chakra";
+  # Optional: Add NFS mounts if needed
+  # fileSystems."/mnt/media" = {
+  #   device = "nas.local:/media";
   #   fsType = "nfs";
   #   options = [ "nfsvers=4" "rw" "soft" "intr" ];
   # };

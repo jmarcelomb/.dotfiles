@@ -227,13 +227,14 @@
           { criteria = { app_id = "^vicinae$"; }; command = "floating enable, border pixel 2, resize set 800 600"; }
 
           # Browsers to workspace 1
-          { criteria = { app_id = "^zen-browser$"; }; command = "move container to workspace number 1"; }
           { criteria = { app_id = "^firefox$"; }; command = "move container to workspace number 1"; }
+          { criteria = { app_id = "^zen-browser$"; }; command = "move container to workspace number 1"; }
           { criteria = { app_id = "^chromium-browser$"; }; command = "move container to workspace number 1"; }
+          { criteria = { app_id = "^google-chrome$"; }; command = "move container to workspace number 1"; }
           { criteria = { class = "^Google-chrome$"; }; command = "move container to workspace number 1"; }
 
           # Terminals to workspace 2
-          { criteria = { app_id = "^ghostty$"; }; command = "move container to workspace number 2"; }
+          { criteria = { app_id = "^com\\.mitchellh\\.ghostty$"; }; command = "move container to workspace number 2"; }
           { criteria = { app_id = "^kitty$"; }; command = "move container to workspace number 2"; }
           { criteria = { app_id = "^Alacritty$"; }; command = "move container to workspace number 2"; }
 
@@ -281,7 +282,7 @@
           # Keyboard settings (all keyboards)
           "type:keyboard" = {
             xkb_layout = "us";
-            repeat_delay = "150";  # Delay before repeat starts (milliseconds)
+            repeat_delay = "180";  # Delay before repeat starts (milliseconds)
             repeat_rate = "40";    # Characters per second when repeating
           };
 
@@ -322,6 +323,9 @@
 
           # GNOME Settings Daemon for better integration
           { command = "${pkgs.gnome-settings-daemon}/libexec/gsd-xsettings"; }
+
+          # Switch to workspace 1 on login
+          { command = "swaymsg workspace number 1"; }
         ];
       };
     };
