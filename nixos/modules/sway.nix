@@ -203,17 +203,23 @@
           "${modifier}+Shift+s" = "exec ${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\" - | ${pkgs.swappy}/bin/swappy -f -";
         };
 
-        # Resize mode (matching Aerospace resize mode)
+        # Resize mode
         modes = {
           resize = {
+            # Vim keys and arrows - universal resize that works from any position
+            # Left/H: make window narrower (move right edge left)
             h = "resize shrink width 50 px";
-            j = "resize grow height 50 px";
-            k = "resize shrink height 50 px";
-            l = "resize grow width 50 px";
             Left = "resize shrink width 50 px";
-            Down = "resize grow height 50 px";
-            Up = "resize shrink height 50 px";
+            # Right/L: make window wider (move right edge right)
+            l = "resize grow width 50 px";
             Right = "resize grow width 50 px";
+            # Up/K: make window shorter (move bottom edge up)
+            k = "resize shrink height 50 px";
+            Up = "resize shrink height 50 px";
+            # Down/J: make window taller (move bottom edge down)
+            j = "resize grow height 50 px";
+            Down = "resize grow height 50 px";
+            # Exit resize mode
             Return = "mode default";
             Escape = "mode default";
           };
