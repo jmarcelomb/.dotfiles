@@ -22,7 +22,7 @@
 
   # Server-specific packages
   environment.systemPackages = with pkgs; [
-    htop      # Process monitor
+    bottom    # Process monitor
     iotop     # IO monitor
     rsync     # File sync
   ];
