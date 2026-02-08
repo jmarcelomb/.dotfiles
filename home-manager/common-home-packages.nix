@@ -38,6 +38,7 @@
       dust
       delta
       yazi
+      jq
 
       # Editor
       helix
