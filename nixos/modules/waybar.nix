@@ -72,28 +72,28 @@
       }
 
       window#waybar {
-        background-color: #1e1e2e;
-        color: #cdd6f4;
+        background-color: #303446;
+        color: #c6d0f5;
       }
 
       #workspaces button {
         padding: 0 8px;
-        color: #cdd6f4;
+        color: #c6d0f5;
         background-color: transparent;
         border: none;
       }
 
       #workspaces button.focused {
-        background-color: #45475a;
+        background-color: #51576d;
       }
 
       #workspaces button.urgent {
-        background-color: #f38ba8;
+        background-color: #e78284;
       }
 
       #mode {
-        background-color: #f9e2af;
-        color: #1e1e2e;
+        background-color: #e5c890;
+        color: #303446;
         padding: 0 10px;
       }
 
