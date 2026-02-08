@@ -11,7 +11,7 @@
       };
       initial_session = {
         command = "sway";
-        user = user;
+        inherit user;
       };
     };
   };
