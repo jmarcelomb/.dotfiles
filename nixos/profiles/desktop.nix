@@ -25,6 +25,9 @@
     # Notification utilities
     libnotify     # Provides notify-send for testing notifications
   ];
+  
+  # Enable dconf for GTK settings
+  programs.dconf.enable = true;
 
   # Printing support (optional, can be disabled per-host)
   services.printing.enable = true;
