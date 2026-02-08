@@ -185,6 +185,12 @@
           "${modifier}+Shift+q" = "kill";
           "${modifier}+w" = "kill";
 
+          # Minimize window (Alt+M) - moves to scratchpad
+          "${modifier}+m" = "move scratchpad";
+
+          # Show/restore minimized windows (Alt+Shift+M)
+          "${modifier}+Shift+m" = "scratchpad show";
+
           # Reload configuration
           "${modifier}+Shift+c" = "reload";
 
@@ -199,6 +205,9 @@
 
           # Clipboard history (Alt+V)
           "${modifier}+v" = "exec ${pkgs.vicinae}/bin/vicinae 'vicinae://extensions/vicinae/clipboard/history'";
+
+          # Window switcher / Dock (Alt+D) - shows all open windows including minimized
+          "${modifier}+d" = "exec ${pkgs.vicinae}/bin/vicinae 'vicinae://extensions/vicinae/wm/switch-windows'";
 
           # Screenshots
           # Print: Full screen -> swappy
