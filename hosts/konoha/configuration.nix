@@ -1,33 +1,26 @@
+# Konoha - VMware VM Desktop system
 { pkgs, stateVersion, hostname, user, ... }:
 
 {
   imports = [
+    # Hardware
     ./hardware-configuration.nix
-    ./local-packages.nix
-    ./ssh.nix
-    ../../nixos/modules/default.nix
+    ../../nixos/hardware/bootloader.nix
+    ../../nixos/hardware/vmware-guest.nix
+
+    # Profiles
+    ../../nixos/profiles/base.nix
+    ../../nixos/profiles/desktop.nix
+
+    # Additional modules
+    ../../nixos/modules/home-manager.nix
+    ../../nixos/modules/net.nix
+    ../../nixos/modules/nix.nix
+    ../../nixos/modules/timezone.nix
+    ../../nixos/modules/boot.nix
   ];
 
-  networking.hostName = hostname;
-  system.stateVersion = stateVersion;
-
-  # Host-specific settings
-  virtualisation.vmware.guest.enable = true;
-
-  systemd.services.mount-vmhgfs = {
-    description = "Mount VMware Shared Folders";
-    after = [ "network.target" "open-vm-tools.service" ];
-    wantedBy = [ "multi-user.target" ];
-
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = "${pkgs.open-vm-tools}/bin/vmhgfs-fuse .host:/ /mnt/hgfs -o subtype=vmhgfs-fuse,allow_other";
-      ExecStop = "${pkgs.util-linux}/bin/umount /mnt/hgfs";
-      RemainAfterExit = true;
-    };
-  };
-
-  system.activationScripts.mkHGFSDir = ''
-    mkdir -p /mnt/hgfs
-  '';
+  # Host-specific configuration
+  # (Most config comes from profiles above)
+  # VMware-specific settings are in hardware/vmware-guest.nix
 }
