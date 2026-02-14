@@ -53,6 +53,11 @@
       gnome-calculator
       gnome-system-monitor
       gnome-settings-daemon
+
+      # Wayland-native dock for Sway
+      nwg-dock
+      # Screen brightness utility
+      brightnessctl
     ];
   };
 
@@ -209,6 +214,9 @@
           # Window switcher / Dock (Alt+D) - shows all open windows including minimized
           "${modifier}+d" = "exec ${pkgs.vicinae}/bin/vicinae 'vicinae://extensions/vicinae/wm/switch-windows'";
 
+          # Toggle nwg-dock visibility (Alt+Shift+D)
+          "${modifier}+Shift+d" = "exec pgrep -x nwg-dock && pkill nwg-dock || nwg-dock -nolauncher -nows -i 48 -mb 4 &";
+
           # Screenshots
           # Print: Full screen -> swappy
           "Print" = "exec ${pkgs.grim}/bin/grim - | ${pkgs.swappy}/bin/swappy -f -";
@@ -220,6 +228,10 @@
           "XF86AudioLowerVolume" = "exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-";
           "XF86AudioMute" = "exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
           "XF86AudioMicMute" = "exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle";
+
+            # Screen brightness controls
+            "XF86MonBrightnessUp" = "exec brightnessctl set +5%";
+            "XF86MonBrightnessDown" = "exec brightnessctl set 5%-";
         };
 
         # Resize mode
@@ -259,6 +271,9 @@
         window.commands = [
           # Vicinae (application launcher) - floating centered
           { criteria = { app_id = "^vicinae$"; }; command = "floating enable, border pixel 2, resize set 800 600"; }
+
+          # Nwg-dock - floating, no border, sticky (shows on all workspaces)
+          { criteria = { app_id = "^nwg-dock"; }; command = "floating enable, border none, sticky enable"; }
 
           # Browsers to workspace 1
           { criteria = { app_id = "^firefox$"; }; command = "move container to workspace number 1"; }
