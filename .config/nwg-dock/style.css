@@ -1,0 +1,39 @@
+/* Nwg-dock styling - Catppuccin Frappe */
+
+window {
+  background: rgba(48, 52, 70, 0.95); /* Catppuccin Frappe base - visible with slight transparency */
+  border-radius: 12px;
+  border-style: none;
+  border-width: 1px;
+  border-color: rgba(156, 142, 122, 0.3)
+}
+
+#box {
+  /* Box surrounding icons - no padding for full width hover */
+  padding: 4px
+}
+
+button, image {
+  background: none;
+  border-style: none;
+  box-shadow: none;
+  color: #c6d0f5 /* Catppuccin Frappe text */
+}
+
+button {
+  padding: 4px;
+  margin-left: 0px;
+  margin-right: 0px;
+  color: #c6d0f5; /* Catppuccin Frappe text */
+  font-size: 12px
+}
+
+button:hover {
+  background-color: rgba(81, 87, 109, 0.5); /* Catppuccin Frappe surface1 */
+  border-radius: 8px;
+}
+
+button:focus {
+  background-color: rgba(140, 170, 238, 0.3); /* Catppuccin Frappe lavender */
+  border-radius: 8px;
+}
