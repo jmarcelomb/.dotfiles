@@ -11,7 +11,7 @@
 
         modules-left = [ "sway/workspaces" "sway/mode" ];
         modules-center = [ "sway/window" ];
-        modules-right = [ "pulseaudio" "network" "cpu" "memory" "battery" "clock" ];
+        modules-right = [ "pulseaudio" "backlight" "network" "cpu" "memory" "battery" "clock" ];
 
         "sway/workspaces" = {
           disable-scroll = true;
@@ -55,6 +55,13 @@
           on-scroll-down = "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-";
           scroll-step = 5;
           max-volume = 200;
+        };
+
+        backlight = {
+          device = "intel_backlight";
+          format = "BRI <b>{percent}%</b>";
+          on-scroll-up = "brightnessctl set +5%";
+          on-scroll-down = "brightnessctl set 5%-";
         };
 
         network = {
@@ -106,5 +113,5 @@
         padding: 0 10px;
       }
     '';
-  };
+};
 }

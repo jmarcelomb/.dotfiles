@@ -30,6 +30,7 @@
     ~/.config/opencode/: .config/opencode/
     ~/.config/crush/: .config/crush/
     ~/.config/lazygit: .config/lazygit/
+    ~/.config/nwg-dock/: .config/nwg-dock/
 
 # - create:
 #     - ~/.vim/undo-history
