@@ -9,6 +9,7 @@
     ../modules/bluetooth.nix
     ../modules/gpg.nix
     ../modules/mime.nix
+    ../modules/theme-toggle.nix
   ];
 
   # Desktop-specific packages
