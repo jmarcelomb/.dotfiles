@@ -3,7 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.11";
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.11";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -20,7 +20,7 @@
 
   outputs = { self, nixpkgs, nixpkgs-stable, home-manager, rust-overlay, nix-darwin, ... }@inputs:
     let
-      homeStateVersion = "24.11";
+      homeStateVersion = "25.11";
 
       # Shared overlays
       overlays = [ rust-overlay.overlays.default ];
@@ -92,7 +92,7 @@
           hostname = "konoha";
           user = "hinata";
           homeDirectory = "/home/hinata";
-          stateVersion = "24.11";
+          stateVersion = "25.11";
           system = "aarch64-linux";
           isServer = false;
         };
@@ -100,7 +100,7 @@
           hostname = "chakra";
           user = "hinata";
           homeDirectory = "/home/hinata";
-          stateVersion = "24.11";
+          stateVersion = "25.11";
           system = "x86_64-linux";
           isServer = true;
         };
@@ -108,7 +108,7 @@
           hostname = "byakugan";
           user = "hinata";
           homeDirectory = "/home/hinata";
-          stateVersion = "24.11";
+          stateVersion = "25.11";
           system = "x86_64-linux";
           isServer = false;
         };
