@@ -29,4 +29,18 @@
   #   fsType = "nfs";
   #   options = [ "nfsvers=4" "rw" "soft" "intr" ];
   # };
+
+  # NVIDIA proprietary driver with PRIME support
+  services.xserver.videoDrivers = [ "nvidia" "modesetting" ];
+  hardware.nvidia = {
+    modesetting.enable = true;
+    prime = {
+      offload.enable = true;
+      intelBusId = "PCI:0:2:0";
+      nvidiaBusId = "PCI:3:0:0";
+    };
+    powerManagement.enable = true;
+    powerManagement.finegrained = false;
+    open = false; # Use proprietary driver
+  };
 }
