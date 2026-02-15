@@ -1,5 +1,9 @@
-{ pkgs, lib, config, user, ... }:
+{ pkgs, lib, config, user, self, ... }:
 
+let
+  wallpaper = "${self}/assets/wallpapers/poland.png";
+  lockWallpaper = "${self}/assets/wallpapers/poland-lock.png";
+in
 {
   # Enable greetd display manager with login prompt
   services.greetd = {
@@ -25,6 +29,7 @@
       # Wayland-native tools
       wl-clipboard
       wlr-randr
+      wdisplays
 
       # Application launcher
       vicinae
@@ -106,6 +111,39 @@
           titlebar = false;
         };
 
+        # Colors (Catppuccin theme-aware)
+        # These colors work well for both Catppuccin Latte (light) and Frappe (dark)
+        colors = {
+          focused = {
+            border = "#8caaee";       # Catppuccin blue (same in both themes)
+            background = "#8caaee";
+            text = "#c6d0f5";
+            indicator = "#81c8be";    # Catppuccin teal
+            childBorder = "#8caaee";
+          };
+          focusedInactive = {
+            border = "#babbf1";       # Catppuccin lavender (lighter for light theme)
+            background = "#303446";
+            text = "#c6d0f5";
+            indicator = "#babbf1";
+            childBorder = "#babbf1";
+          };
+          unfocused = {
+            border = "#e6e9ef";       # Catppuccin Latte surface0 (very light gray)
+            background = "#eff1f5";   # Catppuccin Latte base
+            text = "#8c8fa1";         # Catppuccin Latte overlay0
+            indicator = "#e6e9ef";
+            childBorder = "#e6e9ef";
+          };
+          urgent = {
+            border = "#e78284";       # Catppuccin red (alert color)
+            background = "#e78284";
+            text = "#c6d0f5";
+            indicator = "#e78284";
+            childBorder = "#e78284";
+          };
+        };
+
         # Focus settings
         focus = {
           followMouse = "yes";
@@ -142,8 +180,9 @@
           # Workspace back and forth (Alt+Tab)
           "${modifier}+Tab" = "workspace back_and_forth";
 
-          # Move workspace to next monitor (Alt+Shift+Tab)
-          "${modifier}+Shift+Tab" = "move workspace to output right";
+          # Move workspace to other monitor (Alt+Shift+Tab)
+          # Tries both up/down and left/right to work with any monitor arrangement
+          "${modifier}+Shift+Tab" = "move workspace to output up, move workspace to output down, move workspace to output left, move workspace to output right";
 
           # Workspace switching (Alt+1-9,0,b,s,t)
           "${modifier}+1" = "workspace number 1";
@@ -229,9 +268,18 @@
           "XF86AudioMute" = "exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
           "XF86AudioMicMute" = "exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle";
 
-            # Screen brightness controls
-            "XF86MonBrightnessUp" = "exec brightnessctl set +5%";
-            "XF86MonBrightnessDown" = "exec brightnessctl set 5%-";
+          # Screen brightness controls
+          "XF86MonBrightnessUp" = "exec brightnessctl set +5%";
+          "XF86MonBrightnessDown" = "exec brightnessctl set 5%-";
+
+          # Lock screen (Super+L)
+          "Mod4+l" = "exec ${pkgs.swaylock}/bin/swaylock -f -i ${lockWallpaper}";
+
+          # Display/Monitor settings (Alt+Shift+O for Output)
+          "${modifier}+Shift+o" = "exec ${pkgs.wdisplays}/bin/wdisplays";
+
+          # Theme toggle (Alt+Shift+P for Palette/Preferences)
+          "${modifier}+Shift+p" = "exec ~/.local/bin/toggle-theme";
         };
 
         # Resize mode
@@ -308,7 +356,7 @@
 
           # Bambu, Bitwarden to workspace B
           { criteria = { class = "^bambu-studio$"; }; command = "move container to workspace B"; }
-          { criteria = { class = "^Bitwarden$"; }; command = "move container to workspace B"; }
+          { criteria = { app_id = "^Bitwarden$"; }; command = "move container to workspace B"; }
 
           # Spotify to workspace S
           { criteria = { class = "^Spotify$"; }; command = "move container to workspace S"; }
@@ -319,12 +367,45 @@
         ];
 
         # Output configuration (monitors)
-        # You can customize this based on your monitor setup
+        # IMPORTANT: Monitor names (eDP-1, DP-2, etc.) are hardware-specific and may differ on your system
+        # To find your monitor names, run one of these commands:
+        #   swaymsg -t get_outputs            # Shows detailed JSON output
+        #   wlr-randr                         # Shows formatted list of outputs
+        #   wdisplays                         # GUI tool (press Alt+Shift+O)
+        # Common monitor name patterns:
+        #   eDP-1, eDP-2          -> Built-in laptop screens
+        #   HDMI-A-1, HDMI-A-2    -> HDMI ports
+        #   DP-1, DP-2, DP-3      -> DisplayPort connections
+        #   DVI-D-1               -> DVI connections
         output = {
+          # Default wallpaper for all monitors
           "*" = {
-            bg = "#1e1e2e solid_color";
+            bg = "${wallpaper} fill";
+          };
+          
+          # Secondary monitor (external display) - positioned at top
+          "DP-2" = {
+            position = "0,0";  # Top position (external monitor on top)
+            # Uncomment to set specific resolution/refresh rate:
+            # mode = "1920x1080@60Hz";
+            # scale = "1.0";
+          };
+          
+          # Primary monitor (laptop screen) - positioned below external monitor
+          # Change position to "1920,0" for side by side (laptop on right)
+          # Change to "-1920,0" for side by side (laptop on left)
+          "eDP-1" = {
+            position = "0,1080";  # Below DP-2 (vertical stack)
+            # Uncomment to set specific resolution/refresh rate:
+            # mode = "1920x1080@60Hz";
+            # scale = "1.0";
           };
         };
+
+        # Workspace to monitor assignments
+        # Removed fixed assignments for full flexibility - workspaces can be moved freely between monitors
+        # Use Alt+Shift+Tab to move the current workspace to another monitor
+        # Workspaces will appear on whichever monitor is currently focused when you first switch to them
 
         # Input configuration
         input = {
@@ -364,10 +445,10 @@
           # Idle management
           { command = ''
             ${pkgs.swayidle}/bin/swayidle -w \
-              timeout 60 '${pkgs.swaylock}/bin/swaylock -f' \
+              timeout 60 '${pkgs.swaylock}/bin/swaylock -f -i ${wallpaper}' \
               timeout 120 'swaymsg "output * dpms off"' \
               resume 'swaymsg "output * dpms on"' \
-              before-sleep '${pkgs.swaylock}/bin/swaylock -f'
+              before-sleep '${pkgs.swaylock}/bin/swaylock -f -i ${wallpaper}'
           ''; }
 
           # GNOME Settings Daemon for better integration

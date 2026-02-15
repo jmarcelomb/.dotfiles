@@ -10,6 +10,7 @@
     ./mime.nix
     ./net.nix
     ./nix.nix
+    ./theme-toggle.nix
     ./timezone.nix
     ./user.nix
     ./gpg.nix
