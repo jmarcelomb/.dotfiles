@@ -37,11 +37,18 @@
     modesetting.enable = true;
     prime = {
       offload.enable = true;
+      offload.enableOffloadCmd = true;
       intelBusId = "PCI:0:2:0";
       nvidiaBusId = "PCI:3:0:0";
     };
     powerManagement.enable = true;
     powerManagement.finegrained = false;
     open = false; # Use proprietary driver
+  };
+
+  # Enable OpenGL and Vulkan support
+  hardware.graphics = {
+    enable = true;
+    enable32Bit = true;
   };
 }
