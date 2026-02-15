@@ -318,7 +318,7 @@ in
         # Window rules (matching Aerospace on-window-detected)
         window.commands = [
           # Vicinae (application launcher) - floating centered
-          { criteria = { app_id = "^vicinae$"; }; command = "floating enable, border pixel 2, resize set 800 600"; }
+          { criteria = { app_id = "^vicinae$"; }; command = "floating enable, border pixel 2, resize set 800 600, move position center"; }
 
           # Nwg-dock - floating, no border, sticky (shows on all workspaces)
           { criteria = { app_id = "^nwg-dock"; }; command = "floating enable, border none, sticky enable"; }
@@ -403,16 +403,28 @@ in
         };
 
         # Workspace to monitor assignments
-        # Removed fixed assignments for full flexibility - workspaces can be moved freely between monitors
-        # Use Alt+Shift+Tab to move the current workspace to another monitor
-        # Workspaces will appear on whichever monitor is currently focused when you first switch to them
+        # Workspaces 1-5 on main external display (DP-2)
+        # Workspaces 6-10 on laptop screen (eDP-1)
+        # You can still move workspaces between monitors with Alt+Shift+Tab
+        workspaceOutputAssign = [
+          { workspace = "1"; output = "DP-2"; }
+          { workspace = "2"; output = "DP-2"; }
+          { workspace = "3"; output = "DP-2"; }
+          { workspace = "4"; output = "DP-2"; }
+          { workspace = "5"; output = "DP-2"; }
+          { workspace = "6"; output = "eDP-1"; }
+          { workspace = "7"; output = "eDP-1"; }
+          { workspace = "8"; output = "eDP-1"; }
+          { workspace = "9"; output = "eDP-1"; }
+          { workspace = "10"; output = "eDP-1"; }
+        ];
 
         # Input configuration
         input = {
           # Keyboard settings (all keyboards)
           "type:keyboard" = {
             xkb_layout = "us";
-            xkb_options = "compose:ralt";  # Right Alt as Compose key for accented characters
+            xkb_options = "compose:caps";  # Caps Lock as Compose key for accented characters
             repeat_delay = "180";  # Delay before repeat starts (milliseconds)
             repeat_rate = "40";    # Characters per second when repeating
           };
@@ -428,7 +440,7 @@ in
           # Fallback for devices that don't match type
           "*" = {
             xkb_layout = "us";
-            xkb_options = "compose:ralt";
+            xkb_options = "compose:caps";
           };
         };
 
