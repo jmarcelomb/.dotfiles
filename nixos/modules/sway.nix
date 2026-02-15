@@ -382,7 +382,7 @@ in
           "*" = {
             bg = "${wallpaper} fill";
           };
-          
+
           # Secondary monitor (external display) - positioned at top
           "DP-2" = {
             position = "0,0";  # Top position (external monitor on top)
@@ -390,7 +390,7 @@ in
             # mode = "1920x1080@60Hz";
             # scale = "1.0";
           };
-          
+
           # Primary monitor (laptop screen) - positioned below external monitor
           # Change position to "1920,0" for side by side (laptop on right)
           # Change to "-1920,0" for side by side (laptop on left)
@@ -470,7 +470,7 @@ in
 
           # Switch to workspace 1 on login (workspace 1 is on DP-2, the main external display)
           { command = "swaymsg workspace number 1"; }
-          
+
           # Focus the external monitor (DP-2) at startup
           { command = "swaymsg focus output DP-2"; }
         ];
@@ -479,6 +479,18 @@ in
 
     # SwayNotificationCenter - using defaults, can be customized later
     # Config files will be at ~/.config/swaync/ if you want to customize
+
+    # Vicinae configuration
+    xdg.configFile."vicinae/settings.json".text = builtins.toJSON {
+      "$schema" = "https://vicinae.com/schemas/config.json";
+      launcher_window = {
+        layer_shell = {
+          enabled = true;
+          keyboard_interactivity = "exclusive";
+          layer = "top";
+        };
+      };
+    };
 
     # Vicinae application launcher service
     systemd.user.services.vicinae = {
