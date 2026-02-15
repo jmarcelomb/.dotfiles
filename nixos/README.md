@@ -43,7 +43,7 @@ For graphical desktop systems:
 For headless server systems:
 - SSH server
 - Docker
-- Server monitoring tools (htop, iotop)
+- Server monitoring tools (bottom, iotop)
 - No GUI components
 
 ## Hardware Modules
