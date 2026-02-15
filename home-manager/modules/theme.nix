@@ -43,7 +43,7 @@
       tweaks = [ "rimless" ];
       variant = "latte";
     })
-    
+
     # Light cursor
     catppuccin-cursors.latteDark
   ];
