@@ -364,8 +364,8 @@
           # Idle management
           { command = ''
             ${pkgs.swayidle}/bin/swayidle -w \
-              timeout 300 '${pkgs.swaylock}/bin/swaylock -f' \
-              timeout 600 'swaymsg "output * dpms off"' \
+              timeout 60 '${pkgs.swaylock}/bin/swaylock -f' \
+              timeout 120 'swaymsg "output * dpms off"' \
               resume 'swaymsg "output * dpms on"' \
               before-sleep '${pkgs.swaylock}/bin/swaylock -f'
           ''; }
