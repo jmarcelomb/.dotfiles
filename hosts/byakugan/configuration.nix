@@ -18,6 +18,7 @@
     ../../nixos/modules/nix.nix
     ../../nixos/modules/timezone.nix
     ../../nixos/modules/boot.nix
+    ../../nixos/modules/cad.nix
   ];
 
   # Host-specific configuration
