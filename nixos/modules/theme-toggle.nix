@@ -63,9 +63,10 @@
         ${pkgs.gnused}/bin/sed -i '/^gtk-application-prefer-dark-theme=/c\gtk-application-prefer-dark-theme=0' ~/.config/gtk-4.0/settings.ini 2>/dev/null || true
         ${pkgs.gnused}/bin/sed -i '/^gtk-theme-name=/c\gtk-theme-name=catppuccin-latte-blue-standard+rimless' ~/.config/gtk-4.0/settings.ini 2>/dev/null || true
 
-        # Ghostty terminal theme
+        # Ghostty terminal theme (light mode: 0.75 opacity)
         if [ -f ~/.config/ghostty/config ]; then
           ${pkgs.gnused}/bin/sed -i '/^theme = /c\theme = Catppuccin Latte' ~/.config/ghostty/config
+          ${pkgs.gnused}/bin/sed -i '/^background-opacity = /c\background-opacity = 0.75' ~/.config/ghostty/config
         fi
 
         # tmux theme (Catppuccin Latte)
@@ -101,9 +102,10 @@
         ${pkgs.gnused}/bin/sed -i '/^gtk-application-prefer-dark-theme=/c\gtk-application-prefer-dark-theme=1' ~/.config/gtk-4.0/settings.ini 2>/dev/null || true
         ${pkgs.gnused}/bin/sed -i '/^gtk-theme-name=/c\gtk-theme-name=catppuccin-frappe-blue-standard+rimless' ~/.config/gtk-4.0/settings.ini 2>/dev/null || true
 
-        # Ghostty terminal theme
+        # Ghostty terminal theme (dark mode: 0.93 opacity)
         if [ -f ~/.config/ghostty/config ]; then
           ${pkgs.gnused}/bin/sed -i '/^theme = /c\theme = Catppuccin Frappe' ~/.config/ghostty/config
+          ${pkgs.gnused}/bin/sed -i '/^background-opacity = /c\background-opacity = 0.93' ~/.config/ghostty/config
         fi
 
         # tmux theme (Catppuccin Frappe)
