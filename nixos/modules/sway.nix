@@ -181,8 +181,8 @@ in
           "${modifier}+Tab" = "workspace back_and_forth";
 
           # Move workspace to other monitor (Alt+Shift+Tab)
-          # Tries both up/down and left/right to work with any monitor arrangement
-          "${modifier}+Shift+Tab" = "move workspace to output up, move workspace to output down, move workspace to output left, move workspace to output right";
+          # Moves workspace up in vertical stack, wraps around to bottom
+          "${modifier}+Shift+Tab" = "move workspace to output up";
 
           # Workspace switching (Alt+1-9,0,b,s,t)
           "${modifier}+1" = "workspace number 1";
@@ -412,6 +412,7 @@ in
           # Keyboard settings (all keyboards)
           "type:keyboard" = {
             xkb_layout = "us";
+            xkb_options = "compose:ralt";  # Right Alt as Compose key for accented characters
             repeat_delay = "180";  # Delay before repeat starts (milliseconds)
             repeat_rate = "40";    # Characters per second when repeating
           };
@@ -427,6 +428,7 @@ in
           # Fallback for devices that don't match type
           "*" = {
             xkb_layout = "us";
+            xkb_options = "compose:ralt";
           };
         };
 
@@ -445,17 +447,20 @@ in
           # Idle management
           { command = ''
             ${pkgs.swayidle}/bin/swayidle -w \
-              timeout 60 '${pkgs.swaylock}/bin/swaylock -f -i ${wallpaper}' \
+              timeout 60 '${pkgs.swaylock}/bin/swaylock -f -i ${lockWallpaper}' \
               timeout 120 'swaymsg "output * dpms off"' \
               resume 'swaymsg "output * dpms on"' \
-              before-sleep '${pkgs.swaylock}/bin/swaylock -f -i ${wallpaper}'
+              before-sleep '${pkgs.swaylock}/bin/swaylock -f -i ${lockWallpaper}'
           ''; }
 
           # GNOME Settings Daemon for better integration
           { command = "${pkgs.gnome-settings-daemon}/libexec/gsd-xsettings"; }
 
-          # Switch to workspace 1 on login
+          # Switch to workspace 1 on login (workspace 1 is on DP-2, the main external display)
           { command = "swaymsg workspace number 1"; }
+          
+          # Focus the external monitor (DP-2) at startup
+          { command = "swaymsg focus output DP-2"; }
         ];
       };
     };
