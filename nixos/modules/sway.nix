@@ -81,6 +81,22 @@ in
   # Enable gvfs for Nautilus
   services.gvfs.enable = true;
 
+  # Enable keyd for keyboard remapping (Caps Lock normal, Shift+Caps Lock = Compose)
+  services.keyd = {
+    enable = true;
+    keyboards.default = {
+      ids = [ "*" ];
+      settings = {
+        main = {
+          capslock = "capslock";  # Normal Caps Lock behavior
+        };
+        shift = {
+          capslock = "compose";   # Shift + Caps Lock = Compose key
+        };
+      };
+    };
+  };
+
   # Home-manager configuration for Sway
   home-manager.users.${user} = { pkgs, ... }: {
     imports = [
@@ -424,7 +440,8 @@ in
           # Keyboard settings (all keyboards)
           "type:keyboard" = {
             xkb_layout = "us";
-            xkb_options = "compose:caps";  # Caps Lock as Compose key for accented characters
+            # Enable Compose functionality (keyd handles the key mapping)
+            xkb_options = "compose:menu";
             repeat_delay = "180";  # Delay before repeat starts (milliseconds)
             repeat_rate = "40";    # Characters per second when repeating
           };
@@ -440,7 +457,7 @@ in
           # Fallback for devices that don't match type
           "*" = {
             xkb_layout = "us";
-            xkb_options = "compose:caps";
+            xkb_options = "compose:menu";
           };
         };
 
