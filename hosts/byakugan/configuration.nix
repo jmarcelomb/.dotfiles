@@ -30,6 +30,7 @@
   # Host-specific packages
   environment.systemPackages = with pkgs; [
     bluetui  # Bluetooth TUI manager
+    spotify
   ];
 
   # Optional: Add NFS mounts if needed
