@@ -24,6 +24,14 @@
   # Host-specific configuration
   # (Most config comes from profiles above)
 
+  # Enable KDE Connect for phone integration
+  programs.kdeconnect.enable = true;
+
+  # Host-specific packages
+  environment.systemPackages = with pkgs; [
+    bluetui  # Bluetooth TUI manager
+  ];
+
   # Optional: Add NFS mounts if needed
   # fileSystems."/mnt/media" = {
   #   device = "nas.local:/media";
