@@ -11,7 +11,7 @@
 
         modules-left = [ "sway/workspaces" "sway/mode" ];
         modules-center = [ "sway/window" ];
-        modules-right = [ "pulseaudio" "backlight" "network" "cpu" "memory" "battery" "clock" ];
+        modules-right = [ "battery" "custom/power-mode" "cpu" "memory" "network" "backlight" "pulseaudio" "clock" ];
 
         "sway/workspaces" = {
           disable-scroll = true;
@@ -44,7 +44,23 @@
         };
 
         battery = {
-          format = "BAT <b>{capacity}%</b>";
+          states = {
+            warning = 30;
+            critical = 15;
+          };
+          format = "{icon} <b>{capacity}%</b> {power:.1f}W";
+          format-charging = " <b>{capacity}%</b> {power:.1f}W";
+          format-plugged = " <b>{capacity}%</b>";
+          format-icons = ["" "" "" "" ""];
+          tooltip-format = "Battery: {capacity}% ({timeTo})\nPower: {power:0.2f}W\nHealth: {health}%\nCycles: {cycles}\n\nClick to toggle power mode";
+          on-click = "tlp-toggle";
+        };
+
+        "custom/power-mode" = {
+          exec = "cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor | sed 's/performance/PERF/; s/powersave/SAVE/'";
+          interval = 2;
+          format = "MODE <b>{}</b>";
+          tooltip-format = "Current CPU governor\nClick battery to toggle";
         };
 
         pulseaudio = {
@@ -111,8 +127,28 @@
       #memory,
       #network,
       #pulseaudio,
-      #backlight {
+      #backlight,
+      #custom-power-mode {
         padding: 0 10px;
+      }
+
+      #battery.charging {
+        color: #26A65B;
+      }
+
+      #battery.warning:not(.charging) {
+        color: #ffcc00;
+      }
+
+      #battery.critical:not(.charging) {
+        color: #ff0000;
+        animation: blink 1s linear infinite;
+      }
+
+      @keyframes blink {
+        to {
+          opacity: 0.5;
+        }
       }
     '';
 };
