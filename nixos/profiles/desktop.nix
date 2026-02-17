@@ -10,6 +10,7 @@
     ../modules/gpg.nix
     ../modules/mime.nix
     ../modules/theme-toggle.nix
+    ../modules/3d-print.nix
   ];
 
   # Desktop-specific packages
