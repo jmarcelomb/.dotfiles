@@ -2,3 +2,5 @@ result
 *.bak
 .config/fish/fish_variables
 .config/helix/runtime/
+.config/git/local.inc
+scripts/set-autolock.sh

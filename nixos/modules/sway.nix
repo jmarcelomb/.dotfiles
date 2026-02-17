@@ -103,6 +103,56 @@ in
       ./waybar.nix
     ];
 
+    # Autolock timeout script
+    home.file.".local/bin/set-autolock".source = pkgs.writeShellScript "set-autolock" ''
+      #!/usr/bin/env bash
+      # Set swayidle autolock timeout
+      # Usage: set-autolock <minutes>
+
+      if [ -z "$1" ]; then
+        echo "Usage: set-autolock <minutes>"
+        echo "Example: set-autolock 5    (lock after 5 minutes)"
+        echo "         set-autolock 0    (disable autolock)"
+        exit 1
+      fi
+
+      MINUTES=$1
+      LOCK_TIMEOUT=$((MINUTES * 60))
+      SCREEN_TIMEOUT=$((LOCK_TIMEOUT + 60))
+
+      # Kill existing swayidle
+      pkill swayidle
+
+      if [ "$MINUTES" -eq 0 ]; then
+        echo "Autolock disabled"
+        exit 0
+      fi
+
+      # Start swayidle with new timeout
+      ${pkgs.swayidle}/bin/swayidle -w \
+        timeout $LOCK_TIMEOUT '${pkgs.swaylock}/bin/swaylock -f -i ${lockWallpaper}' \
+        timeout $SCREEN_TIMEOUT 'swaymsg "output * dpms off"' \
+        resume 'swaymsg "output * dpms on"' \
+        before-sleep '${pkgs.swaylock}/bin/swaylock -f -i ${lockWallpaper}' &
+
+      echo "Autolock set to $MINUTES minutes (lock at $LOCK_TIMEOUT seconds, screen off at $SCREEN_TIMEOUT seconds)"
+    '';
+    home.file.".local/bin/set-autolock".executable = true;
+
+    # Vicinae script for setting autolock timeout in ~/scripts
+    home.file."scripts/set-autolock.sh".source = pkgs.writeShellScript "vicinae-set-autolock" ''
+      #!/usr/bin/env bash
+      # @vicinae.schemaVersion 1
+      # @vicinae.title Set Autolock Timeout
+      # @vicinae.icon 🔒
+      # @vicinae.mode compact
+      # @vicinae.argument1 { "type": "text", "placeholder": "Minutes (0 to disable)" }
+
+      ~/.local/bin/set-autolock "$1"
+    '';
+    home.file."scripts/set-autolock.sh".executable = true;
+
+
     wayland.windowManager.sway = {
       enable = true;
       config = rec {
@@ -505,6 +555,15 @@ in
           enabled = true;
           keyboard_interactivity = "exclusive";
           layer = "top";
+        };
+      };
+      providers = {
+        scripts = {
+          preferences = {
+            customDirs = [
+              "${config.home-manager.users.${user}.home.homeDirectory}/scripts"
+            ];
+          };
         };
       };
     };
