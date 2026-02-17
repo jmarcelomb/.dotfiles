@@ -12,6 +12,7 @@
     ./nix.nix
     ./theme-toggle.nix
     ./timezone.nix
+    ./tlp.nix
     ./user.nix
     ./gpg.nix
   ];
