@@ -504,6 +504,12 @@ in
             middle_emulation = "enabled"; # Middle click emulation
           };
 
+          # Mouse/pointer settings (all mice)
+          "type:pointer" = {
+            accel_profile = "flat";      # Flat acceleration (no acceleration curve)
+            pointer_accel = "-0.25";      # Reduce sensitivity (-1 = slowest, 0 = default, 1 = fastest)
+          };
+
           # Fallback for devices that don't match type
           "*" = {
             xkb_layout = "us";
