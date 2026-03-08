@@ -20,6 +20,7 @@
     ../../nixos/modules/boot.nix
     ../../nixos/modules/cad.nix
     ../../nixos/modules/tlp.nix
+    ../../nixos/modules/nvidia-prime.nix
   ];
 
   # Host-specific configuration
@@ -28,11 +29,10 @@
   # Enable KDE Connect for phone integration
   programs.kdeconnect.enable = true;
 
-  # Host-specific packages
+  # Host-specific packages (non-GPU apps)
   environment.systemPackages = with pkgs; [
     bluetui  # Bluetooth TUI manager
-    spotify
-    vlc
+    # GPU-intensive apps (librewolf, vlc, spotify) are configured below in hardware.nvidia.prime.autoOffload
   ];
 
   # Optional: Add NFS mounts if needed
@@ -61,5 +61,27 @@
   hardware.graphics = {
     enable = true;
     enable32Bit = true;
+  };
+
+  # Automatic GPU offload for GPU-intensive applications
+  hardware.nvidia.prime.autoOffload = {
+    enable = true;
+
+    # GTK/Electron applications (work natively with GPU offload)
+    applications = with pkgs; [
+      librewolf  # Web browser with GPU acceleration for WebGL, video
+      vlc        # Video player with hardware decode
+      spotify    # Music player
+      ghostty    # Terminal emulator with GPU acceleration (smooth scrolling, better rendering)
+    ];
+
+    # Qt applications (need XWayland for proper GPU offload)
+    qtApplications = with pkgs; [
+      freecad    # 3D CAD (from cad.nix module)
+      kicad      # Electronics CAD (from cad.nix module)
+    ];
+
+    # Inject NVIDIA environment into Sway session for terminal-launched apps
+    swayEnvironment = true;
   };
 }
