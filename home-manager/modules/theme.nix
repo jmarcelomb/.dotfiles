@@ -1,3 +1,9 @@
+# Theme Configuration (Home Manager)
+# This configures the theme settings for user applications (GTK, Qt, cursor, icons).
+# Works together with nixos/modules/theme-toggle.nix which provides the toggle script.
+# Usage: Press Alt+Shift+P in Sway to toggle between light and dark themes.
+# The toggle script updates these settings dynamically via dconf/gsettings.
+
 { pkgs, ... }:
 
 {
