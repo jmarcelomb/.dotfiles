@@ -1,3 +1,10 @@
+# Theme Toggle Script for NixOS
+# This provides the system-level toggle script and keybindings for Sway.
+# The actual theme configuration for user applications is managed in:
+#   home-manager/modules/theme.nix
+# Together they provide a complete light/dark theme switching experience.
+# Usage: Press Alt+Shift+P in Sway to toggle between light and dark themes.
+
 { pkgs, user, ... }:
 
 {
