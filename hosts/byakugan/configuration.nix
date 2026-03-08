@@ -32,6 +32,7 @@
   environment.systemPackages = with pkgs; [
     bluetui  # Bluetooth TUI manager
     spotify
+    vlc
   ];
 
   # Optional: Add NFS mounts if needed
