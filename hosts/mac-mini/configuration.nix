@@ -1,33 +1,13 @@
-{ self, pkgs, nixpkgs, user, homeStateVersion, hostname, homeDirectory, system, ... }:
-let
-  sharedEnv = import ../shared-env.nix { inherit pkgs; };
-in
+# Mac Mini - macOS system
+{ self, pkgs, user, homeDirectory, system, hostname, ... }:
 {
   imports = [
-    (import ../../nix-darwin/system.nix { inherit self homeDirectory; })
+    (import ../../nix-darwin/profiles/base.nix {
+      inherit self pkgs user homeDirectory system hostname;
+    })
     (import ./vm-clipboard-sync.nix { inherit user homeDirectory; })
-    ../../nix-darwin/homebrew.nix
-    ../../nix-darwin/aerospace.nix
-    ../../nixos/modules/gpg.nix
   ];
 
-  nix.settings.experimental-features = "nix-command flakes";
-  nix.optimise.automatic = true;
-
-  nixpkgs.hostPlatform = system;
-  nixpkgs.config.allowUnfree = true;
-
-  environment.variables = sharedEnv.systemVariables;
-
-  networking.hostName = hostname;
-  system.primaryUser = user;
-
-  services.sketchybar.enable = true;
-  programs.fish.enable = true;
-
-  users.users.${user} = {
-    name = user;
-    home = homeDirectory;
-    shell = pkgs.fish;
-  };
+  # Host-specific configuration
+  # (Most config comes from nix-darwin/profiles/base.nix)
 }

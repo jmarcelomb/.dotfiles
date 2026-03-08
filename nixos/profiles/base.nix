@@ -31,8 +31,8 @@
     curl      # HTTP client
   ];
 
-  # Set neovim as default editor
-  environment.variables.EDITOR = "nvim";
+  # Set helix as default editor
+  environment.variables.EDITOR = "hx";
 
   # Default shell
   programs.fish.enable = true;
