@@ -56,12 +56,15 @@
 
     # Development tools (dev machines only)
     devTools = [
-      # GUI applications
-      librewolf
+      # Terminal emulators (lightweight, don't need GPU offload)
       alacritty
       kitty
 
+      # Note-taking (lightweight GUI app)
       joplin-desktop
+
+      # GPU-intensive GUI apps moved to system packages per-host
+      # (see hosts/*/configuration.nix for librewolf, vlc, spotify, etc.)
 
       # Programming languages & toolchains
       python311
