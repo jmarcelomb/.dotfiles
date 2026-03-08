@@ -3,7 +3,6 @@
     ./audio.nix
     ./bluetooth.nix
     ./boot.nix
-    ./cad.nix
     ./env.nix
     ./sway.nix
     ./home-manager.nix

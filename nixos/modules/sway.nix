@@ -63,6 +63,10 @@ in
       nwg-dock
       # Screen brightness utility
       brightnessctl
+
+      # Utilities for scripts
+      jq
+      libnotify
     ];
   };
 
@@ -118,7 +122,7 @@ in
 
       MINUTES=$1
       LOCK_TIMEOUT=$((MINUTES * 60))
-      SCREEN_TIMEOUT=$((LOCK_TIMEOUT + 60))
+      SCREEN_TIMEOUT=$((LOCK_TIMEOUT + 15))
 
       # Kill existing swayidle
       pkill swayidle
@@ -138,6 +142,26 @@ in
       echo "Autolock set to $MINUTES minutes (lock at $LOCK_TIMEOUT seconds, screen off at $SCREEN_TIMEOUT seconds)"
     '';
     home.file.".local/bin/set-autolock".executable = true;
+
+    # Touchpad toggle script
+    home.file.".local/bin/toggle-touchpad".source = pkgs.writeShellScript "toggle-touchpad" ''
+      #!/usr/bin/env bash
+      # Toggle touchpad on/off
+
+      TOUCHPAD="type:touchpad"
+
+      # Get current state
+      STATUS=$(swaymsg -t get_inputs | ${pkgs.jq}/bin/jq -r '.[] | select(.type == "touchpad") | .libinput.send_events')
+
+      if [ "$STATUS" = "enabled" ]; then
+        swaymsg input "$TOUCHPAD" events disabled
+        ${pkgs.libnotify}/bin/notify-send -t 2000 "Touchpad" "Disabled" -u low
+      else
+        swaymsg input "$TOUCHPAD" events enabled
+        ${pkgs.libnotify}/bin/notify-send -t 2000 "Touchpad" "Enabled" -u low
+      fi
+    '';
+    home.file.".local/bin/toggle-touchpad".executable = true;
 
     # Vicinae script for setting autolock timeout in ~/scripts
     home.file."scripts/set-autolock.sh".source = pkgs.writeShellScript "vicinae-set-autolock" ''
@@ -338,7 +362,10 @@ in
           "XF86MonBrightnessUp" = "exec brightnessctl set +5%";
           "XF86MonBrightnessDown" = "exec brightnessctl set 5%-";
 
-          # Lock screen (Super+L)
+          # Touchpad toggle (Fn+F4 sends Control+Mod4+XF86TouchpadToggle)
+          "Control+Mod4+XF86TouchpadToggle" = "exec ~/.local/bin/toggle-touchpad";
+
+          # Lock screen and turn off display (Super+L)
           "Mod4+l" = "exec ${pkgs.swaylock}/bin/swaylock -f -i ${lockWallpaper}";
 
           # Display/Monitor settings (Alt+Shift+O for Output)
@@ -391,6 +418,7 @@ in
 
           # Browsers to workspace 1
           { criteria = { app_id = "^firefox$"; }; command = "move container to workspace number 1"; }
+          { criteria = { app_id = "^librewolf$"; }; command = "move container to workspace number 1"; }
           { criteria = { app_id = "^zen-browser$"; }; command = "move container to workspace number 1"; }
           { criteria = { app_id = "^chromium-browser$"; }; command = "move container to workspace number 1"; }
           { criteria = { app_id = "^google-chrome$"; }; command = "move container to workspace number 1"; }
@@ -501,6 +529,7 @@ in
             natural_scroll = "enabled";  # Inverted/natural scrolling
             tap = "enabled";             # Tap to click
             dwt = "enabled";             # Disable while typing
+            dwtp = "enabled";            # Disable tap while typing (more aggressive)
             middle_emulation = "enabled"; # Middle click emulation
           };
 
@@ -533,7 +562,7 @@ in
           { command = ''
             ${pkgs.swayidle}/bin/swayidle -w \
               timeout 60 '${pkgs.swaylock}/bin/swaylock -f -i ${lockWallpaper}' \
-              timeout 120 'swaymsg "output * dpms off"' \
+              timeout 15 'pgrep swaylock && swaymsg "output * dpms off"' \
               resume 'swaymsg "output * dpms on"' \
               before-sleep '${pkgs.swaylock}/bin/swaylock -f -i ${lockWallpaper}'
           ''; }

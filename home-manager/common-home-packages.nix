@@ -57,9 +57,11 @@
     # Development tools (dev machines only)
     devTools = [
       # GUI applications
-      # firefox
+      librewolf
       alacritty
       kitty
+
+      joplin-desktop
 
       # Programming languages & toolchains
       python311
