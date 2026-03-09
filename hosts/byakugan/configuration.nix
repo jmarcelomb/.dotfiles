@@ -31,7 +31,11 @@
 
   # Host-specific packages (non-GPU apps)
   environment.systemPackages = with pkgs; [
-    bluetui  # Bluetooth TUI manager
+    bluetui       # Bluetooth TUI manager
+    sushi         # Quick Look-style file previewer (press Space in Nautilus)
+    libheif       # HEIC/HEIF image format support and CLI tools
+    libheif.out   # Additional HEIC/HEIF libraries and binaries
+    ffmpeg        # Multimedia framework for video/audio processing
     # GPU-intensive apps (librewolf, vlc, spotify) are configured below in hardware.nvidia.prime.autoOffload
   ];
 
