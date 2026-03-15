@@ -36,6 +36,15 @@
     libheif       # HEIC/HEIF image format support and CLI tools
     libheif.out   # Additional HEIC/HEIF libraries and binaries
     ffmpeg        # Multimedia framework for video/audio processing
+
+    # GStreamer plugins for video preview in Nautilus
+    gst_all_1.gstreamer
+    gst_all_1.gst-plugins-base
+    gst_all_1.gst-plugins-good
+    gst_all_1.gst-plugins-bad
+    gst_all_1.gst-plugins-ugly
+    gst_all_1.gst-libav  # FFmpeg-based plugins for additional format support
+
     # GPU-intensive apps (librewolf, vlc, spotify) are configured below in hardware.nvidia.prime.autoOffload
   ];
 
