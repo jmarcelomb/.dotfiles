@@ -2,7 +2,7 @@
 {
   systemVariables = {
     TERMINAL = "kitty";
-    EDITOR = "nvim";
+    EDITOR = "hx";
   };
 
   userVariables = {

@@ -21,6 +21,7 @@
 
       # Version control
       git
+      lazygit
 
       # Shell & navigation
       zsh
@@ -80,7 +81,6 @@
       typos-lsp
 
       # Dev workflow tools
-      lazygit
       lazydocker
 
       # Data & document tools
