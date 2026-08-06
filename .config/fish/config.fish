@@ -38,7 +38,7 @@ fish_add_path --prepend --move \
     $HOME/.opencode/bin
 
 # Default editor
-set -gx EDITOR nvim
+set -gx EDITOR hx
 
 # Starship prompt initialization
 if type -q starship
