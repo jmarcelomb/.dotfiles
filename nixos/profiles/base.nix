@@ -10,18 +10,9 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  # Enable Flakes and new Nix commands
-  nix.settings = {
-    experimental-features = [ "nix-command" "flakes" ];
-    auto-optimise-store = true;
-  };
-
-  # Automatic garbage collection
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 30d";
-  };
+  # Nix flakes/GC settings live in ../modules/nix.nix (imported by every host
+  # alongside this profile) so there's a single source of truth instead of
+  # two nix.gc.options definitions colliding.
 
   # Essential system packages (minimal set)
   environment.systemPackages = with pkgs; [
