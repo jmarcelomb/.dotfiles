@@ -13,7 +13,7 @@ export PATH=$HOME/Tools/neovim/bin:$PATH
 export PATH=$HOME/go/bin:$PATH
 export PATH=$HOME/scripts/:$PATH
 
-export EDITOR=nvim
+export EDITOR=hx
 
 bindkey -v
 
