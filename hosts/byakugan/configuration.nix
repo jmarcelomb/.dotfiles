@@ -29,6 +29,17 @@
   # Enable KDE Connect for phone integration
   programs.kdeconnect.enable = true;
 
+  # SSH server so we can connect into this desktop remotely.
+  services.openssh = {
+    enable = true;
+    settings = {
+      PasswordAuthentication = true;
+      PermitRootLogin = "prohibit-password";
+      X11Forwarding = false;
+    };
+  };
+  networking.firewall.allowedTCPPorts = [ 22 ];
+
   # Host-specific packages (non-GPU apps)
   environment.systemPackages = with pkgs; [
     bluetui       # Bluetooth TUI manager
