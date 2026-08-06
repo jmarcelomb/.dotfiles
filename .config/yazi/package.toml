@@ -1,47 +1,47 @@
 [[plugin.deps]]
 use = "Lil-Dank/lazygit"
-rev = "0e56060"
-hash = "ab2e66065a94cca4886b303518e44bd8"
+rev = "e73fd74"
+hash = "6ea5f37c7f219671ec504cb8311f889d"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:chmod"
-rev = "75f6f72"
-hash = "8da0b15a97b5dfd13941d1ecc617ac7c"
+rev = "b9598e6"
+hash = "5b1c276b75cae91cbbdbe7863f39a540"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:git"
-rev = "19dc890"
-hash = "94081eed9bc9fe176715c33b0db55d35"
+rev = "b9598e6"
+hash = "ce259b12c503a33a18a861052fa582b7"
 
 [[plugin.deps]]
 use = "Rolv-Apneseth/starship"
-rev = "eca1861"
-hash = "e519d894e94ded741e06aae4d4775981"
+rev = "159eaba"
+hash = "7de446280b1ba8c49ffd86dbc24bbbe6"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:toggle-pane"
-rev = "19dc890"
-hash = "8a7c58225816a163a6e8730c0adafbc8"
+rev = "b9598e6"
+hash = "15e5b67a241172cbb86b8fbf9e63692"
 
 [[plugin.deps]]
 use = "lpnh/fr"
-rev = "a60466e"
-hash = "ae6f2fb9ea03527e3a367a9faf2690ac"
+rev = "aa88cd4"
+hash = "8b0e87c3176e0d44f79a8656f79f0fa"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:vcs-files"
-rev = "19dc890"
-hash = "4ee57085277d616acfa0ef1fef37dc00"
+rev = "b9598e6"
+hash = "b97710d0734c380d0a1f58c13dab0da2"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-paste"
-rev = "19dc890"
-hash = "75fd60b2df7115e0a6ca31a6a804d320"
+rev = "b9598e6"
+hash = "3f8d49413bc8691b4c652eb417a20178"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:piper"
-rev = "19dc890"
-hash = "b26d542e75151835d7bc885f6dda74cb"
+rev = "b9598e6"
+hash = "f23ecc89ce0f9eeefdd4cea14e2a9ba7"
 
 [[flavor.deps]]
 use = "dangooddd/kanagawa"
