@@ -11,30 +11,31 @@
     # Run with: nix-shell -p webkitgtk_4_1 --run "appimage-run ~/Downloads/Bambu_Studio*.AppImage"
 
     # Alternative slicers that work natively on NixOS
-    prusa-slicer  # Popular slicer, works with many printers
     # orca-slicer # Fork of Bambu Studio (uncomment if available in your nixpkgs)
+
+    # 3D Model viewers and preview tools
+    f3d  # Fast 3D viewer with thumbnailer support for STL previews in Nautilus
   ];
 
   # Home-manager configuration for 3D printing applications
   home-manager.users.${user} = { pkgs, ... }: {
+    # Install f3d for the user (provides thumbnailer)
+    home.packages = with pkgs; [
+      f3d  # 3D model viewer with thumbnailer support
+    ];
+
     # STL file associations
     xdg.mimeApps = {
       associations.added = {
-        "model/stl" = "PrusaSlicer.desktop";
-        "application/sla" = "PrusaSlicer.desktop";
+        "model/stl" = "f3d.desktop";
       };
       defaultApplications = {
-        "model/stl" = "PrusaSlicer.desktop";
-        "application/sla" = "PrusaSlicer.desktop";
+        "model/stl" = "f3d.desktop";
       };
     };
 
     # Configure Sway window rules for 3D printing applications if Sway is enabled
     wayland.windowManager.sway.config.window.commands = lib.mkIf (config.programs.sway.enable or false) [
-      # PrusaSlicer to workspace 5 (3D printing workspace)
-      { criteria = { app_id = "^prusa-slicer$"; }; command = "move container to workspace number 5"; }
-      { criteria = { class = "^PrusaSlicer$"; }; command = "move container to workspace number 5"; }
-
       # Bambu Studio to workspace 5 (3D printing workspace)
       { criteria = { title = "^Bambu Studio.*"; }; command = "move container to workspace number 5"; }
     ];

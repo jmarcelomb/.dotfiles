@@ -418,7 +418,6 @@ in
 
           # Browsers to workspace 1
           { criteria = { app_id = "^firefox$"; }; command = "move container to workspace number 1"; }
-          { criteria = { app_id = "^librewolf$"; }; command = "move container to workspace number 1"; }
           { criteria = { app_id = "^zen-browser$"; }; command = "move container to workspace number 1"; }
           { criteria = { app_id = "^chromium-browser$"; }; command = "move container to workspace number 1"; }
           { criteria = { app_id = "^google-chrome$"; }; command = "move container to workspace number 1"; }
@@ -527,7 +526,7 @@ in
           # Touchpad settings (all touchpads)
           "type:touchpad" = {
             natural_scroll = "enabled";  # Inverted/natural scrolling
-            tap = "enabled";             # Tap to click
+            tap = "disabled";            # Disable tap to click (prevents phantom touches)
             dwt = "enabled";             # Disable while typing
             dwtp = "enabled";            # Disable tap while typing (more aggressive)
             middle_emulation = "enabled"; # Middle click emulation

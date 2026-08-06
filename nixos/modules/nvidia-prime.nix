@@ -62,7 +62,7 @@ let
   # These are wrapped automatically unless explicitly excluded
   defaultGpuApps = with pkgs; [
     # Web Browsers (GPU acceleration for rendering, video, WebGL)
-    # librewolf
+    # zen-browser
     # firefox
     # chromium
     # google-chrome
@@ -74,7 +74,7 @@ let
     # kicad
 
     # 3D Printing slicers
-    # prusa-slicer
+    # orca-slicer
 
     # Video editing & streaming
     # obs-studio
@@ -120,10 +120,10 @@ in
       default = [];
       example = literalExpression ''
         with pkgs; [
-          librewolf
+          inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
           firefox
           freecad
-          prusa-slicer
+          orca-slicer
         ]
       '';
       description = ''
@@ -151,7 +151,7 @@ in
         with pkgs; [
           freecad
           kicad
-          prusa-slicer
+          orca-slicer
         ]
       '';
       description = ''
@@ -163,7 +163,7 @@ in
         Common Qt applications:
         - FreeCAD
         - KiCad
-        - PrusaSlicer
+        - OrcaSlicer
         - OBS Studio
         - Kdenlive
       '';
@@ -183,14 +183,14 @@ in
     appIdPatterns = mkOption {
       type = types.listOf types.str;
       default = [
-        "^librewolf$"
+        "^zen-browser$"
         "^firefox$"
         "^chromium-browser$"
         "^google-chrome$"
         "^freecad$"
         "^FreeCAD$"
         "^kicad$"
-        "^prusa-slicer$"
+        "^orca-slicer$"
         "^obs$"
         "^blender$"
         "^steam$"
@@ -322,13 +322,13 @@ in
       To add more applications to GPU offload, edit your configuration:
         hardware.nvidia.prime.autoOffload = {
           applications = with pkgs; [
-            librewolf      # GTK/Electron apps
+            zen-browser     # GTK/Electron apps
             firefox
           ];
           qtApplications = with pkgs; [
             freecad        # Qt apps (auto-configured for XWayland)
             kicad
-            prusa-slicer
+            orca-slicer
           ];
         };
     '';

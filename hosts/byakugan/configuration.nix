@@ -1,5 +1,5 @@
 # Byakugan - Desktop NixOS system
-{ pkgs, stateVersion, hostname, user, ... }:
+{ pkgs, inputs, stateVersion, hostname, user, ... }:
 
 {
   imports = [
@@ -45,7 +45,7 @@
     gst_all_1.gst-plugins-ugly
     gst_all_1.gst-libav  # FFmpeg-based plugins for additional format support
 
-    # GPU-intensive apps (librewolf, vlc, spotify) are configured below in hardware.nvidia.prime.autoOffload
+    # GPU-intensive apps (zen-browser, vlc, spotify) are configured below in hardware.nvidia.prime.autoOffload
   ];
 
   # Optional: Add NFS mounts if needed
@@ -82,7 +82,7 @@
 
     # GTK/Electron applications (work natively with GPU offload)
     applications = with pkgs; [
-      librewolf  # Web browser with GPU acceleration for WebGL, video
+      inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default  # Web browser with GPU acceleration for WebGL, video
       vlc        # Video player with hardware decode
       spotify    # Music player
       ghostty    # Terminal emulator with GPU acceleration (smooth scrolling, better rendering)
