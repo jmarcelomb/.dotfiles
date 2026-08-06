@@ -63,8 +63,11 @@
       # Note-taking (lightweight GUI app)
       joplin-desktop
 
+      # Cloud storage
+      opencloud-desktop
+
       # GPU-intensive GUI apps moved to system packages per-host
-      # (see hosts/*/configuration.nix for librewolf, vlc, spotify, etc.)
+      # (see hosts/*/configuration.nix for zen-browser, vlc, spotify, etc.)
 
       # Programming languages & toolchains
       python311

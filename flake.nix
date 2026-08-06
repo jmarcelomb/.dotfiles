@@ -16,11 +16,15 @@
       url = "github:LnL7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    zen-browser = {
+      url = "github:youwen5/zen-browser-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, rust-overlay, nix-darwin, ... }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, rust-overlay, nix-darwin, zen-browser, ... }@inputs:
     let
-      homeStateVersion = "25.11";
+      homeStateVersion = "26.05";
 
       # Shared overlays
       overlays = [ rust-overlay.overlays.default ];
@@ -92,7 +96,7 @@
           hostname = "konoha";
           user = "hinata";
           homeDirectory = "/home/hinata";
-          stateVersion = "25.11";
+          stateVersion = "26.05";
           system = "aarch64-linux";
           isServer = false;
         };
@@ -100,7 +104,7 @@
           hostname = "chakra";
           user = "hinata";
           homeDirectory = "/home/hinata";
-          stateVersion = "25.11";
+          stateVersion = "26.05";
           system = "x86_64-linux";
           isServer = true;
         };
@@ -108,7 +112,7 @@
           hostname = "byakugan";
           user = "hinata";
           homeDirectory = "/home/hinata";
-          stateVersion = "25.11";
+          stateVersion = "26.05";
           system = "x86_64-linux";
           isServer = false;
         };

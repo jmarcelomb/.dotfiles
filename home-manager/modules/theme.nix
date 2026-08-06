@@ -22,6 +22,9 @@
       };
     };
 
+    # # Explicitly set GTK4 theme to match GTK3 theme (silences warning about changed default)
+    # gtk4.theme = "catppuccin-frappe-blue-standard+rimless";
+
     # Icon theme (dark by default)
     iconTheme = {
       name = "Papirus-Dark";
@@ -61,6 +64,12 @@
       gtk-theme = "catppuccin-frappe-blue-standard+rimless";
       icon-theme = "Papirus-Dark";
       cursor-theme = "catppuccin-frappe-dark-cursors";
+    };
+
+    # Nautilus file manager preferences
+    "org/gnome/nautilus/preferences" = {
+      show-image-thumbnails = "always";  # Show image thumbnails in all cases
+      thumbnail-limit = 100;  # Generate thumbnails for files up to 100MB
     };
   };
 
