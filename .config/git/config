@@ -70,8 +70,3 @@
 [rerere]
   enabled = true
   autoupdate = true
-
-# Machine-local overrides (gitignored, not tracked in dotfiles). Use this for
-# things that shouldn't be the same across all machines, e.g. GPG signingKey.
-[include]
-  path = ~/.config/git/local.inc
