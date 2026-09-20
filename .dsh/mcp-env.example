@@ -1,0 +1,19 @@
+# Copy to ~/.dsh/mcp-env, fill real values, keep chmod 600.
+# ~/.dsh/mcp-env is NEVER committed — it holds every secret (and the
+# NetBird IP) used by the DSH setup. This template is the committed,
+# secret-free documentation of what it should contain.
+
+# Tokens for the MCP servers in cordis.patch.yml
+CONTEXT7_API_KEY=
+GITHUB_TOKEN=
+
+# This machine's NetBird overlay IP. Used by:
+#   - ~/scripts/dsh-web  -> `--trusted-host ${NETBIRD_IP}:3080`
+#   - the dsh-web-netbird launchd agent -> socat bind address
+NETBIRD_IP=100.106.113.49
+
+# Only needed when the Home Assistant MCP rows are uncommented:
+# HOMEASSISTANT_URL_1=
+# HOMEASSISTANT_TOKEN_1=
+# HOMEASSISTANT_URL_2=
+# HOMEASSISTANT_TOKEN_2=

@@ -1,0 +1,75 @@
+# Home-level DSH patch layer (~/.dsh/cordis.patch.yml -> this file).
+# Applied over EVERY profile (web, dsh-tui, headless, ...) after their own
+# layers. Rows here are shared by all surfaces on this machine.
+#
+# Secrets stay out of this repo: token values are read from the environment
+# (sourced from ~/.dsh/mcp-env, which is never committed).
+- insert:
+    # Cross-session memory, stored locally by Memorix (default ~/.memorix/data,
+    # per-project identity from the working directory).
+    # Upstream: https://github.com/AVIDS2/memorix (pinned 1.3.0, npm global)
+    - id: memory-memorix
+      name: '@deepseek-ai/dsh-mcp-client'
+      config:
+        serverName: memorix
+        transport: stdio
+        command: memorix
+        args: [serve]
+        cwd: !!js process.cwd()
+
+    # Context7 docs MCP (ported from ~/.config/opencode/opencode.jsonc)
+    - id: mcp-context7
+      name: '@deepseek-ai/dsh-mcp-client'
+      config:
+        serverName: context7
+        transport: streamable-http
+        url: https://mcp.context7.com/mcp
+        headers:
+          CONTEXT7_API_KEY: !!js process.env.CONTEXT7_API_KEY ?? ''
+
+    # GitHub Copilot MCP (ported from ~/.config/opencode/opencode.jsonc)
+    - id: mcp-github
+      name: '@deepseek-ai/dsh-mcp-client'
+      config:
+        serverName: github
+        transport: streamable-http
+        url: https://api.githubcopilot.com/mcp/
+        headers:
+          Authorization: !!js '`Bearer ${process.env.GITHUB_TOKEN ?? ""}`'
+
+    # ------------------------------------------------------------------
+    # Ready-to-enable rows (disabled in opencode too). Uncomment and make
+    # sure the needed vars are exported in ~/.dsh/mcp-env.
+    #
+    # - id: mcp-homeassistant
+    #   name: '@deepseek-ai/dsh-mcp-client'
+    #   config:
+    #     serverName: homeassistant
+    #     transport: streamable-http
+    #     url: http://192.168.0.115:8123/api/mcp
+    #     headers:
+    #       Authorization: !!js '`Bearer ${process.env.HOMEASSISTANT_TOKEN_1 ?? ""}`'
+    #
+    # - id: mcp-ha-mcp
+    #   name: '@deepseek-ai/dsh-mcp-client'
+    #   config:
+    #     serverName: ha_mcp
+    #     transport: stdio
+    #     command: uvx
+    #     args: ['--python', '3.13', '--refresh', 'ha-mcp@latest']
+    #     cwd: !!js process.cwd()
+    #     env:
+    #       HOMEASSISTANT_URL: !!js process.env.HOMEASSISTANT_URL_1 ?? ''
+    #       HOMEASSISTANT_TOKEN: !!js process.env.HOMEASSISTANT_TOKEN_1 ?? ''
+    #
+    # - id: mcp-ha-mcp-celia
+    #   name: '@deepseek-ai/dsh-mcp-client'
+    #   config:
+    #     serverName: ha_mcp_celia
+    #     transport: stdio
+    #     command: uvx
+    #     args: ['--python', '3.13', '--refresh', 'ha-mcp@latest']
+    #     cwd: !!js process.cwd()
+    #     env:
+    #       HOMEASSISTANT_URL: !!js process.env.HOMEASSISTANT_URL_2 ?? ''
+    #       HOMEASSISTANT_TOKEN: !!js process.env.HOMEASSISTANT_TOKEN_2 ?? ''

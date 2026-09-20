@@ -20,4 +20,9 @@ if type -q bat
     alias h='help'
 end
 
+# DSH: coding agent in the terminal (profile with the shared MCPs + memory)
+if type -q dsh
+    alias dshc="dsh --profile dsh-tui"
+end
+
 source ~/.aliases.common
