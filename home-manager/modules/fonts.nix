@@ -1,7 +1,12 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
+let
+  inherit (pkgs.stdenv) isDarwin;
+in
 {
-  fonts.fontconfig.enable = true;
-  home.packages = [
-    pkgs.nerd-fonts.sauce-code-pro
-  ];
+  config = lib.mkIf (!isDarwin) {
+    fonts.fontconfig.enable = true;
+    home.packages = [
+      pkgs.nerd-fonts.sauce-code-pro
+    ];
+  };
 }

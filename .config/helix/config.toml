@@ -3,8 +3,10 @@ theme = "kanagawa"
 [editor]
 line-number = "relative"
 color-modes = true
-mouse = false
 true-color = true
+
+[editor.file-picker]
+hidden = false
 
 [editor.indent-guides]
 render = true

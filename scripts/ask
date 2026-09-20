@@ -1,13 +1,3 @@
 #!/usr/bin/env bash
 
-if ! uv tool list | grep -q "llm"; then
-  uv tool install llm --with llm-github-copilot
-fi
-
-MODEL="github_copilot/claude-sonnet-4"
-
-if command -v glow >/dev/null 2>&1; then
-  llm -m "$MODEL" "$*" | glow
-else
-  llm -m "$MODEL" "$*"
-fi
+opencode2 run --model "${OPENCODE_MODEL:-zai-coding-plan/glm-5.3-flash}" "$*"
