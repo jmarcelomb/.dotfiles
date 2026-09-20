@@ -9,14 +9,15 @@
     # per-project identity from the working directory; non-git folders fall
     # back to the untracked/ project).
     # Upstream: https://github.com/AVIDS2/memorix (pinned 1.3.0, npm global)
-    # (--mode micro|lite|team|full selects the tool profile; default micro)
+    # lite mode = 17 tools incl. memorix_session_start/_end/_context, which
+    # bind each session's project root (dsh's MCP client sends no roots).
     - id: memory-memorix
       name: '@deepseek-ai/dsh-mcp-client'
       config:
         serverName: memorix
         transport: stdio
         command: memorix
-        args: [serve, --allow-untracked]
+        args: [serve, --allow-untracked, --mode, lite]
         cwd: !!js process.cwd()
 
     # Context7 docs MCP (ported from ~/.config/opencode/opencode.jsonc)
