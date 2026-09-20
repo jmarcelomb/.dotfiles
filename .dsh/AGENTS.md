@@ -5,10 +5,16 @@ on top of any project-level AGENTS.md.
 
 ## Memory
 
-When the user asks you to remember something, call a memory write tool
-(`mcp__memorix__*`). When historical information may be relevant, search
-memory and use relevant results. Prefer memory over asking the user again for
-facts you were already told.
+Before the first memory read or write in a session, bind the session's
+project: call `mcp__memorix__memorix_session_start` with `projectRoot` set to
+your current working directory (a git repo, or any folder — non-git folders
+fall back to the `untracked/` project). Then:
+
+- When the user asks you to remember something, store it with
+  `mcp__memorix__memorix_store`.
+- When historical information may be relevant, search with
+  `mcp__memorix__memorix_search` and use relevant results.
+- Prefer memory over asking the user again for facts you were already told.
 
 ## Context7 docs
 
