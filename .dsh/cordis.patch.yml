@@ -6,15 +6,17 @@
 # (sourced from ~/.dsh/mcp-env, which is never committed).
 - insert:
     # Cross-session memory, stored locally by Memorix (default ~/.memorix/data,
-    # per-project identity from the working directory).
+    # per-project identity from the working directory; non-git folders fall
+    # back to the untracked/ project).
     # Upstream: https://github.com/AVIDS2/memorix (pinned 1.3.0, npm global)
+    # (--mode micro|lite|team|full selects the tool profile; default micro)
     - id: memory-memorix
       name: '@deepseek-ai/dsh-mcp-client'
       config:
         serverName: memorix
         transport: stdio
         command: memorix
-        args: [serve]
+        args: [serve, --allow-untracked]
         cwd: !!js process.cwd()
 
     # Context7 docs MCP (ported from ~/.config/opencode/opencode.jsonc)
