@@ -1,0 +1,176 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "autoupdate": false,
+  "permission": {
+    "edit": "ask",
+    "bash": {
+      "*": "allow",
+      "git add*": "ask",
+      "git checkout*": "ask",
+      "git restore --staged*": "ask",
+      "git restore*": "ask",
+      "git reset*": "ask",
+      "git rm*": "ask",
+      "rm *": "ask"
+    }
+  },
+  "agent": {
+    "plan": {
+      "mode": "primary",
+      "tools": {
+        "write": false,
+        "edit": false,
+        "bash": true
+      }
+    },
+    "build": {
+      "mode": "primary",
+      "tools": {
+        "write": true,
+        "edit": true,
+        "bash": true
+      },
+      "permission": {
+        "edit": "ask",
+        "bash": {
+          "git commit*": "deny",
+          "git push*": "deny"
+        }
+      }
+    },
+    "autoaccept": {
+      "mode": "primary",
+      "tools": {
+        "write": true,
+        "edit": true,
+        "bash": true
+      },
+      "permission": {
+        "edit": "allow",
+        "bash": {
+          "git commit*": "deny",
+          "git push*": "deny"
+        }
+      }
+    }
+  },
+  "lsp": {
+    "ty-python": {
+      "command": [
+        "ty",
+        "server"
+      ],
+      "extensions": [
+        ".py",
+        ".pyi"
+      ]
+    }
+  },
+  "plugin": [],
+  "mcp": {
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp",
+      "enabled": true,
+      "headers": {
+        "CONTEXT7_API_KEY": "{env:CONTEXT7_API_KEY}"
+      }
+    },
+    "github": {
+      "type": "remote",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": {
+        "Authorization": "Bearer {env:GITHUB_TOKEN}"
+      }
+    },
+    "homeassistant": {
+      "type": "remote",
+      "enabled": false,
+      "url": "http://192.168.0.115:8123/api/mcp",
+      "headers": {
+        "Authorization": "Bearer {env:HOMEASSISTANT_TOKEN_1}"
+      }
+    },
+    "ha-mcp": {
+      "type": "local",
+      "enabled": false,
+      "command": [
+        "uvx",
+        "--python",
+        "3.13",
+        "--refresh",
+        "ha-mcp@latest"
+      ],
+      "environment": {
+        "HOMEASSISTANT_URL": "{env:HOMEASSISTANT_URL_1}",
+        "HOMEASSISTANT_TOKEN": "{env:HOMEASSISTANT_TOKEN_1}"
+      }
+    },
+    "ha-mcp-celia": {
+      "type": "local",
+      "enabled": false,
+      "command": [
+        "uvx",
+        "--python",
+        "3.13",
+        "--refresh",
+        "ha-mcp@latest"
+      ],
+      "environment": {
+        "HOMEASSISTANT_URL": "{env:HOMEASSISTANT_URL_2}",
+        "HOMEASSISTANT_TOKEN": "{env:HOMEASSISTANT_TOKEN_2}"
+      }
+    }
+  },
+  "providers": {
+    "ollama-local": {
+      "name": "Local Ollama",
+      "package": "@opencode/ai/providers/openai-compatible",
+      "settings": {
+        "baseURL": "http://127.0.0.1:11434/v1",
+        "apiKey": "ollama"
+      },
+      "models": {
+        "qwen3.5:9b": {
+          "modelID": "qwen3.5:9b",
+          "name": "Qwen 3.5 9B",
+          "capabilities": {
+            "tools": true,
+            "input": ["text"],
+            "output": ["text"]
+          },
+          "limit": {
+            "context": 131072,
+            "output": 8192
+          }
+        },
+        "qwen2.5-coder:7b": {
+          "modelID": "qwen2.5-coder:7b",
+          "name": "Qwen 2.5 Coder 7B",
+          "capabilities": {
+            "tools": true,
+            "input": ["text"],
+            "output": ["text"]
+          },
+          "limit": {
+            "context": 32768,
+            "output": 8192
+          }
+        },
+        "qwen2.5-coder:14b": {
+          "modelID": "qwen2.5-coder:14b",
+          "name": "Qwen 2.5 Coder 14B",
+          "capabilities": {
+            "tools": true,
+            "input": ["text"],
+            "output": ["text"]
+          },
+          "limit": {
+            "context": 32768,
+            "output": 8192
+          }
+        }
+      }
+    }
+  }
+}

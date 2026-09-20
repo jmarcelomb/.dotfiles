@@ -1,3 +1,8 @@
+# Environment variables for opencode MCP tools (centralized in ~/.env)
+if test -f ~/.env
+    source ~/.env
+end
+
 if ! status is-interactive
     return
 end
@@ -85,3 +90,14 @@ end
 
 # Source additional configurations
 test -f ~/.aliases.fish && source ~/.aliases.fish
+
+# Added by OrbStack: command-line tools and integration
+# This won't be added again if you remove it.
+source ~/.orbstack/shell/init2.fish 2>/dev/null || :
+
+# pnpm
+set -gx PNPM_HOME '/Users/jmmb/Library/pnpm'
+if not string match -q -- "$PNPM_HOME/bin" $PATH
+  set -gx PATH "$PNPM_HOME/bin" $PATH
+end
+# pnpm end

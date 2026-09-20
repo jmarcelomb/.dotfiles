@@ -11,6 +11,8 @@ in
      else import ./linux-home-packages.nix { inherit pkgs isServer; })
   ];
 
+  nixpkgs.config.allowUnsupportedSystem = true;
+
   home = {
     username = user;
     inherit homeDirectory;

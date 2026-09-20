@@ -8,6 +8,7 @@
     };
     brews = [
       "imagemagick"
+      "gh"
     ];
     casks = [
       "veracrypt"
@@ -16,6 +17,7 @@
       "raycast"
 
       "font-sketchybar-app-font"
+      "font-sauce-code-pro-nerd-font"
       "sf-symbols"
 
       # "discord"
@@ -26,7 +28,7 @@
       "spotify"
 
       "shottr"
-      "docker-desktop"
+      "orbstack"
       "joplin"
       "chatgpt"
 

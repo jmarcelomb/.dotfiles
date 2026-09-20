@@ -4,6 +4,8 @@
 export MANPAGER="sh -c 'awk '\''{ gsub(/\x1B\[[0-9;]*m/, \"\", \$0); gsub(/.\x08/, \"\", \$0); print }'\'' | bat -p -lman'"
 export XDG_CONFIG_HOME="$HOME/.config"
 
+alias yt='uvx yt-dlp'
+
 ## tmux aliases
 alias tpe='tmux capture-pane -Jp | $EDITOR'
 alias tbe='tpe' # typos: ignore

@@ -40,7 +40,9 @@
       yazi
 
       # Editor
-      helix
+      # helix
+
+     (pkgs.ffmpeg-full.override { withUnfree = true; })
     ];
 
     miscTools = [
@@ -57,15 +59,17 @@
     devTools = [
       # GUI applications
       # firefox
-      alacritty
-      kitty
+      # alacritty
+      # kitty
+      # opencloud-desktop
 
       # Programming languages & toolchains
-      python311
+      # python311
       uv
       rust-bin.stable.latest.default
       rust-analyzer
-      nodejs_22
+      # nodejs_22
+      # pnpm
       zig
       go
 
@@ -86,7 +90,7 @@
       # Data & document tools
       tabiew
       glow
-      imagemagick
+      # imagemagick
     ];
   in
     cliUtils

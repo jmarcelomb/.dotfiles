@@ -20,10 +20,15 @@
 
   outputs = { self, nixpkgs, nixpkgs-stable, home-manager, rust-overlay, nix-darwin, ... }@inputs:
     let
-      homeStateVersion = "24.11";
+      homeStateVersion = "26.05";
 
       # Shared overlays
-      overlays = [ rust-overlay.overlays.default ];
+      overlays = [
+        rust-overlay.overlays.default
+        (final: prev: {
+          direnv = prev.direnv.overrideAttrs (_: { doCheck = false; });
+        })
+      ];
 
       # Function to create nix-darwin configurations
       makeDarwinSystem = { hostname, user, isServer, homeDirectory, system }:
@@ -43,8 +48,10 @@
             home-manager.darwinModules.home-manager {
               home-manager.useGlobalPkgs = false;
               home-manager.useUserPackages = true;
+              home-manager.backupFileExtension = "backup";
               home-manager.sharedModules = [{
                 nixpkgs.overlays = overlays;
+                nixpkgs.config.allowUnsupportedSystem = true;
               }];
 
               home-manager.users.${user} = import ./home-manager/home.nix {
@@ -92,7 +99,7 @@
           hostname = "konoha";
           user = "hinata";
           homeDirectory = "/home/hinata";
-          stateVersion = "24.11";
+          stateVersion = "26.05";
           system = "aarch64-linux";
           isServer = false;
         };
@@ -100,7 +107,7 @@
           hostname = "chakra";
           user = "hinata";
           homeDirectory = "/home/hinata";
-          stateVersion = "24.11";
+          stateVersion = "26.05";
           system = "x86_64-linux";
           isServer = true;
         };

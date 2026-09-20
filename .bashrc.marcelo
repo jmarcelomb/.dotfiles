@@ -14,6 +14,8 @@ export EDITOR=hx
 [ -f ~/.fzf.zsh ] && source ~/.fzf.bash
 source $HOME/.dotfiles/.plugins/fzf-tab-completion/bash/fzf-bash-completion.sh
 
+[ -f ~/.config/nvm/nvm.sh ] && source ~/.config/nvm/nvm.sh
+
 # Set up fzf key bindings and fuzzy completion
 if command -v fzf >/dev/null 2>&1; then
   eval "$(fzf --bash)"
