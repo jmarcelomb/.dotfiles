@@ -6,6 +6,7 @@ in
   imports = [
     (import ../../nix-darwin/system.nix { inherit self homeDirectory; })
     (import ./vm-clipboard-sync.nix { inherit user homeDirectory; })
+    (import ./dsh-web.nix { inherit pkgs user homeDirectory; })
     ../../nix-darwin/homebrew.nix
     ../../nix-darwin/aerospace.nix
     ../../nixos/modules/gpg.nix

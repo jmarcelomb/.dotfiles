@@ -29,6 +29,8 @@
     ~/.config/tmux/: .config/tmux/
     ~/.config/opencode/: .config/opencode/
     ~/.config/crush/: .config/crush/
+    ~/.dsh/cordis.patch.yml: .dsh/cordis.patch.yml
+    ~/.dsh/AGENTS.md: .dsh/AGENTS.md
     ~/.config/lazygit: .config/lazygit/
 
 # - create:

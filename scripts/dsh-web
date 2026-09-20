@@ -1,0 +1,29 @@
+#!/bin/sh
+# Always-on `dsh web` wrapper, run by the com.user.dsh-web LaunchAgent.
+# Public-repo safe: every secret and the NetBird IP live in ~/.dsh/mcp-env
+# (see .dsh/mcp-env.example in this repo).
+set -eu
+
+# Tokens + NETBIRD_IP (file may not exist yet; loopback-only mode then)
+if [ -f "$HOME/.dsh/mcp-env" ]; then
+    . "$HOME/.dsh/mcp-env"
+fi
+
+# dsh and memorix are npm globals. Two nvm stores exist on this machine:
+# nvm.fish (~/.local/share/nvm, interactive fish default) and bash nvm-sh
+# (~/.config/nvm). Use whichever newest install actually contains dsh.
+for base in "$HOME/.local/share/nvm" "$HOME/.config/nvm/versions/node"; do
+    NVM_NODE_DIR=$(ls -td "$base"/v* 2>/dev/null | head -n 1)
+    if [ -n "$NVM_NODE_DIR" ] && [ -x "$NVM_NODE_DIR/bin/dsh" ]; then
+        PATH="$NVM_NODE_DIR/bin:$PATH"
+        export PATH
+        break
+    fi
+done
+
+set -- dsh web --no-open --port 3080
+# Extend the browser-trust fence to the NetBird authority when configured.
+if [ -n "${NETBIRD_IP:-}" ]; then
+    set -- "$@" --trusted-host "${NETBIRD_IP}:3080"
+fi
+exec "$@"
