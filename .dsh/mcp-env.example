@@ -7,10 +7,12 @@
 CONTEXT7_API_KEY=
 GITHUB_TOKEN=
 
-# This machine's NetBird overlay IP. Used by:
-#   - ~/scripts/dsh-web  -> `--trusted-host ${NETBIRD_IP}:3080`
-#   - the dsh-web-netbird launchd agent -> socat bind address
+# This machine's NetBird overlay IP and DNS name. Used by:
+#   - ~/scripts/dsh-web  -> `--trusted-host` entries for BOTH
+#     <DSH_WEB_HOST>:3080 and <NETBIRD_IP>:3080 (the browser-trust fence)
+#   - the dsh-web-netbird launchd agent -> socat bind address (IP)
 NETBIRD_IP=100.106.113.49
+DSH_WEB_HOST=mac-mini.i.example.dev
 
 # Only needed when the Home Assistant MCP rows are uncommented:
 # HOMEASSISTANT_URL_1=
