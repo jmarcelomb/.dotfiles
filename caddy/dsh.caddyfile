@@ -1,0 +1,35 @@
+# dsh web behind Caddy — real login + TLS, on the caddy peer.
+# Copy this block into the Caddyfile on caddy.i.marceloborges.dev.
+#
+# Prereqs:
+#   1. DNS: dsh.i.marceloborges.dev -> the caddy host (A/AAAA or CNAME),
+#      publicly resolvable so Caddy can get a Let's Encrypt cert.
+#   2. Caddy can reach the mac mini over NetBird: 100.106.113.49:3080.
+#   3. On the mac mini, trust the public hostname in the dsh web service:
+#        ~/.dsh/mcp-env:  DSH_WEB_HOST=dsh.i.marceloborges.dev
+#        launchctl kickstart -k gui/501/com.user.dsh-web
+#      (the wrapper passes <DSH_WEB_HOST>:3080 as --trusted-host; the
+#       port-less authority covers the browser's :443 origin)
+#   4. Password hash: caddy hash-password --plaintext 'YOUR-PASSWORD'
+#
+# Notes:
+#   - header_up Host {host} is REQUIRED: dsh's browser-trust fence checks
+#     Host/Origin equality, so dsh must see the public hostname.
+#   - WebSocket upgrades (the GUI's event stream) pass through reverse_proxy
+#     automatically.
+#   - basic_auth is the login; swap for forward_auth (Authelia/Authentik)
+#     later without touching dsh.
+
+dsh.i.marceloborges.dev {
+	encode zstd gzip
+
+	basic_auth {
+		marcelo $2a$14$REPLACE_WITH_caddy_hash_password_OUTPUT
+	}
+
+	reverse_proxy 100.106.113.49:3080 {
+		header_up Host {host}
+		# SSE / WebSocket friendly: stream responses immediately.
+		flush_interval -1
+	}
+}
