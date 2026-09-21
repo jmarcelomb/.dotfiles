@@ -3,6 +3,28 @@
 These instructions apply to every DSH session on this machine (web and TUI),
 on top of any project-level AGENTS.md.
 
+## About me and this machine
+
+- I'm Marcelo (jmmb); timezone Europe/Lisbon.
+- This is **mac-mini**, my personal always-on machine: nix-darwin + homebrew
+  (managed from `~/.dotfiles`, a PUBLIC GitHub repo), fish shell.
+- Everything config-related should end up versioned in `~/.dotfiles` and
+  committed. Never commit secrets — tokens and the NetBird IP/hostname live
+  ONLY in `~/.dsh/mcp-env` (see `.dsh/mcp-env.example`), and never print
+  token values into output.
+- Node comes from nvm. `dsh`, `dsh-tui`, `memorix` are npm globals; the
+  web GUI runs as a launchd service (`com.user.dsh-web`, port 3080) behind a
+  NetBird-only socat proxy. Logs: `~/Library/Logs/dsh-web/`.
+
+## Working style
+
+- Ask before `git push`, force-anything, or deleting branches/commits.
+- Small focused commits; message style: `area: lowercase imperative summary`.
+- My shell is fish — give me fish-compatible commands; service scripts stay
+  POSIX sh.
+- Prefer concise answers with concrete commands I can paste.
+- TODO(fill): languages I prefer (English/Português), tone, other pet peeves.
+
 ## Memory
 
 Before the first memory read or write in a session, bind the session's
