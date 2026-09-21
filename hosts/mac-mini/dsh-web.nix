@@ -45,6 +45,19 @@
   };
 
   # LaunchAgents' log directory must exist before launchd opens the files.
+  # Nightly local git snapshot of DSH memory + sessions (see
+  # scripts/dsh-memory-backup). Local-only safety net; Time Machine or a
+  # remote added to ~/.local/share/dsh-backups gives off-site copies.
+  launchd.user.agents.dsh-memory-backup = {
+    serviceConfig = {
+      Label = "com.user.dsh-memory-backup";
+      ProgramArguments = [ "${homeDirectory}/scripts/dsh-memory-backup" ];
+      StartCalendarInterval = [{ Hour = 3; Minute = 30; }];
+      StandardOutPath = "${homeDirectory}/Library/Logs/dsh-web/backup.log";
+      StandardErrorPath = "${homeDirectory}/Library/Logs/dsh-web/backup.log";
+    };
+  };
+
   system.activationScripts.dshWebLogs.text = ''
     mkdir -p "${homeDirectory}/Library/Logs/dsh-web"
     chmod 700 "${homeDirectory}/Library/Logs/dsh-web"
