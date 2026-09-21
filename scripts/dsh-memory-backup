@@ -1,0 +1,33 @@
+#!/bin/sh
+# Nightly local snapshot of DSH memory + sessions into a private git repo
+# at ~/.local/share/dsh-backups (local-only; add a remote for off-site).
+# Run by the com.user.dsh-memory-backup LaunchAgent.
+set -eu
+
+REPO="$HOME/.local/share/dsh-backups"
+LOG="$(dirname "$REPO")/../../Library/Logs/dsh-web/backup.log"
+LOG="$HOME/Library/Logs/dsh-web/backup.log"
+
+mkdir -p "$REPO/memorix" "$REPO/dsh-sessions" "$(dirname "$LOG")"
+[ -d "$REPO/.git" ] || git -C "$REPO" init -q
+
+# Memorix: consistent sqlite snapshot (WAL-safe) + any config files.
+if [ -f "$HOME/.memorix/data/memorix.db" ]; then
+	sqlite3 "$HOME/.memorix/data/memorix.db" ".backup '$REPO/memorix/memorix.db'"
+fi
+for f in "$HOME/.memorix/config.toml" "$HOME/memorix.toml"; do
+	[ -f "$f" ] && cp "$f" "$REPO/memorix/"
+done
+
+# DSH: session transcripts (jsonl) + settings. Secrets (.credentials.yaml,
+# mcp-env) are deliberately NOT snapshotted.
+cp -R "$HOME/.dsh/sessions/." "$REPO/dsh-sessions/" 2>/dev/null || true
+cp "$HOME/.dsh/settings.yaml" "$REPO/settings.yaml" 2>/dev/null || true
+
+git -C "$REPO" add -A
+if git -C "$REPO" diff --cached --quiet; then
+	echo "$(date '+%F %T') no changes" >> "$LOG"
+else
+	git -C "$REPO" commit -qm "snapshot $(date '+%F-%H%M')"
+	echo "$(date '+%F %T') snapshot committed" >> "$LOG"
+fi
