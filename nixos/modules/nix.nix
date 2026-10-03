@@ -12,4 +12,6 @@
     options = "--delete-older-than 14d";
     persistent = true;
   };
+
+  nixpkgs.config.permittedInsecurePackages = [ "electron-39.8.10" ];
 }
