@@ -1,7 +1,6 @@
 [user]
   email = git@marceloborges.dev
   name = Marcelo Borges
-  signingKey = 12E8D2CBEAF149915CD0B367FB65789AEC89FC88
 
 [core]
   pager = delta
@@ -28,7 +27,12 @@
 
 [commit]
   verbose = true
-  gpgsign = true
+
+# Commit signing is host-scoped: only hosts holding the GPG secret key
+# (byakugan) sign. See config.signing - prevents "No secret key" failures
+# on every other machine that shares this config.
+[includeIf "hostname:byakugan"]
+  path = ~/.config/git/config.signing
 
 [delta]
   navigate = true  # use n and N to move between diff sections
