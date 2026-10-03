@@ -34,6 +34,10 @@
 [includeIf "hostname:byakugan"]
   path = ~/.config/git/config.signing
 
+# Work identity overrides - see config.work
+[includeIf "hostname:work-macbook"]
+  path = ~/.config/git/config.work
+
 [delta]
   navigate = true  # use n and N to move between diff sections
   dark = true      # or light = true, or omit for auto-detection
