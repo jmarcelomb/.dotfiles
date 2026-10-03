@@ -115,7 +115,7 @@
           hostname = "caddy";
           user = "hinata";
           homeDirectory = "/home/hinata";
-          stateVersion = "24.11";
+          stateVersion = "26.05";
           system = "x86_64-linux";
           isServer = true;
         };
