@@ -1,60 +1,989 @@
 {
-  "$schema": "https://opencode.ai/config.json",
-  "autoupdate": false,
-  "permission": {
-    "edit": "ask",
-    "bash": {
-      "*": "allow",
-      "git add*": "ask",
-      "git checkout*": "ask",
-      "git restore --staged*": "ask",
-      "git restore*": "ask",
-      "git reset*": "ask",
-      "git rm*": "ask",
-      "rm *": "ask"
-    }
-  },
-  "agent": {
-    "plan": {
-      "mode": "primary",
-      "tools": {
-        "write": false,
-        "edit": false,
-        "bash": true
-      }
-    },
+  "$schema": "https://opencode.ai/v2/config.json",
+  "update": "disable",
+  "default_agent": "build",
+  "agents": {
     "build": {
+      "description": "Primary build agent: implements changes, delegates testing and adaptive review.",
       "mode": "primary",
-      "tools": {
-        "write": true,
-        "edit": true,
-        "bash": true
-      },
-      "permission": {
-        "edit": "ask",
-        "bash": {
-          "git commit*": "deny",
-          "git push*": "deny"
+      "model": "zai-coding-plan/glm-5.3",
+      "permissions": [
+        {
+          "action": "edit",
+          "resource": "*",
+          "effect": "ask"
+        },
+        {
+          "action": "shell",
+          "resource": "*",
+          "effect": "allow"
+        },
+        // { "action": "shell", "resource": "git add*", "effect": "ask" },
+        // { "action": "shell", "resource": "git checkout*", "effect": "ask" },
+        // { "action": "shell", "resource": "git restore*", "effect": "ask" },
+        // { "action": "shell", "resource": "git reset*", "effect": "ask" },
+        // { "action": "shell", "resource": "git rm*", "effect": "ask" },
+        {
+          "action": "shell",
+          "resource": "rm *",
+          "effect": "ask"
+        },
+        {
+          "action": "shell",
+          "resource": "git commit*",
+          "effect": "deny"
+        },
+        {
+          "action": "shell",
+          "resource": "git push*",
+          "effect": "deny"
+        },
+        {
+          "action": "subagent",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "subagent",
+          "resource": "researcher",
+          "effect": "allow"
+        },
+        {
+          "action": "subagent",
+          "resource": "review-correctness",
+          "effect": "allow"
+        },
+        {
+          "action": "subagent",
+          "resource": "review-integration",
+          "effect": "allow"
+        },
+        {
+          "action": "subagent",
+          "resource": "review-performance",
+          "effect": "allow"
+        },
+        {
+          "action": "subagent",
+          "resource": "review-challenger",
+          "effect": "allow"
+        },
+        {
+          "action": "subagent",
+          "resource": "tester",
+          "effect": "allow"
+        },
+        {
+          "action": "subagent",
+          "resource": "debugger",
+          "effect": "allow"
+        },
+        {
+          "action": "subagent",
+          "resource": "docs",
+          "effect": "allow"
+        },
+        {
+          "action": "subagent",
+          "resource": "hermes",
+          "effect": "allow"
         }
-      }
+      ]
     },
     "autoaccept": {
+      "description": "Primary build agent with edits auto-accepted; same delegation and review workflow as build.",
       "mode": "primary",
-      "tools": {
-        "write": true,
-        "edit": true,
-        "bash": true
-      },
-      "permission": {
-        "edit": "allow",
-        "bash": {
-          "git commit*": "deny",
-          "git push*": "deny"
+      "model": "zai-coding-plan/glm-5.3",
+      "permissions": [
+        {
+          "action": "edit",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "shell",
+          "resource": "*",
+          "effect": "allow"
+        },
+        // {
+        //   "action": "shell",
+        //   "resource": "git add*",
+        //   "effect": "ask"
+        // },
+        // { "action": "shell", "resource": "git checkout*", "effect": "ask" },
+        // { "action": "shell", "resource": "git restore*", "effect": "ask" },
+        // { "action": "shell", "resource": "git reset*", "effect": "ask" },
+        // { "action": "shell", "resource": "git rm*", "effect": "ask" },
+        {
+          "action": "shell",
+          "resource": "rm *",
+          "effect": "ask"
+        },
+        // { "action": "shell", "resource": "git commit*", "effect": "deny" },
+        // { "action": "shell", "resource": "git push*", "effect": "deny" },
+        {
+          "action": "subagent",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "subagent",
+          "resource": "researcher",
+          "effect": "allow"
+        },
+        {
+          "action": "subagent",
+          "resource": "review-correctness",
+          "effect": "allow"
+        },
+        {
+          "action": "subagent",
+          "resource": "review-integration",
+          "effect": "allow"
+        },
+        {
+          "action": "subagent",
+          "resource": "review-performance",
+          "effect": "allow"
+        },
+        {
+          "action": "subagent",
+          "resource": "review-challenger",
+          "effect": "allow"
+        },
+        {
+          "action": "subagent",
+          "resource": "tester",
+          "effect": "allow"
+        },
+        {
+          "action": "subagent",
+          "resource": "debugger",
+          "effect": "allow"
+        },
+        {
+          "action": "subagent",
+          "resource": "docs",
+          "effect": "allow"
+        },
+        {
+          "action": "subagent",
+          "resource": "hermes",
+          "effect": "allow"
         }
-      }
+      ]
+    },
+    "plan": {
+      "description": "Primary planning agent: researches, writes plans, and assesses proposals. Does not implement.",
+      "mode": "primary",
+      "model": "zai-coding-plan/glm-5.3",
+      "permissions": [
+        {
+          "action": "edit",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "shell",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "shell",
+          "resource": "git status*",
+          "effect": "allow"
+        },
+        {
+          "action": "shell",
+          "resource": "git diff*",
+          "effect": "allow"
+        },
+        {
+          "action": "shell",
+          "resource": "git show*",
+          "effect": "allow"
+        },
+        {
+          "action": "shell",
+          "resource": "git log*",
+          "effect": "allow"
+        },
+        {
+          "action": "shell",
+          "resource": "ls*",
+          "effect": "allow"
+        },
+        {
+          "action": "shell",
+          "resource": "cat *",
+          "effect": "allow"
+        },
+        {
+          "action": "shell",
+          "resource": "rg *",
+          "effect": "allow"
+        },
+        {
+          "action": "shell",
+          "resource": "fd *",
+          "effect": "allow"
+        },
+        {
+          "action": "shell",
+          "resource": "nix flake show*",
+          "effect": "allow"
+        },
+        {
+          "action": "shell",
+          "resource": "nix flake check*",
+          "effect": "allow"
+        },
+        {
+          "action": "shell",
+          "resource": "nix eval*",
+          "effect": "allow"
+        },
+        {
+          "action": "shell",
+          "resource": "nix build*",
+          "effect": "allow"
+        },
+        {
+          "action": "read",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "glob",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "grep",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "webfetch",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "websearch",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "subagent",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "subagent",
+          "resource": "researcher",
+          "effect": "allow"
+        },
+        {
+          "action": "subagent",
+          "resource": "review-challenger",
+          "effect": "allow"
+        },
+        {
+          "action": "subagent",
+          "resource": "hermes",
+          "effect": "allow"
+        }
+      ]
+    },
+    "review-correctness": {
+      "description": "Reviews changes for incorrect behavior, edge cases, error handling, and security defects.",
+      "mode": "subagent",
+      "model": "zai-coding-plan/glm-5.3",
+      "system": "Review the changed code for correctness. Focus on incorrect behavior, broken edge cases, incomplete error handling, regressions, and security defects. Inspect the changed code and its callers before reporting. Each finding needs the failure condition, file and line references, and supporting evidence. Separate defects from optional improvements. Say 'No findings' when nothing is supported. Do not modify any files. Do not spawn subagents.",
+      "permissions": [
+        {
+          "action": "edit",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "shell",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "shell",
+          "resource": "git status*",
+          "effect": "allow"
+        },
+        {
+          "action": "shell",
+          "resource": "git diff*",
+          "effect": "allow"
+        },
+        {
+          "action": "shell",
+          "resource": "git show*",
+          "effect": "allow"
+        },
+        {
+          "action": "shell",
+          "resource": "git log*",
+          "effect": "allow"
+        },
+        {
+          "action": "read",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "glob",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "grep",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "webfetch",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "websearch",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "subagent",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "question",
+          "resource": "*",
+          "effect": "deny"
+        }
+      ]
+    },
+    "review-integration": {
+      "description": "Reviews changes for call-site compatibility, configuration consistency, and missing test coverage.",
+      "mode": "subagent",
+      "model": "zai-coding-plan/glm-5.3-flash",
+      "system": "Review the changed code for integration issues. Focus on call sites, API compatibility, configuration consistency, naming and structure, and missing test coverage for the new behavior. Inspect the changed code and the code that uses it before reporting. Each finding needs file and line references and evidence. Say 'No findings' when nothing is supported. Do not modify any files. Do not spawn subagents.",
+      "permissions": [
+        {
+          "action": "edit",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "shell",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "shell",
+          "resource": "git status*",
+          "effect": "allow"
+        },
+        {
+          "action": "shell",
+          "resource": "git diff*",
+          "effect": "allow"
+        },
+        {
+          "action": "shell",
+          "resource": "git show*",
+          "effect": "allow"
+        },
+        {
+          "action": "shell",
+          "resource": "git log*",
+          "effect": "allow"
+        },
+        {
+          "action": "read",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "glob",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "grep",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "webfetch",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "websearch",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "subagent",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "question",
+          "resource": "*",
+          "effect": "deny"
+        }
+      ]
+    },
+    "review-performance": {
+      "description": "Reviews changes for database query, caching, concurrency, and complexity issues. Runs when changes touch queries, caching, or hot paths.",
+      "mode": "subagent",
+      "model": "zai-coding-plan/glm-5.3-flash",
+      "system": "Review the changed code for performance issues. Focus on: database queries (N+1 queries, missing indexes, unnecessary joins, SELECT * when specific columns suffice, queries that could batch but run in loops, missing pagination on large result sets); caching (frequently-read, rarely-changed data that is not cached, invalidation correctness, key naming and TTL appropriateness, missing cache-aside patterns); algorithmic complexity (nested loops over large datasets, redundant computation, data structure choices that hurt lookup); I/O and concurrency (sequential I/O that could be parallel, blocking calls in async contexts, batch vs individual calls). For each finding, explain the current approach, why it is suboptimal, and the better approach, with file and line references. Say 'No findings' when nothing is supported. Do not modify any files. Do not spawn subagents.",
+      "permissions": [
+        {
+          "action": "edit",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "shell",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "shell",
+          "resource": "git status*",
+          "effect": "allow"
+        },
+        {
+          "action": "shell",
+          "resource": "git diff*",
+          "effect": "allow"
+        },
+        {
+          "action": "shell",
+          "resource": "git show*",
+          "effect": "allow"
+        },
+        {
+          "action": "shell",
+          "resource": "git log*",
+          "effect": "allow"
+        },
+        {
+          "action": "read",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "glob",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "grep",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "webfetch",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "websearch",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "subagent",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "question",
+          "resource": "*",
+          "effect": "deny"
+        }
+      ]
+    },
+    "review-challenger": {
+      "description": "Independent second opinion from a different model family (local Qwen via Ollama). Runs for risky changes and disputed findings.",
+      "mode": "subagent",
+      "model": "ollama-local/qwen2.5-coder:14b",
+      "system": "You are an independent reviewer using a different model than the one that wrote the code. Assess the changes for correctness, security, regressions, and design risks without assuming the original approach is right. Challenge assumptions, look for what other reviewers may have missed, and verify disputed findings against the actual code. Each finding needs the failure condition, file and line references, and supporting evidence. Say 'No findings' when nothing is supported. Do not modify any files. Do not spawn subagents.",
+      "permissions": [
+        {
+          "action": "edit",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "shell",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "shell",
+          "resource": "git status*",
+          "effect": "allow"
+        },
+        {
+          "action": "shell",
+          "resource": "git diff*",
+          "effect": "allow"
+        },
+        {
+          "action": "shell",
+          "resource": "git show*",
+          "effect": "allow"
+        },
+        {
+          "action": "shell",
+          "resource": "git log*",
+          "effect": "allow"
+        },
+        {
+          "action": "read",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "glob",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "grep",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "webfetch",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "websearch",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "subagent",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "question",
+          "resource": "*",
+          "effect": "deny"
+        }
+      ]
+    },
+    "review-deep": {
+      "description": "Deep review on GLM 5.3 with high reasoning effort. Manual invocation only; not in the default review rotation.",
+      "mode": "subagent",
+      "hidden": true,
+      "model": "zai-coding-plan/glm-5.3",
+      "reasoning_effort": "high",
+      "system": "You are a deep reviewer on the strongest model available. Go beyond surface inspection: trace data flow across modules, check invariants the other reviewers may not cover, and evaluate design-level risks in the changed code. Each finding needs the failure condition, file and line references, and supporting evidence. Separate defects from optional improvements. Say 'No findings' when nothing is supported. Do not modify any files. Do not spawn subagents.",
+      "permissions": [
+        {
+          "action": "edit",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "shell",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "shell",
+          "resource": "git status*",
+          "effect": "allow"
+        },
+        {
+          "action": "shell",
+          "resource": "git diff*",
+          "effect": "allow"
+        },
+        {
+          "action": "shell",
+          "resource": "git show*",
+          "effect": "allow"
+        },
+        {
+          "action": "shell",
+          "resource": "git log*",
+          "effect": "allow"
+        },
+        {
+          "action": "read",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "glob",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "grep",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "webfetch",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "websearch",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "subagent",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "question",
+          "resource": "*",
+          "effect": "deny"
+        }
+      ]
+    },
+    "researcher": {
+      "description": "Investigates codebase architecture, dependencies, and external docs. Runs when a task touches an unfamiliar subsystem or spans components.",
+      "mode": "subagent",
+      "model": "zai-coding-plan/glm-5.3-flash",
+      "system": "Investigate the codebase architecture, relevant external documentation, and dependencies. Focus on existing patterns and conventions, file organization, error handling approaches, test coverage gaps, and potential breaking changes. Return a structured summary with file paths, line references, and a recommended implementation approach. Do not modify any files. Do not spawn subagents.",
+      "permissions": [
+        {
+          "action": "edit",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "shell",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "read",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "glob",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "grep",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "webfetch",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "websearch",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "subagent",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "question",
+          "resource": "*",
+          "effect": "deny"
+        }
+      ]
+    },
+    "tester": {
+      "description": "Writes and runs tests for new and changed behavior, following the project's test conventions.",
+      "mode": "subagent",
+      "model": "zai-coding-plan/glm-5.3-flash",
+      "system": "Write and run tests for the changed code. Use the project's existing test framework, fixtures, factories, and conventions; do not introduce a new framework. Test observable behavior: happy paths, edge cases, error handling, and boundary conditions. Keep each test focused on one behavior; use multiple assertions when they verify that behavior. Report failures with root-cause analysis and suggested fixes. Do not modify files outside tests and test fixtures. Do not spawn subagents.",
+      "permissions": [
+        {
+          "action": "edit",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "shell",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "shell",
+          "resource": "git commit*",
+          "effect": "deny"
+        },
+        {
+          "action": "shell",
+          "resource": "git push*",
+          "effect": "deny"
+        },
+        {
+          "action": "read",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "glob",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "grep",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "webfetch",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "websearch",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "subagent",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "question",
+          "resource": "*",
+          "effect": "deny"
+        }
+      ]
+    },
+    "docs": {
+      "description": "Writes and updates documentation to reflect current code behavior.",
+      "mode": "subagent",
+      "model": "zai-coding-plan/glm-5.3-flash",
+      "system": "Write or update documentation to reflect current code behavior. Keep prose concise and example-driven. Follow the project's existing doc style. Avoid AI-generated patterns: no em dashes, no rule-of-three lists, no vague attributions. Only modify markdown and documentation files. Do not spawn subagents.",
+      "permissions": [
+        {
+          "action": "edit",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "shell",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "read",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "glob",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "grep",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "webfetch",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "websearch",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "subagent",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "question",
+          "resource": "*",
+          "effect": "deny"
+        }
+      ]
+    },
+    "debugger": {
+      "description": "Reproduces issues, identifies root causes, and proposes fixes.",
+      "mode": "subagent",
+      "model": "zai-coding-plan/glm-5.3",
+      "system": "Reproduce the issue first. Then identify the root cause by tracing the execution path, checking inputs and outputs at each step, and isolating the failing component. Propose a fix with a clear explanation of why it resolves the issue. Do not apply edits without confirmation. Do not spawn subagents.",
+      "permissions": [
+        {
+          "action": "read",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "glob",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "grep",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "shell",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "shell",
+          "resource": "git commit*",
+          "effect": "deny"
+        },
+        {
+          "action": "shell",
+          "resource": "git push*",
+          "effect": "deny"
+        },
+        {
+          "action": "edit",
+          "resource": "*",
+          "effect": "ask"
+        },
+        {
+          "action": "webfetch",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "websearch",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "subagent",
+          "resource": "*",
+          "effect": "deny"
+        }
+      ]
+    },
+    "hermes": {
+      "description": "Delegate a task to Hermes Agent via `hermes chat -q` (one-shot). Use when the task needs Hermes tools (HA control, browser, email, Apple apps) or its cross-session memory.",
+      "mode": "subagent",
+      "model": "zai-coding-plan/glm-5.3-flash",
+      "system": "You delegate tasks to the Hermes agent running on this host (plain CLI, no container).\n\nHermes has access to: Home Assistant tools, browser automation, email (himalaya), Apple Notes/Reminders/iMessage/FindMy, terminal, web search, skills, and cross-session memory shared with this machine's Hermes conversations.\n\n## When to delegate to Hermes\n\n- Controlling or querying Home Assistant (lights, covers, sensors)\n- Reading or sending email, iMessages, Apple Notes or Reminders\n- Anything requiring a real browser session\n- Answering questions that need Hermes's cross-session memory\n\nDo NOT delegate when you can handle it yourself:\n- Reading, writing, or editing local files\n- Running shell commands, git, or code\n- Searching the web\n- Simple lookups or questions\n\n## How to call Hermes\n\n```\nhermes chat -q \"<task>\"\n```\n\nAdd --workdir <dir> when the task should run in a specific directory. Use a generous timeout (600s) for long tasks.\n\n## Rules\n\n1. Pass the user's task verbatim or lightly rephrased for clarity.\n2. Return Hermes's response directly. Do not summarize, interpret, or filter unless asked.\n3. If the task involves code or files, mention the file paths so Hermes can find them.\n4. One-shot only: each call is independent. Do not try to maintain a conversation.\n5. If the command fails, report the raw error.",
+      "permissions": [
+        {
+          "action": "edit",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "shell",
+          "resource": "hermes chat -q *",
+          "effect": "allow"
+        },
+        {
+          "action": "shell",
+          "resource": "hermes *",
+          "effect": "ask"
+        },
+        {
+          "action": "shell",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "read",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "glob",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "grep",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "subagent",
+          "resource": "*",
+          "effect": "deny"
+        }
+      ]
+    },
+    "hindsight-survey": {
+      "description": "One-time read-only structural survey that seeds this repository's Hindsight memory.",
+      "mode": "primary",
+      "hidden": true,
+      "permissions": [
+        {
+          "action": "edit",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "shell",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "subagent",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "read",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "glob",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "grep",
+          "resource": "*",
+          "effect": "allow"
+        }
+      ]
     }
   },
   "lsp": {
+    "nixd": {
+      "command": [
+        "nixd"
+      ],
+      "extensions": [
+        ".nix"
+      ]
+    },
     "ty-python": {
       "command": [
         "ty",
@@ -66,62 +995,73 @@
       ]
     }
   },
-  "plugin": [],
   "mcp": {
-    "context7": {
-      "type": "remote",
-      "url": "https://mcp.context7.com/mcp",
-      "enabled": true,
-      "headers": {
-        "CONTEXT7_API_KEY": "{env:CONTEXT7_API_KEY}"
-      }
-    },
-    "github": {
-      "type": "remote",
-      "url": "https://api.githubcopilot.com/mcp/",
-      "headers": {
-        "Authorization": "Bearer {env:GITHUB_TOKEN}"
-      }
-    },
-    "homeassistant": {
-      "type": "remote",
-      "enabled": false,
-      "url": "http://192.168.0.115:8123/api/mcp",
-      "headers": {
-        "Authorization": "Bearer {env:HOMEASSISTANT_TOKEN_1}"
-      }
-    },
-    "ha-mcp": {
-      "type": "local",
-      "enabled": false,
-      "command": [
-        "uvx",
-        "--python",
-        "3.13",
-        "--refresh",
-        "ha-mcp@latest"
-      ],
-      "environment": {
-        "HOMEASSISTANT_URL": "{env:HOMEASSISTANT_URL_1}",
-        "HOMEASSISTANT_TOKEN": "{env:HOMEASSISTANT_TOKEN_1}"
-      }
-    },
-    "ha-mcp-celia": {
-      "type": "local",
-      "enabled": false,
-      "command": [
-        "uvx",
-        "--python",
-        "3.13",
-        "--refresh",
-        "ha-mcp@latest"
-      ],
-      "environment": {
-        "HOMEASSISTANT_URL": "{env:HOMEASSISTANT_URL_2}",
-        "HOMEASSISTANT_TOKEN": "{env:HOMEASSISTANT_TOKEN_2}"
+    "servers": {
+      "context7": {
+        "type": "remote",
+        "url": "https://mcp.context7.com/mcp",
+        "headers": {
+          "CONTEXT7_API_KEY": "{env:CONTEXT7_API_KEY}"
+        }
+      },
+      "github": {
+        "type": "remote",
+        "url": "https://api.githubcopilot.com/mcp/",
+        "headers": {
+          "Authorization": "Bearer {env:GITHUB_TOKEN}"
+        }
+      },
+      "serena": {
+        "type": "local",
+        "command": [
+          "uvx",
+          "--refresh",
+          "--from",
+          "serena-agent",
+          "serena",
+          "start-mcp-server",
+          "--context",
+          "desktop-app",
+          "--mode",
+          "editing"
+        ]
+      },
+      "dbhub": {
+        "disabled": true,
+        "type": "local",
+        "command": [
+          "npx",
+          "-y",
+          "@bytebase/dbhub@latest",
+          "--config",
+          "/Users/jmmb/.config/opencode/dbhub.toml"
+        ]
+      },
+      "homeassistant": {
+        "disabled": true,
+        "type": "remote",
+        "url": "http://192.168.0.115:8123/api/mcp",
+        "headers": {
+          "Authorization": "Bearer {env:HOMEASSISTANT_TOKEN_1}"
+        }
+      },
+      "truenas": {
+        "type": "local",
+        "command": [
+          "truenas-mcp",
+          "--insecure",
+          "--truenas-url",
+          "192.168.0.235"
+        ],
+        "environment": {
+          "TRUENAS_API_KEY": "{env:TRUENAS_API_KEY}"
+        }
       }
     }
   },
+  "plugin": [
+    "/Users/jmmb/.hindsight/coding-agents"
+  ],
   "providers": {
     "ollama-local": {
       "name": "Local Ollama",
@@ -136,8 +1076,12 @@
           "name": "Qwen 3.5 9B",
           "capabilities": {
             "tools": true,
-            "input": ["text"],
-            "output": ["text"]
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
           },
           "limit": {
             "context": 131072,
@@ -149,8 +1093,12 @@
           "name": "Qwen 2.5 Coder 7B",
           "capabilities": {
             "tools": true,
-            "input": ["text"],
-            "output": ["text"]
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
           },
           "limit": {
             "context": 32768,
@@ -162,8 +1110,12 @@
           "name": "Qwen 2.5 Coder 14B",
           "capabilities": {
             "tools": true,
-            "input": ["text"],
-            "output": ["text"]
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
           },
           "limit": {
             "context": 32768,

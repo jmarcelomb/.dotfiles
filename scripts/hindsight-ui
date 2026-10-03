@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Hindsight UI control: on-demand start/stop of the web UI (no launchd persistence).
+# Usage: hindsight-ui start | stop | status | open
+set -euo pipefail
+
+H="/Users/jmmb/.hermes/installs/585a06148ece382c/environments/c0886c47e7894e8eb4df62976c7e47a9/venv/bin/hindsight-embed"
+PROFILE="hermes"
+PORT=19177
+
+case "${1:-}" in
+  start)
+    "$H" --profile "$PROFILE" ui start
+    ;;
+  stop)
+    "$H" --profile "$PROFILE" ui stop
+    ;;
+  status)
+    "$H" --profile "$PROFILE" ui status
+    ;;
+  open)
+    open "http://localhost:$PORT"
+    ;;
+  *)
+    echo "Usage: hindsight-ui {start|stop|status|open}"
+    exit 1
+    ;;
+esac
