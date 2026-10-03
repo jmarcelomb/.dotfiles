@@ -6,7 +6,10 @@
   # compose `depends_on` ordering on daemon/VM boot.
   systemd.services.netbird-compose = {
     description = "netbird docker compose stack (/home/hinata/server/netbird)";
-    after = [ "docker.service" "network-online.target" ];
+    after = [
+      "docker.service"
+      "network-online.target"
+    ];
     requires = [ "docker.service" ];
     wants = [ "network-online.target" ];
     wantedBy = [ "multi-user.target" ];

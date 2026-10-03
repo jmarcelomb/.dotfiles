@@ -1,4 +1,10 @@
-{ pkgs, lib, config, user, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  user,
+  ...
+}:
 
 with lib;
 
@@ -14,49 +20,53 @@ let
   };
 
   # Wrapper function to add NVIDIA env vars to a package
-  wrapWithNvidia = pkg: pkgs.symlinkJoin {
-    name = "${pkg.name}-nvidia";
-    paths = [ pkg ];
-    buildInputs = [ pkgs.makeWrapper ];
-    postBuild = ''
-      # Wrap all executables in bin/
-      for file in ${pkg}/bin/*; do
-        if [ -f "$file" ] && [ -x "$file" ]; then
-          local exe="$out/bin/$(basename "$file")"
-          echo "Wrapping $exe with NVIDIA env vars"
-          rm -f "$exe"
-          makeWrapper "$file" "$exe" \
-            --set __NV_PRIME_RENDER_OFFLOAD 1 \
-            --set __NV_PRIME_RENDER_OFFLOAD_PROVIDER NVIDIA-G0 \
-            --set __GLX_VENDOR_LIBRARY_NAME nvidia \
-            --set __VK_LAYER_NV_optimus NVIDIA_only
-        fi
-      done
-    '';
-  };
+  wrapWithNvidia =
+    pkg:
+    pkgs.symlinkJoin {
+      name = "${pkg.name}-nvidia";
+      paths = [ pkg ];
+      buildInputs = [ pkgs.makeWrapper ];
+      postBuild = ''
+        # Wrap all executables in bin/
+        for file in ${pkg}/bin/*; do
+          if [ -f "$file" ] && [ -x "$file" ]; then
+            local exe="$out/bin/$(basename "$file")"
+            echo "Wrapping $exe with NVIDIA env vars"
+            rm -f "$exe"
+            makeWrapper "$file" "$exe" \
+              --set __NV_PRIME_RENDER_OFFLOAD 1 \
+              --set __NV_PRIME_RENDER_OFFLOAD_PROVIDER NVIDIA-G0 \
+              --set __GLX_VENDOR_LIBRARY_NAME nvidia \
+              --set __VK_LAYER_NV_optimus NVIDIA_only
+          fi
+        done
+      '';
+    };
 
   # Wrapper function for Qt applications that need XWayland
-  wrapQtWithNvidia = pkg: pkgs.symlinkJoin {
-    name = "${pkg.name}-nvidia-qt";
-    paths = [ pkg ];
-    buildInputs = [ pkgs.makeWrapper ];
-    postBuild = ''
-      # Wrap all executables in bin/
-      for file in ${pkg}/bin/*; do
-        if [ -f "$file" ] && [ -x "$file" ]; then
-          local exe="$out/bin/$(basename "$file")"
-          echo "Wrapping $exe with NVIDIA env vars + QT_QPA_PLATFORM=xcb"
-          rm -f "$exe"
-          makeWrapper "$file" "$exe" \
-            --set __NV_PRIME_RENDER_OFFLOAD 1 \
-            --set __NV_PRIME_RENDER_OFFLOAD_PROVIDER NVIDIA-G0 \
-            --set __GLX_VENDOR_LIBRARY_NAME nvidia \
-            --set __VK_LAYER_NV_optimus NVIDIA_only \
-            --set QT_QPA_PLATFORM xcb
-        fi
-      done
-    '';
-  };
+  wrapQtWithNvidia =
+    pkg:
+    pkgs.symlinkJoin {
+      name = "${pkg.name}-nvidia-qt";
+      paths = [ pkg ];
+      buildInputs = [ pkgs.makeWrapper ];
+      postBuild = ''
+        # Wrap all executables in bin/
+        for file in ${pkg}/bin/*; do
+          if [ -f "$file" ] && [ -x "$file" ]; then
+            local exe="$out/bin/$(basename "$file")"
+            echo "Wrapping $exe with NVIDIA env vars + QT_QPA_PLATFORM=xcb"
+            rm -f "$exe"
+            makeWrapper "$file" "$exe" \
+              --set __NV_PRIME_RENDER_OFFLOAD 1 \
+              --set __NV_PRIME_RENDER_OFFLOAD_PROVIDER NVIDIA-G0 \
+              --set __GLX_VENDOR_LIBRARY_NAME nvidia \
+              --set __VK_LAYER_NV_optimus NVIDIA_only \
+              --set QT_QPA_PLATFORM xcb
+          fi
+        done
+      '';
+    };
 
   # Default GPU-intensive applications
   # These are wrapped automatically unless explicitly excluded
@@ -117,7 +127,7 @@ in
 
     applications = mkOption {
       type = types.listOf types.package;
-      default = [];
+      default = [ ];
       example = literalExpression ''
         with pkgs; [
           inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
@@ -146,7 +156,7 @@ in
 
     qtApplications = mkOption {
       type = types.listOf types.package;
-      default = [];
+      default = [ ];
       example = literalExpression ''
         with pkgs; [
           freecad
@@ -216,84 +226,85 @@ in
 
     # Add wrapped applications and user-facing utilities to system packages
     environment.systemPackages =
-      (map wrapWithNvidia appsToWrap) ++
-      (map wrapQtWithNvidia cfg.qtApplications) ++ [
-      # nvidia-offload command is already provided by NixOS NVIDIA module
-      # Add a script to check which GPU is being used
-      (pkgs.writeShellScriptBin "gpu-check" ''
-        #!/usr/bin/env bash
-        # Check which GPU is currently rendering
+      (map wrapWithNvidia appsToWrap)
+      ++ (map wrapQtWithNvidia cfg.qtApplications)
+      ++ [
+        # nvidia-offload command is already provided by NixOS NVIDIA module
+        # Add a script to check which GPU is being used
+        (pkgs.writeShellScriptBin "gpu-check" ''
+          #!/usr/bin/env bash
+          # Check which GPU is currently rendering
 
-        echo "=== GPU Information ==="
-        echo
-
-        if command -v glxinfo &> /dev/null; then
-          echo "OpenGL Renderer:"
-          glxinfo | grep "OpenGL renderer" | sed 's/^/  /'
+          echo "=== GPU Information ==="
           echo
-          echo "OpenGL Vendor:"
-          glxinfo | grep "OpenGL vendor" | sed 's/^/  /'
-          echo
-        fi
 
-        if command -v nvidia-smi &> /dev/null; then
-          echo "=== NVIDIA GPU Status ==="
-          nvidia-smi --query-gpu=name,utilization.gpu,memory.used,memory.total --format=csv,noheader,nounits | \
-            awk -F', ' '{printf "  GPU: %s\n  Utilization: %s%%\n  Memory: %s/%s MB\n", $1, $2, $3, $4}'
-          echo
-          echo "=== Running Processes on NVIDIA GPU ==="
-          nvidia-smi --query-compute-apps=pid,process_name,used_memory --format=csv,noheader | \
-            sed 's/^/  /' || echo "  No processes running on NVIDIA GPU"
-        fi
-
-        echo
-        echo "=== Environment Variables ==="
-        env | grep -E "(NV_PRIME|GLX_VENDOR|VK_LAYER)" | sed 's/^/  /' || echo "  No NVIDIA environment variables set"
-      '')
-
-      # Script to toggle GPU mode (for advanced users)
-      (pkgs.writeShellScriptBin "gpu-mode" ''
-        #!/usr/bin/env bash
-        # Toggle between Intel and NVIDIA GPU modes
-
-        case "$1" in
-          nvidia)
-            echo "Setting NVIDIA GPU mode (all apps will use NVIDIA)"
-            export __NV_PRIME_RENDER_OFFLOAD=1
-            export __NV_PRIME_RENDER_OFFLOAD_PROVIDER=NVIDIA-G0
-            export __GLX_VENDOR_LIBRARY_NAME=nvidia
-            export __VK_LAYER_NV_optimus=NVIDIA_only
-            echo "Environment variables set. Launch applications from this shell to use NVIDIA."
-            ;;
-          intel)
-            echo "Setting Intel GPU mode (integrated graphics)"
-            unset __NV_PRIME_RENDER_OFFLOAD
-            unset __NV_PRIME_RENDER_OFFLOAD_PROVIDER
-            unset __GLX_VENDOR_LIBRARY_NAME
-            unset __VK_LAYER_NV_optimus
-            echo "NVIDIA environment variables cleared. Apps will use Intel GPU."
-            ;;
-          status)
-            if [ -n "$__NV_PRIME_RENDER_OFFLOAD" ]; then
-              echo "Current mode: NVIDIA GPU"
-            else
-              echo "Current mode: Intel GPU (integrated)"
-            fi
-            ;;
-          *)
-            echo "Usage: gpu-mode {nvidia|intel|status}"
+          if command -v glxinfo &> /dev/null; then
+            echo "OpenGL Renderer:"
+            glxinfo | grep "OpenGL renderer" | sed 's/^/  /'
             echo
-            echo "  nvidia  - Set environment to use NVIDIA GPU"
-            echo "  intel   - Set environment to use Intel GPU"
-            echo "  status  - Show current GPU mode"
+            echo "OpenGL Vendor:"
+            glxinfo | grep "OpenGL vendor" | sed 's/^/  /'
             echo
-            echo "Note: This affects applications launched from the current shell."
-            echo "System-wide configured apps will still use their configured GPU."
-            exit 1
-            ;;
-        esac
-      '')
-    ];
+          fi
+
+          if command -v nvidia-smi &> /dev/null; then
+            echo "=== NVIDIA GPU Status ==="
+            nvidia-smi --query-gpu=name,utilization.gpu,memory.used,memory.total --format=csv,noheader,nounits | \
+              awk -F', ' '{printf "  GPU: %s\n  Utilization: %s%%\n  Memory: %s/%s MB\n", $1, $2, $3, $4}'
+            echo
+            echo "=== Running Processes on NVIDIA GPU ==="
+            nvidia-smi --query-compute-apps=pid,process_name,used_memory --format=csv,noheader | \
+              sed 's/^/  /' || echo "  No processes running on NVIDIA GPU"
+          fi
+
+          echo
+          echo "=== Environment Variables ==="
+          env | grep -E "(NV_PRIME|GLX_VENDOR|VK_LAYER)" | sed 's/^/  /' || echo "  No NVIDIA environment variables set"
+        '')
+
+        # Script to toggle GPU mode (for advanced users)
+        (pkgs.writeShellScriptBin "gpu-mode" ''
+          #!/usr/bin/env bash
+          # Toggle between Intel and NVIDIA GPU modes
+
+          case "$1" in
+            nvidia)
+              echo "Setting NVIDIA GPU mode (all apps will use NVIDIA)"
+              export __NV_PRIME_RENDER_OFFLOAD=1
+              export __NV_PRIME_RENDER_OFFLOAD_PROVIDER=NVIDIA-G0
+              export __GLX_VENDOR_LIBRARY_NAME=nvidia
+              export __VK_LAYER_NV_optimus=NVIDIA_only
+              echo "Environment variables set. Launch applications from this shell to use NVIDIA."
+              ;;
+            intel)
+              echo "Setting Intel GPU mode (integrated graphics)"
+              unset __NV_PRIME_RENDER_OFFLOAD
+              unset __NV_PRIME_RENDER_OFFLOAD_PROVIDER
+              unset __GLX_VENDOR_LIBRARY_NAME
+              unset __VK_LAYER_NV_optimus
+              echo "NVIDIA environment variables cleared. Apps will use Intel GPU."
+              ;;
+            status)
+              if [ -n "$__NV_PRIME_RENDER_OFFLOAD" ]; then
+                echo "Current mode: NVIDIA GPU"
+              else
+                echo "Current mode: Intel GPU (integrated)"
+              fi
+              ;;
+            *)
+              echo "Usage: gpu-mode {nvidia|intel|status}"
+              echo
+              echo "  nvidia  - Set environment to use NVIDIA GPU"
+              echo "  intel   - Set environment to use Intel GPU"
+              echo "  status  - Show current GPU mode"
+              echo
+              echo "Note: This affects applications launched from the current shell."
+              echo "System-wide configured apps will still use their configured GPU."
+              exit 1
+              ;;
+          esac
+        '')
+      ];
 
     # Inform user about the configuration
     environment.etc."nvidia-prime-info.txt".text = ''

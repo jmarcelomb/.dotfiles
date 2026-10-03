@@ -1,4 +1,9 @@
-{ pkgs, user, homeDirectory, ... }:
+{
+  pkgs,
+  user,
+  homeDirectory,
+  ...
+}:
 {
   # Always-on DSH web GUI on this machine, plus a NetBird-only L4 proxy so
   # other devices in the NetBird network can reach it. dsh itself stays
@@ -52,7 +57,12 @@
     serviceConfig = {
       Label = "com.user.dsh-memory-backup";
       ProgramArguments = [ "${homeDirectory}/scripts/dsh-memory-backup" ];
-      StartCalendarInterval = [{ Hour = 3; Minute = 30; }];
+      StartCalendarInterval = [
+        {
+          Hour = 3;
+          Minute = 30;
+        }
+      ];
       StandardOutPath = "${homeDirectory}/Library/Logs/dsh-web/backup.log";
       StandardErrorPath = "${homeDirectory}/Library/Logs/dsh-web/backup.log";
     };

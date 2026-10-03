@@ -1,6 +1,14 @@
 # Base NixOS configuration that all hosts should include
 # This provides the foundational setup for any NixOS system
-{ pkgs, lib, config, user, hostname, stateVersion, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  user,
+  hostname,
+  stateVersion,
+  ...
+}:
 
 {
   # Core system settings
@@ -16,10 +24,10 @@
 
   # Essential system packages (minimal set)
   environment.systemPackages = with pkgs; [
-    git       # Version control
-    neovim    # Modern text editor
-    wget      # Downloads
-    curl      # HTTP client
+    git # Version control
+    neovim # Modern text editor
+    wget # Downloads
+    curl # HTTP client
   ];
 
   # Set helix as default editor
@@ -47,7 +55,10 @@
   users.users.${user} = {
     isNormalUser = true;
     description = user;
-    extraGroups = [ "wheel" "networkmanager" ];
+    extraGroups = [
+      "wheel"
+      "networkmanager"
+    ];
     shell = pkgs.fish;
   };
 

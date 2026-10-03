@@ -17,15 +17,15 @@
   environment.systemPackages = with pkgs; [
     # Applications are mostly managed via home-manager
     # System-level packages that need to be here:
-    vicinae       # Application launcher
-    nautilus      # File manager
+    vicinae # Application launcher
+    nautilus # File manager
 
     # Wayland utilities
     wl-clipboard
     wlr-randr
 
     # Notification utilities
-    libnotify     # Provides notify-send for testing notifications
+    libnotify # Provides notify-send for testing notifications
   ];
 
   # Enable dconf for GTK settings

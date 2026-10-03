@@ -1,4 +1,10 @@
-{ pkgs, lib, config, user, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  user,
+  ...
+}:
 
 {
   # CAD applications module
@@ -27,15 +33,42 @@
     };
 
     # Configure Sway window rules for CAD applications if Sway is enabled
-    wayland.windowManager.sway.config.window.commands = lib.mkIf (config.programs.sway.enable or false) [
-      # FreeCAD to workspace 4 (CAD workspace)
-      { criteria = { app_id = "^freecad$"; }; command = "move container to workspace number 4"; }
-      { criteria = { class = "^FreeCAD$"; }; command = "move container to workspace number 4"; }
+    wayland.windowManager.sway.config.window.commands =
+      lib.mkIf (config.programs.sway.enable or false)
+        [
+          # FreeCAD to workspace 4 (CAD workspace)
+          {
+            criteria = {
+              app_id = "^freecad$";
+            };
+            command = "move container to workspace number 4";
+          }
+          {
+            criteria = {
+              class = "^FreeCAD$";
+            };
+            command = "move container to workspace number 4";
+          }
 
-      # KiCAD to workspace 4 (CAD workspace)
-      { criteria = { app_id = "^kicad$"; }; command = "move container to workspace number 4"; }
-      { criteria = { class = "^KiCad$"; }; command = "move container to workspace number 4"; }
-      { criteria = { class = "^kicad$"; }; command = "move container to workspace number 4"; }
-    ];
+          # KiCAD to workspace 4 (CAD workspace)
+          {
+            criteria = {
+              app_id = "^kicad$";
+            };
+            command = "move container to workspace number 4";
+          }
+          {
+            criteria = {
+              class = "^KiCad$";
+            };
+            command = "move container to workspace number 4";
+          }
+          {
+            criteria = {
+              class = "^kicad$";
+            };
+            command = "move container to workspace number 4";
+          }
+        ];
   };
 }

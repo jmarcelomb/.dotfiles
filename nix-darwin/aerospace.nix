@@ -23,7 +23,10 @@
         outer = {
           left = 0;
           bottom = 0;
-          top = [{ monitor."Built-in Retina Display" = 0; } 30];
+          top = [
+            { monitor."Built-in Retina Display" = 0; }
+            30
+          ];
           right = 0;
         };
       };
@@ -135,22 +138,58 @@
 
         service = {
           binding = {
-            esc = ["reload-config" "mode main"];
-            r = ["flatten-workspace-tree" "mode main"]; # reset layout
-            f = ["layout floating tiling" "mode main"]; # Toggle between floating and tiling layout
-            backspace = ["close-all-windows-but-current" "mode main"];
+            esc = [
+              "reload-config"
+              "mode main"
+            ];
+            r = [
+              "flatten-workspace-tree"
+              "mode main"
+            ]; # reset layout
+            f = [
+              "layout floating tiling"
+              "mode main"
+            ]; # Toggle between floating and tiling layout
+            backspace = [
+              "close-all-windows-but-current"
+              "mode main"
+            ];
 
             # sticky is not yet supported https://github.com/nikitabobko/AeroSpace/issues/2
             #s = ["layout sticky tiling" "mode main"];
 
-            alt-shift-h = ["join-with left" "mode main"];
-            alt-shift-j = ["join-with down" "mode main"];
-            alt-shift-k = ["join-with up" "mode main"];
-            alt-shift-l = ["join-with right" "mode main"];
-            alt-shift-left = ["join-with left" "mode main"];
-            alt-shift-down = ["join-with down" "mode main"];
-            alt-shift-up = ["join-with up" "mode main"];
-            alt-shift-right = ["join-with right" "mode main"];
+            alt-shift-h = [
+              "join-with left"
+              "mode main"
+            ];
+            alt-shift-j = [
+              "join-with down"
+              "mode main"
+            ];
+            alt-shift-k = [
+              "join-with up"
+              "mode main"
+            ];
+            alt-shift-l = [
+              "join-with right"
+              "mode main"
+            ];
+            alt-shift-left = [
+              "join-with left"
+              "mode main"
+            ];
+            alt-shift-down = [
+              "join-with down"
+              "mode main"
+            ];
+            alt-shift-up = [
+              "join-with up"
+              "mode main"
+            ];
+            alt-shift-right = [
+              "join-with right"
+              "mode main"
+            ];
           };
         };
       };
@@ -244,14 +283,16 @@
         {
           "if".app-id = "com.bitwarden.desktop";
           run = [ "move-node-to-workspace B" ];
-        }        {
+        }
+        {
           "if".app-id = "com.spotify.client";
           run = [ "move-node-to-workspace S" ];
         }
         {
           "if".app-id = "com.microsoft.teams2";
           run = [ "move-node-to-workspace T" ];
-        }{
+        }
+        {
           "if".app-id = "com.apple.reminders";
           run = [ "move-node-to-workspace T" ];
         }
