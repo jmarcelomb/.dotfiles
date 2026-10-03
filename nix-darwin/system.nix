@@ -44,11 +44,11 @@
         Dragging = true;
       };
     };
-
-    activationScripts.extraActivation.text = ''
-      softwareupdate --all --install
-    '';
   };
+  # NOTE: OS/app updates are handled by macOS itself via
+  # SoftwareUpdate.AutomaticallyInstallMacOSUpdates above. Do NOT run
+  # `softwareupdate` synchronously in activation scripts - it stalls
+  # darwin-rebuild for many minutes on every switch.
   # Set your time zone.
   time.timeZone = "Europe/Lisbon";
 

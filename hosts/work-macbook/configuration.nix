@@ -2,9 +2,7 @@
 { self, pkgs, user, homeDirectory, system, hostname, ... }:
 {
   imports = [
-    (import ../../nix-darwin/profiles/base.nix {
-      inherit self pkgs user homeDirectory system hostname;
-    })
+    ../../nix-darwin/profiles/base.nix
     ./local-packages.nix
   ];
 

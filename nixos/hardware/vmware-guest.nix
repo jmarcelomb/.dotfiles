@@ -20,10 +20,11 @@
     };
   };
 
-  # Create mount point
-  system.activationScripts.mkHGFSDir = ''
-    mkdir -p /mnt/hgfs
-  '';
+  # Create mount point (tmpfiles runs early-boot, before the mount unit;
+  # activationScripts are serialized and better avoided)
+  systemd.tmpfiles.rules = [
+    "d /mnt/hgfs 0755 root root -"
+  ];
 
   # VM-specific optimizations for Wayland/Sway
   environment.variables = {

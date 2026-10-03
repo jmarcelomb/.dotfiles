@@ -2,11 +2,9 @@
 { self, pkgs, user, homeDirectory, system, hostname, ... }:
 {
   imports = [
-    (import ../../nix-darwin/profiles/base.nix {
-      inherit self pkgs user homeDirectory system hostname;
-    })
-    (import ./vm-clipboard-sync.nix { inherit user homeDirectory; })
-    (import ./dsh-web.nix { inherit pkgs user homeDirectory; })
+    ../../nix-darwin/profiles/base.nix
+    ./vm-clipboard-sync.nix
+    ./dsh-web.nix
   ];
 
   # Host-specific configuration
