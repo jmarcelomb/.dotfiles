@@ -3,7 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.11";
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.11";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -16,9 +16,13 @@
       url = "github:LnL7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    zen-browser = {
+      url = "github:youwen5/zen-browser-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, rust-overlay, nix-darwin, ... }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, rust-overlay, nix-darwin, zen-browser, ... }@inputs:
     let
       homeStateVersion = "26.05";
 
@@ -71,7 +75,7 @@
         in
         nixpkgs.lib.nixosSystem {
           inherit system;
-          specialArgs = { inherit inputs stateVersion hostname user homeDirectory isServer; };
+          specialArgs = { inherit inputs self stateVersion hostname user homeDirectory isServer; };
           modules = [
             ./hosts/${hostname}/configuration.nix
             home-manager.nixosModules.home-manager {
@@ -118,6 +122,14 @@
           stateVersion = "26.05";
           system = "x86_64-linux";
           isServer = true;
+        };
+        byakugan = makeNixosSystem {
+          hostname = "byakugan";
+          user = "hinata";
+          homeDirectory = "/home/hinata";
+          stateVersion = "26.05";
+          system = "x86_64-linux";
+          isServer = false;
         };
       };
 

@@ -38,11 +38,10 @@
       dust
       delta
       yazi
+      jq
 
       # Editor
-      # helix
-
-     (pkgs.ffmpeg-full.override { withUnfree = true; })
+      helix
     ];
 
     miscTools = [
@@ -57,19 +56,25 @@
 
     # Development tools (dev machines only)
     devTools = [
-      # GUI applications
-      # firefox
-      # alacritty
-      # kitty
-      # opencloud-desktop
+      # Terminal emulators (lightweight, don't need GPU offload)
+      alacritty
+      kitty
+
+      # Note-taking (lightweight GUI app)
+      joplin-desktop
+
+      # Cloud storage
+      opencloud-desktop
+
+      # GPU-intensive GUI apps moved to system packages per-host
+      # (see hosts/*/configuration.nix for zen-browser, vlc, spotify, etc.)
 
       # Programming languages & toolchains
-      # python311
+      python311
       uv
       rust-bin.stable.latest.default
       rust-analyzer
-      # nodejs_22
-      # pnpm
+      nodejs_22
       zig
       go
 
@@ -90,7 +95,7 @@
       # Data & document tools
       tabiew
       glow
-      # imagemagick
+      imagemagick
     ];
   in
     cliUtils

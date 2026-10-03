@@ -32,6 +32,7 @@
     ~/.dsh/cordis.patch.yml: .dsh/cordis.patch.yml
     ~/.dsh/AGENTS.md: .dsh/AGENTS.md
     ~/.config/lazygit: .config/lazygit/
+    ~/.config/nwg-dock/: .config/nwg-dock/
 
 # - create:
 #     - ~/.vim/undo-history
