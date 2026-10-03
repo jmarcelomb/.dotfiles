@@ -6,9 +6,14 @@
       upgrade = true;
       cleanup = "uninstall";
     };
+    taps = [
+      "steipete/tap"
+    ];
     brews = [
       "imagemagick"
       "gh"
+      "openssl@3" # hindsight-embed's postgres (libpq) links against homebrew's libssl.3.dylib
+      "steipete/tap/imsg"
     ];
     casks = [
       "veracrypt"
