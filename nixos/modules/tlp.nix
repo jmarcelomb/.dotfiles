@@ -1,10 +1,16 @@
-{ config, lib, pkgs, user, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  user,
+  ...
+}:
 
 let
   # Script to toggle between TLP performance and power-saver modes
   tlp-toggle = pkgs.writeShellScriptBin "tlp-toggle" ''
     STATE_FILE="/tmp/tlp-manual-mode"
-    
+
     # Check if we have a manual override set
     if [ -f "$STATE_FILE" ]; then
       MODE=$(cat "$STATE_FILE")
@@ -40,7 +46,7 @@ in
   # TLP - Advanced power management for Linux
   services.tlp = {
     enable = true;
-    
+
     settings = {
       # Battery charge thresholds (helps extend battery lifespan)
       # Uncomment and adjust these if your laptop supports it (ThinkPad, some Dell/ASUS)
@@ -73,11 +79,11 @@ in
   # Disable conflicting power management services
   # TLP conflicts with these services
   services.power-profiles-daemon.enable = false;
-  
+
   # Add TLP UI tools and toggle script to system packages
   environment.systemPackages = with pkgs; [
-    tlp  # Includes tlp-stat command for viewing statistics
-    tlp-toggle  # Custom toggle script
+    tlp # Includes tlp-stat command for viewing statistics
+    tlp-toggle # Custom toggle script
   ];
 
   # Allow users to run tlp commands without password

@@ -21,7 +21,16 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, rust-overlay, nix-darwin, zen-browser, ... }@inputs:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      home-manager,
+      rust-overlay,
+      nix-darwin,
+      zen-browser,
+      ...
+    }@inputs:
     let
       homeStateVersion = "26.05";
 
@@ -31,9 +40,14 @@
       overlays = [
         rust-overlay.overlays.default
         # direnv: skip the test suite on darwin (slow/flaky there).
-        (final: prev: prev.lib.optionalAttrs prev.stdenv.hostPlatform.isDarwin {
-          direnv = prev.direnv.overrideAttrs (_: { doCheck = false; });
-        })
+        (
+          final: prev:
+          prev.lib.optionalAttrs prev.stdenv.hostPlatform.isDarwin {
+            direnv = prev.direnv.overrideAttrs (_: {
+              doCheck = false;
+            });
+          }
+        )
       ];
 
       # Single source of truth for nixpkgs configuration per host.
@@ -46,22 +60,67 @@
       # collision behavior on every host (backupFileExtension). This is a
       # function module: `pkgs` here is the outer system's module pkgs, so
       # home.nix receives the very same instance home-manager uses.
-      homeManagerModule = { user, homeDirectory, isServer }: { pkgs, ... }: {
-        home-manager.useGlobalPkgs = true;
-        home-manager.useUserPackages = true;
-        home-manager.backupFileExtension = "backup";
-        home-manager.users.${user} = import ./home-manager/home.nix {
-          inherit pkgs user homeDirectory homeStateVersion isServer;
+      homeManagerModule =
+        {
+          user,
+          homeDirectory,
+          isServer,
+        }:
+        { pkgs, ... }: {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.backupFileExtension = "backup";
+          home-manager.users.${user} = import ./home-manager/home.nix {
+            inherit
+              pkgs
+              user
+              homeDirectory
+              homeStateVersion
+              isServer
+              ;
+          };
         };
-      };
 
       # Args every host module (and the profiles they import) can expect.
-      specialArgsFor = { user, homeDirectory, system, hostname, isServer }:
-        { inherit self inputs user homeDirectory system hostname isServer homeStateVersion; };
+      specialArgsFor =
+        {
+          user,
+          homeDirectory,
+          system,
+          hostname,
+          isServer,
+        }:
+        {
+          inherit
+            self
+            inputs
+            user
+            homeDirectory
+            system
+            hostname
+            isServer
+            homeStateVersion
+            ;
+        };
 
-      makeDarwinSystem = { hostname, user, isServer, homeDirectory, system }:
+      makeDarwinSystem =
+        {
+          hostname,
+          user,
+          isServer,
+          homeDirectory,
+          system,
+        }:
         nix-darwin.lib.darwinSystem {
-          specialArgs = specialArgsFor { inherit user homeDirectory system hostname isServer; };
+          specialArgs = specialArgsFor {
+            inherit
+              user
+              homeDirectory
+              system
+              hostname
+              isServer
+              ;
+          };
           modules = [
             nixpkgsModule
             ./hosts/${hostname}/configuration.nix
@@ -70,9 +129,29 @@
           ];
         };
 
-      makeNixosSystem = { hostname, user, isServer, homeDirectory, stateVersion, system }:
+      makeNixosSystem =
+        {
+          hostname,
+          user,
+          isServer,
+          homeDirectory,
+          stateVersion,
+          system,
+        }:
         nixpkgs.lib.nixosSystem {
-          specialArgs = (specialArgsFor { inherit user homeDirectory system hostname isServer; }) // { inherit stateVersion; };
+          specialArgs =
+            (specialArgsFor {
+              inherit
+                user
+                homeDirectory
+                system
+                hostname
+                isServer
+                ;
+            })
+            // {
+              inherit stateVersion;
+            };
           modules = [
             nixpkgsModule
             ./hosts/${hostname}/configuration.nix
@@ -81,10 +160,15 @@
           ];
         };
 
-      supportedSystems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" ];
+      supportedSystems = [
+        "x86_64-linux"
+        "aarch64-linux"
+        "aarch64-darwin"
+      ];
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
 
-    in {
+    in
+    {
       nixosConfigurations = {
         konoha = makeNixosSystem {
           hostname = "konoha";
@@ -138,7 +222,8 @@
         };
       };
 
-      # nixfmt (RFC 166 style) - nixpkgs-fmt is archived.
-      formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt);
+      # nixfmt-tree: upstream's wrapper for formatting directories
+      # (nixpkgs-fmt is archived; bare nixfmt over trees is deprecated).
+      formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-tree);
     };
 }

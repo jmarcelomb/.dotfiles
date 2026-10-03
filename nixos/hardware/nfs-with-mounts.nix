@@ -20,7 +20,13 @@ let
     value = {
       device = mount.server;
       fsType = "nfs";
-      options = mount.options or [ "nfsvers=4" "rw" "soft" "intr" ];
+      options =
+        mount.options or [
+          "nfsvers=4"
+          "rw"
+          "soft"
+          "intr"
+        ];
     };
   };
 in

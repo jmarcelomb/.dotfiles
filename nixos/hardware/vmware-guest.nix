@@ -9,7 +9,10 @@
   # Mount VMware Shared Folders
   systemd.services.mount-vmhgfs = {
     description = "Mount VMware Shared Folders";
-    after = [ "network.target" "open-vm-tools.service" ];
+    after = [
+      "network.target"
+      "open-vm-tools.service"
+    ];
     wantedBy = [ "multi-user.target" ];
 
     serviceConfig = {

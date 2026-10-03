@@ -1,4 +1,10 @@
-{ pkgs, lib, config, user, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  user,
+  ...
+}:
 
 {
   # 3D Printing module
@@ -14,14 +20,14 @@
     # orca-slicer # Fork of Bambu Studio (uncomment if available in your nixpkgs)
 
     # 3D Model viewers and preview tools
-    f3d  # Fast 3D viewer with thumbnailer support for STL previews in Nautilus
+    f3d # Fast 3D viewer with thumbnailer support for STL previews in Nautilus
   ];
 
   # Home-manager configuration for 3D printing applications
   home-manager.users.${user} = { pkgs, ... }: {
     # Install f3d for the user (provides thumbnailer)
     home.packages = with pkgs; [
-      f3d  # 3D model viewer with thumbnailer support
+      f3d # 3D model viewer with thumbnailer support
     ];
 
     # STL file associations
@@ -35,9 +41,16 @@
     };
 
     # Configure Sway window rules for 3D printing applications if Sway is enabled
-    wayland.windowManager.sway.config.window.commands = lib.mkIf (config.programs.sway.enable or false) [
-      # Bambu Studio to workspace 5 (3D printing workspace)
-      { criteria = { title = "^Bambu Studio.*"; }; command = "move container to workspace number 5"; }
-    ];
+    wayland.windowManager.sway.config.window.commands =
+      lib.mkIf (config.programs.sway.enable or false)
+        [
+          # Bambu Studio to workspace 5 (3D printing workspace)
+          {
+            criteria = {
+              title = "^Bambu Studio.*";
+            };
+            command = "move container to workspace number 5";
+          }
+        ];
   };
 }

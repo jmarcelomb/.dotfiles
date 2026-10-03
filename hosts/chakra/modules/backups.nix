@@ -5,7 +5,10 @@
   # doesn't cause "Permission denied" when creating files.
   systemd.services.docker-volumes-backup = {
     description = "Backup docker volumes to NFS share on TrueNAS";
-    after = [ "network-online.target" "mnt-nfs\\x2dchakra.automount" ];
+    after = [
+      "network-online.target"
+      "mnt-nfs\\x2dchakra.automount"
+    ];
     wants = [ "network-online.target" ];
     serviceConfig = {
       Type = "oneshot";

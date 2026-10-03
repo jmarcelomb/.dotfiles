@@ -1,5 +1,11 @@
 # Konoha - VMware VM Desktop system
-{ pkgs, stateVersion, hostname, user, ... }:
+{
+  pkgs,
+  stateVersion,
+  hostname,
+  user,
+  ...
+}:
 
 {
   imports = [

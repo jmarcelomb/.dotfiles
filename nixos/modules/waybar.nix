@@ -1,4 +1,8 @@
-{ pkgs, nerdFontName ? "monospace", ... }:
+{
+  pkgs,
+  nerdFontName ? "monospace",
+  ...
+}:
 
 {
   programs.waybar = {
@@ -9,9 +13,21 @@
         position = "top";
         height = 30;
 
-        modules-left = [ "sway/workspaces" "sway/mode" ];
+        modules-left = [
+          "sway/workspaces"
+          "sway/mode"
+        ];
         modules-center = [ "sway/window" ];
-        modules-right = [ "battery" "custom/power-mode" "cpu" "memory" "network" "backlight" "pulseaudio" "clock" ];
+        modules-right = [
+          "battery"
+          "custom/power-mode"
+          "cpu"
+          "memory"
+          "network"
+          "backlight"
+          "pulseaudio"
+          "clock"
+        ];
 
         "sway/workspaces" = {
           disable-scroll = true;
@@ -51,7 +67,13 @@
           format = "{icon} <b>{capacity}%</b> {power:.1f}W";
           format-charging = " <b>{capacity}%</b> {power:.1f}W";
           format-plugged = " <b>{capacity}%</b>";
-          format-icons = ["" "" "" "" ""];
+          format-icons = [
+            ""
+            ""
+            ""
+            ""
+            ""
+          ];
           tooltip-format = "Battery: {capacity}% ({timeTo})\nPower: {power:0.2f}W\nHealth: {health}%\nCycles: {cycles}\n\nClick to toggle power mode";
           on-click = "tlp-toggle";
         };
@@ -151,5 +173,5 @@
         }
       }
     '';
-};
+  };
 }

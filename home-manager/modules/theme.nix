@@ -68,8 +68,8 @@
 
     # Nautilus file manager preferences
     "org/gnome/nautilus/preferences" = {
-      show-image-thumbnails = "always";  # Show image thumbnails in all cases
-      thumbnail-limit = 100;  # Generate thumbnails for files up to 100MB
+      show-image-thumbnails = "always"; # Show image thumbnails in all cases
+      thumbnail-limit = 100; # Generate thumbnails for files up to 100MB
     };
   };
 

@@ -1,4 +1,11 @@
-{ pkgs, lib, config, user, self, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  user,
+  self,
+  ...
+}:
 
 let
   wallpaper = "${self}/assets/wallpapers/poland.png";
@@ -92,10 +99,10 @@ in
       ids = [ "*" ];
       settings = {
         main = {
-          capslock = "capslock";  # Normal Caps Lock behavior
+          capslock = "capslock"; # Normal Caps Lock behavior
         };
         shift = {
-          capslock = "compose";   # Shift + Caps Lock = Compose key
+          capslock = "compose"; # Shift + Caps Lock = Compose key
         };
       };
     };
@@ -176,7 +183,6 @@ in
     '';
     home.file."scripts/set-autolock.sh".executable = true;
 
-
     wayland.windowManager.sway = {
       enable = true;
       config = rec {
@@ -185,7 +191,7 @@ in
         menu = "${pkgs.vicinae}/bin/vicinae toggle";
 
         # Disable default Sway bar (using Waybar instead)
-        bars = [];
+        bars = [ ];
 
         # Gaps configuration (matching Aerospace: no gaps)
         gaps = {
@@ -205,28 +211,28 @@ in
         # These colors work well for both Catppuccin Latte (light) and Frappe (dark)
         colors = {
           focused = {
-            border = "#8caaee";       # Catppuccin blue (same in both themes)
+            border = "#8caaee"; # Catppuccin blue (same in both themes)
             background = "#8caaee";
             text = "#c6d0f5";
-            indicator = "#81c8be";    # Catppuccin teal
+            indicator = "#81c8be"; # Catppuccin teal
             childBorder = "#8caaee";
           };
           focusedInactive = {
-            border = "#babbf1";       # Catppuccin lavender (lighter for light theme)
+            border = "#babbf1"; # Catppuccin lavender (lighter for light theme)
             background = "#303446";
             text = "#c6d0f5";
             indicator = "#babbf1";
             childBorder = "#babbf1";
           };
           unfocused = {
-            border = "#e6e9ef";       # Catppuccin Latte surface0 (very light gray)
-            background = "#eff1f5";   # Catppuccin Latte base
-            text = "#8c8fa1";         # Catppuccin Latte overlay0
+            border = "#e6e9ef"; # Catppuccin Latte surface0 (very light gray)
+            background = "#eff1f5"; # Catppuccin Latte base
+            text = "#8c8fa1"; # Catppuccin Latte overlay0
             indicator = "#e6e9ef";
             childBorder = "#e6e9ef";
           };
           urgent = {
-            border = "#e78284";       # Catppuccin red (alert color)
+            border = "#e78284"; # Catppuccin red (alert color)
             background = "#e78284";
             text = "#c6d0f5";
             indicator = "#e78284";
@@ -338,19 +344,23 @@ in
           "${modifier}+n" = "exec ${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw";
 
           # Clipboard history (Alt+V)
-          "${modifier}+v" = "exec ${pkgs.vicinae}/bin/vicinae 'vicinae://extensions/vicinae/clipboard/history'";
+          "${modifier}+v" =
+            "exec ${pkgs.vicinae}/bin/vicinae 'vicinae://extensions/vicinae/clipboard/history'";
 
           # Window switcher / Dock (Alt+D) - shows all open windows including minimized
-          "${modifier}+d" = "exec ${pkgs.vicinae}/bin/vicinae 'vicinae://extensions/vicinae/wm/switch-windows'";
+          "${modifier}+d" =
+            "exec ${pkgs.vicinae}/bin/vicinae 'vicinae://extensions/vicinae/wm/switch-windows'";
 
           # Toggle nwg-dock visibility (Alt+Shift+D)
-          "${modifier}+Shift+d" = "exec pgrep -x nwg-dock && pkill nwg-dock || nwg-dock -nolauncher -nows -i 48 -mb 4 &";
+          "${modifier}+Shift+d" =
+            "exec pgrep -x nwg-dock && pkill nwg-dock || nwg-dock -nolauncher -nows -i 48 -mb 4 &";
 
           # Screenshots
           # Print: Full screen -> swappy
           "Print" = "exec ${pkgs.grim}/bin/grim - | ${pkgs.swappy}/bin/swappy -f -";
           # Alt+Shift+S: Select area -> swappy
-          "${modifier}+Shift+s" = "exec ${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\" - | ${pkgs.swappy}/bin/swappy -f -";
+          "${modifier}+Shift+s" =
+            "exec ${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\" - | ${pkgs.swappy}/bin/swappy -f -";
 
           # Volume control (capped at 200%)
           "XF86AudioRaiseVolume" = "exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+ --limit 2.0";
@@ -411,52 +421,172 @@ in
         # Window rules (matching Aerospace on-window-detected)
         window.commands = [
           # Vicinae (application launcher) - floating centered
-          { criteria = { app_id = "^vicinae$"; }; command = "floating enable, border pixel 2, resize set 800 600, move position center"; }
+          {
+            criteria = {
+              app_id = "^vicinae$";
+            };
+            command = "floating enable, border pixel 2, resize set 800 600, move position center";
+          }
 
           # Nwg-dock - floating, no border, sticky (shows on all workspaces)
-          { criteria = { app_id = "^nwg-dock"; }; command = "floating enable, border none, sticky enable"; }
+          {
+            criteria = {
+              app_id = "^nwg-dock";
+            };
+            command = "floating enable, border none, sticky enable";
+          }
 
           # Browsers to workspace 1
-          { criteria = { app_id = "^firefox$"; }; command = "move container to workspace number 1"; }
-          { criteria = { app_id = "^zen-browser$"; }; command = "move container to workspace number 1"; }
-          { criteria = { app_id = "^chromium-browser$"; }; command = "move container to workspace number 1"; }
-          { criteria = { app_id = "^google-chrome$"; }; command = "move container to workspace number 1"; }
-          { criteria = { class = "^Google-chrome$"; }; command = "move container to workspace number 1"; }
+          {
+            criteria = {
+              app_id = "^firefox$";
+            };
+            command = "move container to workspace number 1";
+          }
+          {
+            criteria = {
+              app_id = "^zen-browser$";
+            };
+            command = "move container to workspace number 1";
+          }
+          {
+            criteria = {
+              app_id = "^chromium-browser$";
+            };
+            command = "move container to workspace number 1";
+          }
+          {
+            criteria = {
+              app_id = "^google-chrome$";
+            };
+            command = "move container to workspace number 1";
+          }
+          {
+            criteria = {
+              class = "^Google-chrome$";
+            };
+            command = "move container to workspace number 1";
+          }
 
           # Terminals to workspace 2
-          { criteria = { app_id = "^com\\.mitchellh\\.ghostty$"; }; command = "move container to workspace number 2"; }
-          { criteria = { app_id = "^kitty$"; }; command = "move container to workspace number 2"; }
-          { criteria = { app_id = "^Alacritty$"; }; command = "move container to workspace number 2"; }
+          {
+            criteria = {
+              app_id = "^com\\.mitchellh\\.ghostty$";
+            };
+            command = "move container to workspace number 2";
+          }
+          {
+            criteria = {
+              app_id = "^kitty$";
+            };
+            command = "move container to workspace number 2";
+          }
+          {
+            criteria = {
+              app_id = "^Alacritty$";
+            };
+            command = "move container to workspace number 2";
+          }
 
           # VM to workspace 3
-          { criteria = { class = "^vmware$"; }; command = "move container to workspace number 3"; }
+          {
+            criteria = {
+              class = "^vmware$";
+            };
+            command = "move container to workspace number 3";
+          }
 
           # VSCode to workspace 5
-          { criteria = { class = "^code$"; }; command = "move container to workspace number 5"; }
-          { criteria = { class = "^VSCodium$"; }; command = "move container to workspace number 5"; }
+          {
+            criteria = {
+              class = "^code$";
+            };
+            command = "move container to workspace number 5";
+          }
+          {
+            criteria = {
+              class = "^VSCodium$";
+            };
+            command = "move container to workspace number 5";
+          }
 
           # OBS to workspace 8
-          { criteria = { class = "^obs$"; }; command = "move container to workspace number 8"; }
+          {
+            criteria = {
+              class = "^obs$";
+            };
+            command = "move container to workspace number 8";
+          }
 
           # Notes/productivity to workspace 9
-          { criteria = { class = "^joplin$"; }; command = "move container to workspace number 9"; }
-          { criteria = { class = "^OneNote$"; }; command = "move container to workspace number 9"; }
+          {
+            criteria = {
+              class = "^joplin$";
+            };
+            command = "move container to workspace number 9";
+          }
+          {
+            criteria = {
+              class = "^OneNote$";
+            };
+            command = "move container to workspace number 9";
+          }
 
           # Communication to workspace 10
-          { criteria = { class = "^discord$"; }; command = "move container to workspace number 10"; }
-          { criteria = { class = "^Messenger$"; }; command = "move container to workspace number 10"; }
-          { criteria = { class = "^whatsapp$"; }; command = "move container to workspace number 10"; }
+          {
+            criteria = {
+              class = "^discord$";
+            };
+            command = "move container to workspace number 10";
+          }
+          {
+            criteria = {
+              class = "^Messenger$";
+            };
+            command = "move container to workspace number 10";
+          }
+          {
+            criteria = {
+              class = "^whatsapp$";
+            };
+            command = "move container to workspace number 10";
+          }
 
           # Bambu, Bitwarden to workspace B
-          { criteria = { class = "^bambu-studio$"; }; command = "move container to workspace B"; }
-          { criteria = { app_id = "^Bitwarden$"; }; command = "move container to workspace B"; }
+          {
+            criteria = {
+              class = "^bambu-studio$";
+            };
+            command = "move container to workspace B";
+          }
+          {
+            criteria = {
+              app_id = "^Bitwarden$";
+            };
+            command = "move container to workspace B";
+          }
 
           # Spotify to workspace S
-          { criteria = { class = "^Spotify$"; }; command = "move container to workspace S"; }
+          {
+            criteria = {
+              class = "^Spotify$";
+            };
+            command = "move container to workspace S";
+          }
 
           # Teams/Zoom to workspace T
-          { criteria = { class = "^teams$"; }; command = "move container to workspace T"; }
-          { criteria = { class = "^zoom$"; }; command = "move container to workspace T"; }
+          {
+            criteria = {
+              class = "^teams$";
+            };
+            command = "move container to workspace T";
+          }
+          {
+            criteria = {
+              class = "^zoom$";
+            };
+            command = "move container to workspace T";
+          }
         ];
 
         # Output configuration (monitors)
@@ -478,7 +608,7 @@ in
 
           # Secondary monitor (external display) - positioned at top
           "DP-2" = {
-            position = "0,0";  # Top position (external monitor on top)
+            position = "0,0"; # Top position (external monitor on top)
             # Uncomment to set specific resolution/refresh rate:
             # mode = "1920x1080@60Hz";
             # scale = "1.0";
@@ -488,7 +618,7 @@ in
           # Change position to "1920,0" for side by side (laptop on right)
           # Change to "-1920,0" for side by side (laptop on left)
           "eDP-1" = {
-            position = "0,1080";  # Below DP-2 (vertical stack)
+            position = "0,1080"; # Below DP-2 (vertical stack)
             # Uncomment to set specific resolution/refresh rate:
             # mode = "1920x1080@60Hz";
             # scale = "1.0";
@@ -500,16 +630,46 @@ in
         # Workspaces 6-10 on laptop screen (eDP-1)
         # You can still move workspaces between monitors with Alt+Shift+Tab
         workspaceOutputAssign = [
-          { workspace = "1"; output = "DP-2"; }
-          { workspace = "2"; output = "DP-2"; }
-          { workspace = "3"; output = "DP-2"; }
-          { workspace = "4"; output = "DP-2"; }
-          { workspace = "5"; output = "DP-2"; }
-          { workspace = "6"; output = "eDP-1"; }
-          { workspace = "7"; output = "eDP-1"; }
-          { workspace = "8"; output = "eDP-1"; }
-          { workspace = "9"; output = "eDP-1"; }
-          { workspace = "10"; output = "eDP-1"; }
+          {
+            workspace = "1";
+            output = "DP-2";
+          }
+          {
+            workspace = "2";
+            output = "DP-2";
+          }
+          {
+            workspace = "3";
+            output = "DP-2";
+          }
+          {
+            workspace = "4";
+            output = "DP-2";
+          }
+          {
+            workspace = "5";
+            output = "DP-2";
+          }
+          {
+            workspace = "6";
+            output = "eDP-1";
+          }
+          {
+            workspace = "7";
+            output = "eDP-1";
+          }
+          {
+            workspace = "8";
+            output = "eDP-1";
+          }
+          {
+            workspace = "9";
+            output = "eDP-1";
+          }
+          {
+            workspace = "10";
+            output = "eDP-1";
+          }
         ];
 
         # Input configuration
@@ -519,23 +679,23 @@ in
             xkb_layout = "us";
             # Enable Compose functionality (keyd handles the key mapping)
             xkb_options = "compose:menu";
-            repeat_delay = "180";  # Delay before repeat starts (milliseconds)
-            repeat_rate = "40";    # Characters per second when repeating
+            repeat_delay = "180"; # Delay before repeat starts (milliseconds)
+            repeat_rate = "40"; # Characters per second when repeating
           };
 
           # Touchpad settings (all touchpads)
           "type:touchpad" = {
-            natural_scroll = "enabled";  # Inverted/natural scrolling
-            tap = "disabled";            # Disable tap to click (prevents phantom touches)
-            dwt = "enabled";             # Disable while typing
-            dwtp = "enabled";            # Disable tap while typing (more aggressive)
+            natural_scroll = "enabled"; # Inverted/natural scrolling
+            tap = "disabled"; # Disable tap to click (prevents phantom touches)
+            dwt = "enabled"; # Disable while typing
+            dwtp = "enabled"; # Disable tap while typing (more aggressive)
             middle_emulation = "enabled"; # Middle click emulation
           };
 
           # Mouse/pointer settings (all mice)
           "type:pointer" = {
-            accel_profile = "flat";      # Flat acceleration (no acceleration curve)
-            pointer_accel = "-0.40";      # Reduce sensitivity (-1 = slowest, 0 = default, 1 = fastest)
+            accel_profile = "flat"; # Flat acceleration (no acceleration curve)
+            pointer_accel = "-0.40"; # Reduce sensitivity (-1 = slowest, 0 = default, 1 = fastest)
           };
 
           # Fallback for devices that don't match type
@@ -548,8 +708,12 @@ in
         # Startup commands
         startup = [
           # Import environment variables to systemd for proper app launching
-          { command = "systemctl --user import-environment PATH DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP XDG_SESSION_TYPE"; }
-          { command = "hash dbus-update-activation-environment 2>/dev/null && dbus-update-activation-environment --systemd PATH DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP XDG_SESSION_TYPE"; }
+          {
+            command = "systemctl --user import-environment PATH DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP XDG_SESSION_TYPE";
+          }
+          {
+            command = "hash dbus-update-activation-environment 2>/dev/null && dbus-update-activation-environment --systemd PATH DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP XDG_SESSION_TYPE";
+          }
 
           # Notification center
           { command = "${pkgs.swaynotificationcenter}/bin/swaync"; }
@@ -558,13 +722,15 @@ in
           { command = "${pkgs.waybar}/bin/waybar"; }
 
           # Idle management
-          { command = ''
-            ${pkgs.swayidle}/bin/swayidle -w \
-              timeout 60 '${pkgs.swaylock}/bin/swaylock -f -i ${lockWallpaper}' \
-              timeout 15 'pgrep swaylock && swaymsg "output * dpms off"' \
-              resume 'swaymsg "output * dpms on"' \
-              before-sleep '${pkgs.swaylock}/bin/swaylock -f -i ${lockWallpaper}'
-          ''; }
+          {
+            command = ''
+              ${pkgs.swayidle}/bin/swayidle -w \
+                timeout 60 '${pkgs.swaylock}/bin/swaylock -f -i ${lockWallpaper}' \
+                timeout 15 'pgrep swaylock && swaymsg "output * dpms off"' \
+                resume 'swaymsg "output * dpms on"' \
+                before-sleep '${pkgs.swaylock}/bin/swaylock -f -i ${lockWallpaper}'
+            '';
+          }
 
           # GNOME Settings Daemon for better integration
           { command = "${pkgs.gnome-settings-daemon}/libexec/gsd-xsettings"; }

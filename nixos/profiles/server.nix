@@ -13,7 +13,7 @@
     settings = {
       PasswordAuthentication = true;
       PermitRootLogin = "prohibit-password";
-      X11Forwarding = false;  # No GUI
+      X11Forwarding = false; # No GUI
     };
   };
 
@@ -22,9 +22,9 @@
 
   # Server-specific packages
   environment.systemPackages = with pkgs; [
-    bottom    # Process monitor
-    iotop     # IO monitor
-    rsync     # File sync
+    bottom # Process monitor
+    iotop # IO monitor
+    rsync # File sync
   ];
 
   # No need for display manager, audio, or GUI tools

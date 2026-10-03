@@ -1,7 +1,10 @@
 { inputs, ... }:
 {
   nix.settings = {
-    experimental-features = [ "nix-command" "flakes" ];
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
     # Deduplicate identical store paths automatically after every build.
     auto-optimise-store = true;
 

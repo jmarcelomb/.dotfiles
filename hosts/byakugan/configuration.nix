@@ -1,12 +1,19 @@
 # Byakugan - Desktop NixOS system
-{ pkgs, inputs, stateVersion, hostname, user, ... }:
+{
+  pkgs,
+  inputs,
+  stateVersion,
+  hostname,
+  user,
+  ...
+}:
 
 {
   imports = [
     # Hardware
     ./hardware-configuration.nix
     ../../nixos/hardware/bootloader.nix
-    ../../nixos/hardware/nfs-client.nix  # Just enable NFS support, no mounts
+    ../../nixos/hardware/nfs-client.nix # Just enable NFS support, no mounts
 
     # Profiles
     ../../nixos/profiles/base.nix
@@ -41,11 +48,11 @@
 
   # Host-specific packages (non-GPU apps)
   environment.systemPackages = with pkgs; [
-    bluetui       # Bluetooth TUI manager
-    sushi         # Quick Look-style file previewer (press Space in Nautilus)
-    libheif       # HEIC/HEIF image format support and CLI tools
-    libheif.out   # Additional HEIC/HEIF libraries and binaries
-    ffmpeg        # Multimedia framework for video/audio processing
+    bluetui # Bluetooth TUI manager
+    sushi # Quick Look-style file previewer (press Space in Nautilus)
+    libheif # HEIC/HEIF image format support and CLI tools
+    libheif.out # Additional HEIC/HEIF libraries and binaries
+    ffmpeg # Multimedia framework for video/audio processing
 
     # GStreamer plugins for video preview in Nautilus
     gst_all_1.gstreamer
@@ -53,7 +60,7 @@
     gst_all_1.gst-plugins-good
     gst_all_1.gst-plugins-bad
     gst_all_1.gst-plugins-ugly
-    gst_all_1.gst-libav  # FFmpeg-based plugins for additional format support
+    gst_all_1.gst-libav # FFmpeg-based plugins for additional format support
 
     # GPU-intensive apps (zen-browser, vlc, spotify) are configured below in hardware.nvidia.prime.autoOffload
   ];
@@ -66,7 +73,10 @@
   # };
 
   # NVIDIA proprietary driver with PRIME support
-  services.xserver.videoDrivers = [ "nvidia" "modesetting" ];
+  services.xserver.videoDrivers = [
+    "nvidia"
+    "modesetting"
+  ];
   hardware.nvidia = {
     modesetting.enable = true;
     prime = {
@@ -92,16 +102,16 @@
 
     # GTK/Electron applications (work natively with GPU offload)
     applications = with pkgs; [
-      inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default  # Web browser with GPU acceleration for WebGL, video
-      vlc        # Video player with hardware decode
-      spotify    # Music player
-      ghostty    # Terminal emulator with GPU acceleration (smooth scrolling, better rendering)
+      inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default # Web browser with GPU acceleration for WebGL, video
+      vlc # Video player with hardware decode
+      spotify # Music player
+      ghostty # Terminal emulator with GPU acceleration (smooth scrolling, better rendering)
     ];
 
     # Qt applications (need XWayland for proper GPU offload)
     qtApplications = with pkgs; [
-      freecad    # 3D CAD (from cad.nix module)
-      kicad      # Electronics CAD (from cad.nix module)
+      freecad # 3D CAD (from cad.nix module)
+      kicad # Electronics CAD (from cad.nix module)
     ];
 
     # Inject NVIDIA environment into Sway session for terminal-launched apps

@@ -1,5 +1,13 @@
 # Work MacBook - macOS system
-{ self, pkgs, user, homeDirectory, system, hostname, ... }:
+{
+  self,
+  pkgs,
+  user,
+  homeDirectory,
+  system,
+  hostname,
+  ...
+}:
 {
   imports = [
     ../../nix-darwin/profiles/base.nix
