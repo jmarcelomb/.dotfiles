@@ -13,7 +13,6 @@
     ../../nixos/profiles/desktop.nix
 
     # Additional modules
-    ../../nixos/modules/home-manager.nix
     ../../nixos/modules/net.nix
     ../../nixos/modules/nix.nix
     ../../nixos/modules/timezone.nix

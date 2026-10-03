@@ -1,9 +1,8 @@
 {
-  description = "Unified system configuration for nix-darwin, chakra, and konoha";
+  description = "Unified system configuration for nix-darwin and NixOS hosts";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.11";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -22,79 +21,67 @@
     };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, rust-overlay, nix-darwin, zen-browser, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, rust-overlay, nix-darwin, zen-browser, ... }@inputs:
     let
       homeStateVersion = "26.05";
 
-      # Shared overlays
+      # Shared overlays, applied once via nixpkgs.overlays so every host -
+      # system and home-manager alike - evaluates a single pkgs instance
+      # (home-manager.useGlobalPkgs = true below).
       overlays = [
         rust-overlay.overlays.default
-        (final: prev: {
+        # direnv: skip the test suite on darwin (slow/flaky there).
+        (final: prev: prev.lib.optionalAttrs prev.stdenv.hostPlatform.isDarwin {
           direnv = prev.direnv.overrideAttrs (_: { doCheck = false; });
         })
       ];
 
-      # Function to create nix-darwin configurations
+      # Single source of truth for nixpkgs configuration per host.
+      nixpkgsModule = {
+        nixpkgs.overlays = overlays;
+        nixpkgs.config.allowUnfree = true;
+      };
+
+      # Shared home-manager wiring. One pkgs instance (useGlobalPkgs), same
+      # collision behavior on every host (backupFileExtension). This is a
+      # function module: `pkgs` here is the outer system's module pkgs, so
+      # home.nix receives the very same instance home-manager uses.
+      homeManagerModule = { user, homeDirectory, isServer }: { pkgs, ... }: {
+        home-manager.useGlobalPkgs = true;
+        home-manager.useUserPackages = true;
+        home-manager.backupFileExtension = "backup";
+        home-manager.users.${user} = import ./home-manager/home.nix {
+          inherit pkgs user homeDirectory homeStateVersion isServer;
+        };
+      };
+
+      # Args every host module (and the profiles they import) can expect.
+      specialArgsFor = { user, homeDirectory, system, hostname, isServer }:
+        { inherit self inputs user homeDirectory system hostname isServer homeStateVersion; };
+
       makeDarwinSystem = { hostname, user, isServer, homeDirectory, system }:
-        let
-          pkgs = import nixpkgs {
-            inherit system overlays;
-            config.allowUnfree = true;
-          };
-        in
         nix-darwin.lib.darwinSystem {
-          inherit system;
-          specialArgs = { inherit rust-overlay; };
+          specialArgs = specialArgsFor { inherit user homeDirectory system hostname isServer; };
           modules = [
-            (import ./hosts/${hostname}/configuration.nix {
-              inherit pkgs nixpkgs self hostname homeStateVersion user homeDirectory system;
-            })
-            home-manager.darwinModules.home-manager {
-              home-manager.useGlobalPkgs = false;
-              home-manager.useUserPackages = true;
-              home-manager.backupFileExtension = "backup";
-              home-manager.sharedModules = [{
-                nixpkgs.overlays = overlays;
-                nixpkgs.config.allowUnsupportedSystem = true;
-              }];
-
-              home-manager.users.${user} = import ./home-manager/home.nix {
-                inherit pkgs user homeDirectory homeStateVersion isServer;
-              };
-            }
-          ];
-        };
-
-      # Function to create NixOS configurations
-      makeNixosSystem = { hostname, user, isServer, homeDirectory, stateVersion, system }:
-        let
-          pkgs = import nixpkgs {
-            inherit system overlays;
-            config.allowUnfree = true;
-          };
-        in
-        nixpkgs.lib.nixosSystem {
-          inherit system;
-          specialArgs = { inherit inputs self stateVersion hostname user homeDirectory isServer; };
-          modules = [
+            nixpkgsModule
             ./hosts/${hostname}/configuration.nix
-            home-manager.nixosModules.home-manager {
-              home-manager.useGlobalPkgs = false;
-              home-manager.useUserPackages = true;
-              home-manager.sharedModules = [{
-                nixpkgs.overlays = overlays;
-              }];
-              home-manager.users.${user} = import ./home-manager/home.nix {
-                inherit pkgs user homeDirectory homeStateVersion isServer;
-              };
-            }
+            home-manager.darwinModules.home-manager
+            (homeManagerModule { inherit user homeDirectory isServer; })
           ];
         };
 
-      # Define supported systems
-      supportedSystems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
+      makeNixosSystem = { hostname, user, isServer, homeDirectory, stateVersion, system }:
+        nixpkgs.lib.nixosSystem {
+          specialArgs = (specialArgsFor { inherit user homeDirectory system hostname isServer; }) // { inherit stateVersion; };
+          modules = [
+            nixpkgsModule
+            ./hosts/${hostname}/configuration.nix
+            home-manager.nixosModules.home-manager
+            (homeManagerModule { inherit user homeDirectory isServer; })
+          ];
+        };
 
-      # Function to generate attributes for all supported systems
+      supportedSystems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" ];
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
 
     in {
@@ -151,9 +138,7 @@
         };
       };
 
-      # Add formatters for all supported systems
-      formatter = forAllSystems (system: let
-        pkgs = nixpkgs.legacyPackages.${system};
-      in pkgs.nixpkgs-fmt);
+      # nixfmt (RFC 166 style) - nixpkgs-fmt is archived.
+      formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt);
     };
 }

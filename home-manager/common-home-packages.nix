@@ -1,6 +1,4 @@
 { pkgs, isServer, ... }: {
-  nixpkgs.config.allowUnfree = true;
-
   # Define package groups
   home.packages = with pkgs; let
     # Core CLI utilities (available everywhere)

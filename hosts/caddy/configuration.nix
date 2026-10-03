@@ -15,11 +15,12 @@
     ../../nixos/modules/timezone.nix
     ../../nixos/modules/user.nix
 
-    # No netbird-stack.nix and no backups.nix here: caddy is a lightweight,
-    # single-purpose VM (reverse proxy + netbird client only). Its
-    # configuration lives in git, so there is nothing stateful worth
-    # backing up beyond what's already tracked.
-    #(import ./modules/auto-upgrade.nix { inherit inputs; })
+    # No netbird-stack.nix here: caddy is a lightweight, single-purpose VM
+    # (reverse proxy + netbird client only). Its configuration lives in
+    # git, so there is nothing stateful worth backing up beyond what's
+    # already tracked... except TLS certs + netbird identity, which
+    # ./modules/backups.nix ships to chakra's backed-up tree nightly.
+    ./modules/backups.nix
   ];
 
   networking.hostName = hostname;
