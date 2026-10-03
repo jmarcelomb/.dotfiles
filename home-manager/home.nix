@@ -1,7 +1,7 @@
 { pkgs, isServer, homeStateVersion, user, homeDirectory, ... }:
 let
   sharedEnv = import ../hosts/shared-env.nix { inherit pkgs; };
-  inherit (pkgs.stdenv) isDarwin;
+  inherit (pkgs.stdenv.hostPlatform) isDarwin;
 in
 {
   imports = [

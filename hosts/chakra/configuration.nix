@@ -33,10 +33,10 @@
   services.qemuGuest.enable = true;
 
   # Cap the journal so it can't grow unbounded on a small root fs.
-  services.journald.extraConfig = ''
-    SystemMaxUse=500M
-    SystemKeepFree=1G
-  '';
+  services.journald.settings.Journal = {
+    SystemMaxUse = "500M";
+    SystemKeepFree = "1G";
+  };
 
   # Compressed RAM swap in addition to the existing disk swap partition.
   # zram is preferred (higher priority) because it's much faster and avoids

@@ -14,7 +14,7 @@
     LC_CTYPE = "en_US.UTF-8";
     LC_ALL = "en_US.UTF-8";
   } // (
-    if pkgs.stdenv.isDarwin then {
+    if pkgs.stdenv.hostPlatform.isDarwin then {
       # See: https://github.com/NixOS/nixpkgs/issues/390751
       DISPLAY = "nixpkgs-390751";
     } else {}
