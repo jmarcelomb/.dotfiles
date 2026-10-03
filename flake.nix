@@ -111,6 +111,14 @@
           system = "x86_64-linux";
           isServer = true;
         };
+        caddy = makeNixosSystem {
+          hostname = "caddy";
+          user = "hinata";
+          homeDirectory = "/home/hinata";
+          stateVersion = "24.11";
+          system = "x86_64-linux";
+          isServer = true;
+        };
       };
 
       darwinConfigurations = {
