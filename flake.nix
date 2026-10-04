@@ -220,14 +220,6 @@
           system = "aarch64-darwin";
           isServer = false;
         };
-
-        "work-macbook" = makeDarwinSystem {
-          hostname = "work-macbook";
-          user = "jmmb";
-          homeDirectory = "/Users/jmmb";
-          system = "aarch64-darwin";
-          isServer = false;
-        };
       };
 
       # nixfmt-tree: upstream's wrapper for formatting directories

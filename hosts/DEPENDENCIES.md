@@ -9,8 +9,7 @@ arrows. (Verified 2026-10-04; keep updated.)
 | Host | What | Addr | Notes |
 |---|---|---|---|
 | mac-mini | aarch64-darwin, daily driver | this machine | keystone: hosts konoha VM, receives chakra backups |
-| work-macbook | aarch64-darwin | - | work identity via `includeIf hostname:work-macbook` (`.config/git/config.work`) |
-| konoha | aarch64-linux sway desktop VM (VMware Fusion on mac-mini) | VM, often off | shares `~/Virtual Machines.localized/Share` ↔ `/mnt/hgfs` |
+| konoha | aarch64-linux sway desktop VM (VMware Fusion on mac-mini) | 192.168.0.231 | often off; shares `~/Virtual Machines.localized/Share` ↔ `/mnt/hgfs` |
 | chakra | x86_64-linux server VM on TrueNAS | 192.168.0.236 | docker stacks from `~/server` (separate repo `jmarcelomb/server`) |
 | caddy | x86_64-linux VM (chakra clone) | 192.168.0.237 | reverse proxy + netbird client only |
 | byakugan | x86_64-linux sway laptop | 192.168.0.104 | holds the GPG commit-signing key (`includeIf hostname:byakugan`) |
