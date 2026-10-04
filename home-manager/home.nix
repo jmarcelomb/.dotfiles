@@ -1,5 +1,6 @@
 {
   pkgs,
+  lib,
   isServer,
   homeStateVersion,
   user,
@@ -19,7 +20,12 @@ in
       else
         import ./linux-home-packages.nix { inherit pkgs isServer; }
     )
-  ];
+  ]
+  # Desktop theming (gtk/papirus/dconf) only on graphical Linux hosts.
+  # dconf activation requires a D-Bus session: on headless servers it
+  # fails with GDBus.ServiceUnknown and breaks home-manager activation
+  # (seen on chakra/caddy 2026-10-04).
+  ++ lib.optionals (!isServer && !isDarwin) [ ./modules/theme.nix ];
 
   home = {
     username = user;

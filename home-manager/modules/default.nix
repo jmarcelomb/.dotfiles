@@ -4,6 +4,5 @@
     ./fonts.nix
     ./neovim.nix
     ./starship.nix
-    ./theme.nix
   ];
 }

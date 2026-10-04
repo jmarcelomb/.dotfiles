@@ -1,8 +1,0 @@
-# Work identity - only loaded on the work laptop.
-# Included conditionally from config via: includeIf "hostname:work-macbook"
-[user]
-  email = REDACTED-WORK-EMAIL
-  signingKey = REDACTED-WORK-SIGNING-KEY
-
-[commit]
-  gpgSign = true
