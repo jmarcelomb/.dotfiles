@@ -1,6 +1,5 @@
 {
   pkgs,
-  lib,
   isServer,
   homeStateVersion,
   user,
@@ -25,7 +24,7 @@ in
   # dconf activation requires a D-Bus session: on headless servers it
   # fails with GDBus.ServiceUnknown and breaks home-manager activation
   # (seen on chakra/caddy 2026-10-04).
-  ++ lib.optionals (!isServer && !isDarwin) [ ./modules/theme.nix ];
+  ++ pkgs.lib.optionals (!isServer && !isDarwin) [ ./modules/theme.nix ];
 
   home = {
     username = user;
