@@ -12,7 +12,6 @@
   imports = [
     ../../nix-darwin/profiles/base.nix
     ./vm-clipboard-sync.nix
-    ./dsh-web.nix
   ];
 
   # Host-specific configuration

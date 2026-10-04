@@ -42,6 +42,9 @@
 
         # Editor
         helix
+
+        # Media (unfree codecs)
+        (pkgs.ffmpeg-full.override { withUnfree = true; })
       ];
 
       miscTools = [
@@ -60,11 +63,9 @@
         alacritty
         kitty
 
-        # Note-taking (lightweight GUI app)
-        joplin-desktop
-
-        # Cloud storage
-        opencloud-desktop
+        # Note-taking: Joplin is installed as a brew cask on darwin
+        # (see nix-darwin/homebrew.nix) - don't also ship the 600MB nix build.
+        # joplin-desktop
 
         # GPU-intensive GUI apps moved to system packages per-host
         # (see hosts/*/configuration.nix for zen-browser, vlc, spotify, etc.)
