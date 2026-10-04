@@ -39,10 +39,18 @@
       # (home-manager.useGlobalPkgs = true below).
       overlays = [
         rust-overlay.overlays.default
-        # direnv: skip the test suite on darwin (slow/flaky there).
+        # Skip heavyweight test suites on packages we override anyway:
+        # any .override* is a cache.nixos.org miss, so tests would re-run
+        # on every host that builds the package (ffmpeg-full's FATE suite
+        # alone can grind for hours on the server VMs).
         (
           final: prev:
-          prev.lib.optionalAttrs prev.stdenv.hostPlatform.isDarwin {
+          {
+            ffmpeg-full = prev.ffmpeg-full.overrideAttrs (_: {
+              doCheck = false;
+            });
+          }
+          // prev.lib.optionalAttrs prev.stdenv.hostPlatform.isDarwin {
             direnv = prev.direnv.overrideAttrs (_: {
               doCheck = false;
             });
