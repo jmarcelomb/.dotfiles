@@ -19,7 +19,7 @@
       Group = "users";
       ExecStart = ''
         ${pkgs.rsync}/bin/rsync -az --delete \
-          -e "${pkgs.openssh}/bin/ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new" \
+          -e "${pkgs.openssh}/bin/ssh -i /home/hinata/.ssh/id_ed25519_backup_to_chakra -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=accept-new" \
           /home/hinata/server/caddy/volumes/ \
           hinata@chakra.home:/home/hinata/server/volumes/caddy-guest/
       '';
