@@ -5,6 +5,7 @@ on:
     paths-ignore:
       - 'README.md'
   push:
+    branches: [main]
     paths-ignore:
       - 'README.md'
 
@@ -13,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: write
+      contents: read
 
     steps:
     - name: Checkout repository
@@ -24,23 +25,45 @@ jobs:
       with:
         nix_path: nixpkgs=channel:nixos-unstable
 
-    - name: Install Nix Linting and Formatting Tools
-      run: nix-env -i statix nixpkgs-fmt -f '<nixpkgs>'
+    - name: Install statix
+      run: nix-env -iA statix -f '<nixpkgs>'
 
-    - name: Run Statix Lint
-      run: statix fix
+    # Check-only: lint findings FAIL the job instead of being auto-fixed
+    # and auto-committed back to the branch (the old mutating behavior
+    # raced local work and rewrote branches from CI).
+    - name: Statix lint (check only)
+      run: statix check .
 
-    - name: Run Nix Format
-      run: nix fmt
+    - name: Format check (nix fmt + git diff)
+      run: |
+        nix fmt
+        git diff --exit-code
 
-    - name: Nix Flake Check - Manual
-      run: nix flake check
+    - name: Nix Flake Check
+      run: nix flake check --no-build
 
     - name: Nix Flake Checker
       uses: DeterminateSystems/flake-checker-action@v12
 
-    - name: Commit
-      uses: stefanzweifel/git-auto-commit-action@v7
+  build-server:
+    # Full native build of the x86_64 server closure. Main only - PRs get
+    # the (fast) evaluation gate above. cache.nixos.org substitutes almost
+    # everything; this catches breakage that only building reveals.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v6
+
+    - name: Install Nix
+      uses: cachix/install-nix-action@v31
       with:
-        commit_message: "chore: apply flake auto lint/format"
-        skip_checkout: true
+        nix_path: nixpkgs=channel:nixos-unstable
+
+    - name: Build chakra toplevel
+      run: nix build .#nixosConfigurations.chakra.config.system.build.toplevel --no-link
+
+    - name: Build caddy toplevel
+      run: nix build .#nixosConfigurations.caddy.config.system.build.toplevel --no-link

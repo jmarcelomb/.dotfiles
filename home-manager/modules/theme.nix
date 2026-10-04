@@ -4,75 +4,86 @@
 # Usage: Press Alt+Shift+P in Sway to toggle between light and dark themes.
 # The toggle script updates these settings dynamically via dconf/gsettings.
 
-{ pkgs, ... }:
-
 {
-  # GTK theme configuration - Catppuccin (supports both light and dark)
-  gtk = {
-    enable = true;
+  pkgs,
+  lib,
+  ...
+}:
 
-    # Default to Catppuccin Frappe (dark theme)
-    theme = {
-      name = "catppuccin-frappe-blue-standard+rimless";
-      package = pkgs.catppuccin-gtk.override {
+# Linux only: gtk/papirus/dconf theming for the sway desktop hosts.
+# papirus-icon-theme is Linux-only (meta.platforms) - evaluating this
+# module on darwin drags an unsupported package into home.packages and
+# breaks the build (this is what the old allowUnsupportedSystem flag
+# was silently papering over).
+{
+  config = lib.mkIf (!pkgs.stdenv.hostPlatform.isDarwin) {
+    # GTK theme configuration - Catppuccin (supports both light and dark)
+    gtk = {
+      enable = true;
+
+      # Default to Catppuccin Frappe (dark theme)
+      theme = {
+        name = "catppuccin-frappe-blue-standard+rimless";
+        package = pkgs.catppuccin-gtk.override {
+          accents = [ "blue" ];
+          size = "standard";
+          tweaks = [ "rimless" ];
+          variant = "frappe";
+        };
+      };
+
+      # # Explicitly set GTK4 theme to match GTK3 theme (silences warning about changed default)
+      # gtk4.theme = "catppuccin-frappe-blue-standard+rimless";
+
+      # Icon theme (dark by default)
+      iconTheme = {
+        name = "Papirus-Dark";
+        package = pkgs.papirus-icon-theme;
+      };
+
+      # Cursor theme (dark by default)
+      cursorTheme = {
+        name = "catppuccin-frappe-dark-cursors";
+        package = pkgs.catppuccin-cursors.frappeDark;
+        size = 24;
+      };
+
+      # Don't force dark mode - let dconf/toggle script control it
+      # gtk3.extraConfig.gtk-application-prefer-dark-theme is managed by toggle script
+      # gtk4.extraConfig.gtk-application-prefer-dark-theme is managed by toggle script
+    };
+
+    # Install additional themes for toggling
+    home.packages = with pkgs; [
+      # Light theme for toggle support
+      (catppuccin-gtk.override {
         accents = [ "blue" ];
         size = "standard";
         tweaks = [ "rimless" ];
-        variant = "frappe";
+        variant = "latte";
+      })
+
+      # Light cursor
+      catppuccin-cursors.latteDark
+    ];
+
+    # Set default color scheme via dconf (dark mode by default)
+    dconf.settings = {
+      "org/gnome/desktop/interface" = {
+        color-scheme = "prefer-dark";
+        gtk-theme = "catppuccin-frappe-blue-standard+rimless";
+        icon-theme = "Papirus-Dark";
+        cursor-theme = "catppuccin-frappe-dark-cursors";
+      };
+
+      # Nautilus file manager preferences
+      "org/gnome/nautilus/preferences" = {
+        show-image-thumbnails = "always"; # Show thumbnails in all cases
+        thumbnail-limit = 100; # Generate thumbnails for files up to 100MB
       };
     };
 
-    # # Explicitly set GTK4 theme to match GTK3 theme (silences warning about changed default)
-    # gtk4.theme = "catppuccin-frappe-blue-standard+rimless";
-
-    # Icon theme (dark by default)
-    iconTheme = {
-      name = "Papirus-Dark";
-      package = pkgs.papirus-icon-theme;
-    };
-
-    # Cursor theme (dark by default)
-    cursorTheme = {
-      name = "catppuccin-frappe-dark-cursors";
-      package = pkgs.catppuccin-cursors.frappeDark;
-      size = 24;
-    };
-
-    # Don't force dark mode - let dconf/toggle script control it
-    # gtk3.extraConfig.gtk-application-prefer-dark-theme is managed by toggle script
-    # gtk4.extraConfig.gtk-application-prefer-dark-theme is managed by toggle script
+    # Don't set GTK_THEME environment variable - it overrides dconf settings
+    # The toggle script will manage themes via dconf instead
   };
-
-  # Install additional themes for toggling
-  home.packages = with pkgs; [
-    # Light theme for toggle support
-    (catppuccin-gtk.override {
-      accents = [ "blue" ];
-      size = "standard";
-      tweaks = [ "rimless" ];
-      variant = "latte";
-    })
-
-    # Light cursor
-    catppuccin-cursors.latteDark
-  ];
-
-  # Set default color scheme via dconf (dark mode by default)
-  dconf.settings = {
-    "org/gnome/desktop/interface" = {
-      color-scheme = "prefer-dark";
-      gtk-theme = "catppuccin-frappe-blue-standard+rimless";
-      icon-theme = "Papirus-Dark";
-      cursor-theme = "catppuccin-frappe-dark-cursors";
-    };
-
-    # Nautilus file manager preferences
-    "org/gnome/nautilus/preferences" = {
-      show-image-thumbnails = "always"; # Show image thumbnails in all cases
-      thumbnail-limit = 100; # Generate thumbnails for files up to 100MB
-    };
-  };
-
-  # Don't set GTK_THEME environment variable - it overrides dconf settings
-  # The toggle script will manage themes via dconf instead
 }
