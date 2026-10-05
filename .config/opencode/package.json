@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@opencode-ai/plugin": "1.14.24"
+  },
+  "overrides": {
+    "toml": "^5.0.0",
+    "uuid": "^14.0.2"
+  }
+}
