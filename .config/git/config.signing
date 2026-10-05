@@ -1,7 +1,0 @@
-# Commit signing - only loaded on hosts that hold the GPG secret key.
-# Included conditionally from config via: includeIf "hostname:byakugan"
-[user]
-  signingKey = REDACTED-BYAKUGAN-SIGNING-KEY
-
-[commit]
-  gpgSign = true
