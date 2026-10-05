@@ -12,6 +12,8 @@
   imports = [
     ../../nix-darwin/profiles/base.nix
     ./vm-clipboard-sync.nix
+    ../../nix-darwin/system.nix
+    ./googleworkspace.cli.nix
   ];
 
   # Host-specific configuration

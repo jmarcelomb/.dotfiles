@@ -6,17 +6,19 @@
   # existing backup timers carry them onward to the TrueNAS NFS share and
   # the mac-mini offsite copy. Total volume is a few MB.
   #
-  # Without this, rebuilding the caddy VM would mean re-issuing all
-  # *.p.marceloborges.dev certs (rate-limited) and re-enrolling the
-  # netbird client.
+  # Runs as ROOT locally: the netbird-client volume contains root-owned
+  # state (opendir as hinata -> Permission denied, seen 2026-10-05).
+  # Remote side is unaffected: ssh targets hinata@chakra with the
+  # dedicated backup key, so files land owned by hinata on chakra.
   systemd.services.caddy-state-backup = {
     description = "Push caddy/netbird state to chakra's backed-up tree";
-    after = [ "network-online.target" ];
+    after = [
+      "network-online.target"
+      "docker.service"
+    ];
     wants = [ "network-online.target" ];
     serviceConfig = {
       Type = "oneshot";
-      User = "hinata";
-      Group = "users";
       ExecStart = ''
         ${pkgs.rsync}/bin/rsync -az --delete \
           -e "${pkgs.openssh}/bin/ssh -i /home/hinata/.ssh/id_ed25519_backup_to_chakra -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=accept-new" \
