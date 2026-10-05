@@ -12,7 +12,7 @@
   imports = [
     ../../nix-darwin/profiles/base.nix
     ./vm-clipboard-sync.nix
-    ../../nix-darwin/system.nix
+    # Google Workspace CLI (gws) - admin tooling
     ./googleworkspace.cli.nix
   ];
 
