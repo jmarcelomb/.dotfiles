@@ -1,4 +1,8 @@
+# opencode runtime/scaffolding state - NOT tracked.
+# User-authored files (opencode.jsonc, AGENTS.md, cli.json, commands/,
+# agents/, plugins/ you write) stay tracked at the repo root's rules.
 node_modules
 package.json
-bun.lock
-.gitignore
+package-lock.json
+service.json
+tui.json
