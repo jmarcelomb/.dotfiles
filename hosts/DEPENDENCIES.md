@@ -15,8 +15,6 @@ times intentionally vague - fill in from your own notes/router.)
 | caddy | x86_64-linux VM (chakra clone) | reverse proxy + netbird client only |
 | byakugan | x86_64-linux sway laptop | holds the GPG commit-signing key (`includeIf hostname:byakugan`) |
 
-(work-macbook removed from the fleet 2026-10-04.)
-
 ## Cross-host contracts
 
 - **chakra -> mac-mini (nightly offsite rsync)**: authenticates with a

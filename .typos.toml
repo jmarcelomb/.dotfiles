@@ -6,7 +6,6 @@ extend-ignore-re = [
 ]
 
 [default.extend-words]
-synopsys = "synopsys"
 
 [files]
 extend-exclude = [".config/yazi/plugins/"]
