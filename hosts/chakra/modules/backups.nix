@@ -1,20 +1,46 @@
 { pkgs, ... }:
 {
-  # Nightly backup of docker volumes to the NFS share on TrueNAS.
-  # Runs as `hinata` (not root) so that NFS root-squash on the TrueNAS side
+  # Two-stage nightly backup of the docker volumes.
+  #
+  # Stage (root): the volumes tree contains root-owned container state
+  # (adguardhome config, netbird identity, caddy certs) that a hinata-run
+  # rsync cannot read - it failed with Permission denied on exactly those
+  # paths (2026-10-05). Root stages a full copy to /var/backups and hands
+  # ownership to hinata.
+  #
+  # Ship (hinata): rsyncs the staging tree to the NFS share on TrueNAS.
+  # Runs as hinata (not root) so NFS root-squash on the TrueNAS side
   # doesn't cause "Permission denied" when creating files.
+  systemd.services.docker-volumes-stage = {
+    description = "Stage docker volumes for backup (read as root)";
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = ''
+        ${pkgs.rsync}/bin/rsync -a --delete /home/hinata/server/volumes/ /var/backups/docker-volumes/
+      '';
+      ExecStartPost = ''
+        ${pkgs.coreutils}/bin/chown -R hinata:users /var/backups/docker-volumes
+      '';
+      SyslogIdentifier = "docker-volumes-stage";
+    };
+  };
+
   systemd.services.docker-volumes-backup = {
     description = "Backup docker volumes to NFS share on TrueNAS";
+    requires = [ "docker-volumes-stage.service" ];
+    # The automount unit name is derived from the mountpoint path
+    # (/mnt/nfs-chakra); renaming the mountpoint breaks this ordering.
+    wants = [ "network-online.target" ];
     after = [
       "network-online.target"
+      "docker-volumes-stage.service"
       "mnt-nfs\\x2dchakra.automount"
     ];
-    wants = [ "network-online.target" ];
     serviceConfig = {
       Type = "oneshot";
       User = "hinata";
       Group = "users";
-      ExecStart = "${pkgs.rsync}/bin/rsync -av --delete /home/hinata/server/volumes/ /mnt/nfs-chakra/docker-volumes-backup/";
+      ExecStart = "${pkgs.rsync}/bin/rsync -av --delete /var/backups/docker-volumes/ /mnt/nfs-chakra/docker-volumes-backup/";
       # Log output tagged so `journalctl -t docker-backup` still works.
       SyslogIdentifier = "docker-backup";
     };

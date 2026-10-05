@@ -104,3 +104,6 @@ end
 
 # Hermes Agent command
 fish_add_path "$HOME/.local/bin"
+
+# opencode
+fish_add_path "$HOME/.opencode/bin"
