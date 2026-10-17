@@ -24,6 +24,9 @@ let
     # on very long prompts; 64k covers everything Hermes sends (cron PR check
     # ~16-19k tokens) with headroom.
     maxKvSize = 65536;
+    # Cap concurrent decodes: several parallel 5k-token prefills Metal-OOM
+    # ("Insufficient Memory") on 16 GB. Extra requests queue (backpressure).
+    maxNumSeqs = 2;
   };
 in
 {
@@ -34,7 +37,8 @@ in
         --model ${cfg.model} \
         --host ${cfg.host} \
         --port "${toString cfg.port}" \
-        --max-kv-size "${toString cfg.maxKvSize}"
+        --max-kv-size "${toString cfg.maxKvSize}" \
+        --max-num-seqs "${toString cfg.maxNumSeqs}"
     '';
     serviceConfig = {
       Label = "com.user.mlx-lm-server";
