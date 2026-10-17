@@ -213,7 +213,7 @@
         "B" = "secondary";
         "S" = "secondary";
         "T" = "secondary";
-        "A" = "main";
+        "A" = "secondary";
       };
 
       on-window-detected = [
