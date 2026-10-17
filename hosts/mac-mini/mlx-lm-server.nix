@@ -21,9 +21,12 @@ let
     # generated token").
     tokenQueueTimeoutS = 3600;
     # Hard KV-cache cap. Unbounded cache on 16 GB can spike wired GPU memory
-    # on very long prompts; 64k covers everything Hermes sends (cron PR check
-    # ~16-19k tokens) with headroom.
-    maxKvSize = 65536;
+    # on very long prompts; 64k covered everything but its ~10.7 GB KV
+    # reservation plus ~5.5 GB weights starves the whole machine (2026-10-17:
+    # 15% free RAM, 40 s for a 5-token completion even after a clean restart,
+    # streaming failures). 32k still covers the largest cron prompts (~19k
+    # tokens) with headroom at roughly half the KV footprint.
+    maxKvSize = 32768;
     # Cap concurrent decodes: several parallel 5k-token prefills Metal-OOM
     # ("Insufficient Memory") on 16 GB. Extra requests queue (backpressure).
     maxNumSeqs = 2;
