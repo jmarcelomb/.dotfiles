@@ -8,8 +8,13 @@ let
     host = "127.0.0.1";
     port = 8080;
     # uv-managed binary; stable across uv tool upgrades
-    bin = "${homeDirectory}/.local/bin/mlx_lm.server";
+    # mlx-vlm 0.7.8+: text + tool calls + gemma4_unified vision in one server
+    bin = "${homeDirectory}/.local/bin/mlx_vlm.server";
     logDir = "${homeDirectory}/Library/Logs/mlx-lm";
+    # log rotation (newsyslog): rotate when log passes maxLogSizeMB,
+    # keep maxArchives compressed copies
+    maxLogSizeMB = 10;
+    maxArchives = 3;
   };
 in
 {
@@ -30,4 +35,11 @@ in
       StandardErrorPath = "${cfg.logDir}/server.log";
     };
   };
+
+  # Rotate server.log via newsyslog: when it passes maxLogSizeMB, compress it
+  # and keep maxArchives copies. Disk usage stays capped at a few MB total.
+  environment.etc."newsyslog.d/mlx-lm.conf".text = ''
+    # logfilename                           owner:group  mode  count  size  when  flags
+    ${cfg.logDir}/server.log                ${user}:staff 644  ${toString cfg.maxArchives}  ${toString (cfg.maxLogSizeMB * 1024)}  *  J
+  '';
 }
