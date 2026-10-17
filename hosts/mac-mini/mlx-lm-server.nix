@@ -4,17 +4,22 @@
 
 let
   cfg = {
-    model = "mlx-community/gemma-4-12B-it-qat-4bit";
+    model = "mlx-community/Qwen3.5-9B-4bit";
     host = "127.0.0.1";
     port = 8080;
     # uv-managed binary; stable across uv tool upgrades
-    # mlx-vlm 0.7.8+: text + tool calls + gemma4_unified vision in one server
+    # mlx-vlm 0.7.8+: text + tool calls + vision (gemma4_unified, qwen3_5) in one server
     bin = "${homeDirectory}/.local/bin/mlx_vlm.server";
     logDir = "${homeDirectory}/Library/Logs/mlx-lm";
     # log rotation (newsyslog): rotate when log passes maxLogSizeMB,
     # keep maxArchives compressed copies
     maxLogSizeMB = 10;
     maxArchives = 3;
+    # 600s default is too short for long prefills (~19k-token cron prompts);
+    # when several requests queue, prefill can exceed it and the server drops
+    # the stream mid-generation ("Timed out waiting for 600s for the next
+    # generated token").
+    tokenQueueTimeoutS = 3600;
   };
 in
 {
@@ -31,6 +36,9 @@ in
       RunAtLoad = true;
       KeepAlive = true; # restart on crash
       ProcessType = "Background";
+      EnvironmentVariables = {
+        MLX_VLM_TOKEN_QUEUE_TIMEOUT = toString cfg.tokenQueueTimeoutS;
+      };
       StandardOutPath = "${cfg.logDir}/server.log";
       StandardErrorPath = "${cfg.logDir}/server.log";
     };
