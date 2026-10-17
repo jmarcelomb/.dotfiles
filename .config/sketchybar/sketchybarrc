@@ -1,23 +1,14 @@
-# This is a demo config to showcase some of the most important commands.
-# It is meant to be changed and configured, as it is intentionally kept sparse.
-# For a (much) more advanced configuration example see my dotfiles:
-# https://github.com/FelixKratz/dotfiles
+# Sketchybar config. Workspaces are AeroSpace workspaces; one hidden helper
+# item updates all of them per event (see plugins/aerospace_windows.sh).
+# Battery auto-hides on desktops (see plugins/battery.sh).
 
 PLUGIN_DIR="$CONFIG_DIR/plugins"
 
 ##### Bar Appearance #####
-# Configuring the general appearance of the bar.
-# These are only some of the options available. For all options see:
-# https://felixkratz.github.io/SketchyBar/config/bar
-# If you are looking for other colors, see the color picker:
-# https://felixkratz.github.io/SketchyBar/config/tricks#color-picker
 
 sketchybar --bar position=top height=30 blur_radius=30 color=0x40000000
 
-##### Changing Defaults #####
-# We now change some default values, which are applied to all further items.
-# For a full list of all available item properties see:
-# https://felixkratz.github.io/SketchyBar/config/items
+##### Defaults #####
 
 default=(
   padding_left=1
@@ -33,50 +24,46 @@ default=(
 )
 sketchybar --default "${default[@]}"
 
-##### Adding Left Items #####
-# We add some regular items to the left side of the bar, where
-# only the properties deviating from the current defaults need to be set
-
-# sketchybar --add item chevron left \
-#            --set chevron icon= label.drawing=off \
-#            --add item front_app left \
-#            --set front_app icon.drawing=off script="$PLUGIN_DIR/front_app.sh" \
-#            --subscribe front_app front_app_switched
+##### Left: AeroSpace workspaces #####
 
 sketchybar --add event aerospace_workspace_change
 
-EXISTING=$(aerospace list-workspaces --all | grep -v -E "^(C|E|N|I)$")
-echo "$EXISTING" | grep -qx "A" || EXISTING="$EXISTING A"
+# Fixed order, independent of which workspaces AeroSpace has created so far.
+WORKSPACES=(1 2 3 4 5 6 7 8 9 10 A B S T)
 
-for sid in $EXISTING; do
+for sid in "${WORKSPACES[@]}"; do
     sketchybar --add item space.$sid left \
-        --subscribe space.$sid aerospace_workspace_change \
         --set space.$sid \
-        background.color=0x44ffffff \
+        label.font="sketchybar-app-font:Regular:16.0" \
+        background.color=0x66ffffff \
         background.corner_radius=5 \
         background.height=20 \
         background.drawing=off \
-        label="$sid" \
-        click_script="aerospace workspace $sid" \
-        script="$CONFIG_DIR/plugins/aerospace.sh $sid"
+        icon="$sid" \
+        click_script="aerospace workspace $sid"
 done
 
-##### Adding Right Items #####
-# In the same way as the left items we can add items to the right side.
-# Additional position (e.g. center) are available, see:
-# https://felixkratz.github.io/SketchyBar/config/items#adding-items-to-sketchybar
+# Hidden item that does the actual updating: one aerospace query and one
+# batched sketchybar call per event instead of one process per item.
+sketchybar --add item aerospace_helper left \
+    --set aerospace_helper \
+    drawing=off \
+    script="$PLUGIN_DIR/aerospace_windows.sh" \
+    --subscribe aerospace_helper aerospace_workspace_change
 
-# Some items refresh on a fixed cycle, e.g. the clock runs its script once
-# every 10s. Other items respond to events they subscribe to, e.g. the
-# volume.sh script is only executed once an actual change in system audio
-# volume is registered. More info about the event system can be found here:
-# https://felixkratz.github.io/SketchyBar/config/events
+##### Right items #####
 
 sketchybar --add item clock right \
-           --set clock update_freq=10 icon=􀐫  script="$PLUGIN_DIR/clock.sh" \
+           --set clock update_freq=10 icon=􀐫 script="$PLUGIN_DIR/clock.sh" \
            --add item volume right \
            --set volume script="$PLUGIN_DIR/volume.sh" \
            --subscribe volume volume_change \
+           --add item lamp right \
+           --set lamp update_freq=30 \
+           icon="●" icon.color=0xff666666 \
+           label="candeeiro" label.font="SauceCodePro Nerd Font Mono:Bold:14.0" \
+           script="$PLUGIN_DIR/lamp.sh" \
+           --subscribe lamp mouse.clicked system_woke \
            --add item battery right \
            --set battery update_freq=120 script="$PLUGIN_DIR/battery.sh" \
            --subscribe battery system_woke power_source_change

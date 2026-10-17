@@ -1,9 +1,11 @@
 #!/bin/sh
 
-PERCENTAGE="$(pmset -g batt | grep -Eo "\d+%" | cut -d% -f1)"
+PERCENTAGE="$(pmset -g batt | grep -Eo '[0-9]+%' | cut -d% -f1)"
 CHARGING="$(pmset -g batt | grep 'AC Power')"
 
+# Auto-hide on desktops: no percentage means no battery.
 if [ "$PERCENTAGE" = "" ]; then
+  sketchybar --set "$NAME" drawing=off
   exit 0
 fi
 
@@ -29,4 +31,4 @@ fi
 
 # The item invoking this script (name $NAME) will get its icon and label
 # updated with the current battery status
-sketchybar --set "$NAME" icon="$ICON" label="${PERCENTAGE}%"
+sketchybar --set "$NAME" drawing=on icon="$ICON" label="${PERCENTAGE}%"
