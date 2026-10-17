@@ -30,10 +30,19 @@ for sid in "${WORKSPACES[@]}"; do
   )
   ICONS="${ICONS% }"
 
-  if [ "$sid" = "$FOCUSED" ]; then
-    args+=(--set "space.$sid" label="$ICONS" background.drawing=on background.color=0x66ffffff)
+  # Centering: a bare number/letter gets symmetric padding around the icon;
+  # an item with app glyphs keeps a small gap after the letter and breathing
+  # room after the glyphs.
+  if [ -z "$ICONS" ]; then
+    PADS=(icon.padding_left=8 icon.padding_right=8 label.padding_left=0 label.padding_right=0)
   else
-    args+=(--set "space.$sid" label="$ICONS" background.drawing=off)
+    PADS=(icon.padding_left=8 icon.padding_right=3 label.padding_left=1 label.padding_right=6)
+  fi
+
+  if [ "$sid" = "$FOCUSED" ]; then
+    args+=(--set "space.$sid" label="$ICONS" "${PADS[@]}" background.drawing=on background.color=0x66ffffff)
+  else
+    args+=(--set "space.$sid" label="$ICONS" "${PADS[@]}" background.drawing=off)
   fi
 done
 
