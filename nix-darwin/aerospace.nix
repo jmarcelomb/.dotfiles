@@ -58,6 +58,7 @@
             alt-b = "workspace B";
             alt-s = "workspace S";
             alt-t = "workspace T";
+            alt-a = "workspace A";
 
             alt-shift-1 = [
               "move-node-to-workspace 1"
@@ -110,6 +111,10 @@
             alt-shift-t = [
               "move-node-to-workspace T"
               "workspace T"
+            ];
+            alt-shift-a = [
+              "move-node-to-workspace A"
+              "workspace A"
             ];
 
             alt-shift-semicolon = "mode service";
@@ -208,6 +213,7 @@
         "B" = "secondary";
         "S" = "secondary";
         "T" = "secondary";
+        "A" = "main";
       };
 
       on-window-detected = [
@@ -299,6 +305,10 @@
         {
           "if".app-id = "us.zoom.xos";
           run = [ "move-node-to-workspace T" ];
+        }
+        {
+          "if".app-id = "com.nousresearch.hermes";
+          run = [ "move-node-to-workspace A" ];
         }
         {
           "if".app-id = "com.microsoft.onenote.mac";
