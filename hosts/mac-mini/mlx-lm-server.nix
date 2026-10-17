@@ -20,6 +20,10 @@ let
     # the stream mid-generation ("Timed out waiting for 600s for the next
     # generated token").
     tokenQueueTimeoutS = 3600;
+    # Hard KV-cache cap. Unbounded cache on 16 GB can spike wired GPU memory
+    # on very long prompts; 64k covers everything Hermes sends (cron PR check
+    # ~16-19k tokens) with headroom.
+    maxKvSize = 65536;
   };
 in
 {
@@ -29,7 +33,8 @@ in
       exec ${cfg.bin} \
         --model ${cfg.model} \
         --host ${cfg.host} \
-        --port "${toString cfg.port}"
+        --port "${toString cfg.port}" \
+        --max-kv-size "${toString cfg.maxKvSize}"
     '';
     serviceConfig = {
       Label = "com.user.mlx-lm-server";
