@@ -5,9 +5,11 @@
 # Click the item to toggle. The desk-lamp glyph carries the state in its
 # color: warm yellow = on, dim gray = off, red alert glyph = unreachable.
 
+source "$CONFIG_DIR/helpers/theme.sh"
+
 ENTITY="light.sala_candeeiro_secretaria_pessoal"
-GLYPH_LAMP=$'\U000F095F'      # md-desk_lamp
-GLYPH_ALERT=$'\U000F19E1'     # md-lightbulb_alert
+GLYPH_LAMP='󰥟'      # md-desk_lamp
+GLYPH_ALERT='󱧡'     # md-lightbulb_alert
 
 set -a
 [ -f "$HOME/.hermes/.env" ] && source "$HOME/.hermes/.env"
@@ -34,7 +36,7 @@ except Exception: print("unavailable")' 2>/dev/null)"
 fi
 
 case "$STATE" in
-  on)  sketchybar --set "$NAME" icon="$GLYPH_LAMP" icon.color=0xffe6c34a ;;
-  off) sketchybar --set "$NAME" icon="$GLYPH_LAMP" icon.color=0xff777777 ;;
-  *)   sketchybar --set "$NAME" icon="$GLYPH_ALERT" icon.color=0xffcc5555 ;;
+  on)  sketchybar --set "$NAME" icon="$GLYPH_LAMP" icon.color=$HA_ON ;;
+  off) sketchybar --set "$NAME" icon="$GLYPH_LAMP" icon.color=$HA_OFF ;;
+  *)   sketchybar --set "$NAME" icon="$GLYPH_ALERT" icon.color=$RED ;;
 esac

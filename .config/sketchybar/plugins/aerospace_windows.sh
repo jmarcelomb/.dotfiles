@@ -6,6 +6,7 @@
 # every workspace instead of one process per item per event.
 
 source "$CONFIG_DIR/helpers/icon_map.sh"
+source "$CONFIG_DIR/helpers/theme.sh"
 
 WORKSPACES=(1 2 3 4 5 6 7 8 9 10 A B S T)
 FOCUSED="$(aerospace list-workspaces --focused)"
@@ -40,9 +41,13 @@ for sid in "${WORKSPACES[@]}"; do
   fi
 
   if [ "$sid" = "$FOCUSED" ]; then
-    args+=(--set "space.$sid" label="$ICONS" "${PADS[@]}" background.drawing=on background.color=0x66ffffff)
+    args+=(--set "space.$sid" label="$ICONS" "${PADS[@]}" \
+      background.drawing=on background.color=$FOCUS_BG \
+      icon.color=$FOCUS_TEXT label.color=$FOCUS_TEXT)
   else
-    args+=(--set "space.$sid" label="$ICONS" "${PADS[@]}" background.drawing=off)
+    args+=(--set "space.$sid" label="$ICONS" "${PADS[@]}" \
+      background.drawing=off \
+      icon.color=$TEXT label.color=$TEXT)
   fi
 done
 

@@ -1,12 +1,17 @@
-# Sketchybar config. Workspaces are AeroSpace workspaces; one hidden helper
-# item updates all of them per event (see plugins/aerospace_windows.sh).
-# Battery auto-hides on desktops (see plugins/battery.sh).
+# Sketchybar config: island style over a transparent bar, Catppuccin Frappe
+# palette in helpers/theme.sh. Groups: AeroSpace workspaces (left),
+# Spotify now-playing, Home Assistant, control center (right).
+# Workspaces are updated by one hidden helper per event
+# (plugins/aerospace_windows.sh). Battery and media auto-hide when their
+# source is absent (plugins/battery.sh, plugins/media.sh).
+
+source "$CONFIG_DIR/helpers/theme.sh"
 
 PLUGIN_DIR="$CONFIG_DIR/plugins"
 
 ##### Bar Appearance #####
 
-sketchybar --bar position=top height=30 blur_radius=30 color=0x40000000
+sketchybar --bar position=top height=30 blur_radius=0 color=$BAR_BG
 
 ##### Defaults #####
 
@@ -15,8 +20,8 @@ default=(
   padding_right=1
   icon.font="SauceCodePro Nerd Font Mono:Bold:19.0"
   label.font="SauceCodePro Nerd Font Mono:Bold:15.0"
-  icon.color=0xffffffff
-  label.color=0xffffffff
+  icon.color=$TEXT
+  label.color=$TEXT
   icon.padding_left=4
   icon.padding_right=4
   label.padding_left=2
@@ -24,9 +29,12 @@ default=(
 )
 sketchybar --default "${default[@]}"
 
-##### Left: AeroSpace workspaces #####
+##### Left island: AeroSpace workspaces #####
 
 sketchybar --add event aerospace_workspace_change
+
+# Edge spacer gives the island inner padding (blank glyph, invisible).
+sketchybar --add item ws_l left --set ws_l icon=" " label.drawing=off
 
 # Fixed order, independent of which workspaces AeroSpace has created so far.
 WORKSPACES=(1 2 3 4 5 6 7 8 9 10 A B S T)
@@ -38,13 +46,15 @@ for sid in "${WORKSPACES[@]}"; do
         icon.y_offset=1 \
         label.font="sketchybar-app-font:Regular:14.0" \
         label.y_offset=0 \
-        background.color=0x66ffffff \
+        background.color=$FOCUS_BG \
         background.corner_radius=5 \
         background.height=20 \
         background.drawing=off \
         icon="$sid" \
         click_script="aerospace workspace $sid"
 done
+
+sketchybar --add item ws_r left --set ws_r icon=" " label.drawing=off
 
 # Hidden item that does the actual updating: one aerospace query and one
 # batched sketchybar call per event instead of one process per item.
@@ -54,22 +64,82 @@ sketchybar --add item aerospace_helper left \
     script="$PLUGIN_DIR/aerospace_windows.sh" \
     --subscribe aerospace_helper aerospace_workspace_change
 
-##### Right items #####
+sketchybar --add bracket ws_island ws_l space.1 space.2 space.3 space.4 space.5 \
+    space.6 space.7 space.8 space.9 space.10 space.A space.B space.S space.T ws_r \
+    --set ws_island \
+    background.drawing=on \
+    background.color=$ISLAND_BG \
+    background.border_width=1 \
+    background.border_color=$ISLAND_BORDER \
+    background.corner_radius=$ISLAND_RADIUS \
+    background.height=$ISLAND_HEIGHT
 
-sketchybar --add item clock right \
-           --set clock update_freq=10 icon=􀐫 script="$PLUGIN_DIR/clock.sh" \
+##### Right islands #####
+
+# Added right-to-left: first item added to "right" is the rightmost.
+# Islands right to left: control center, Home Assistant, Spotify media.
+
+sketchybar --add item ctl_r right --set ctl_r icon=" " label.drawing=off \
+           --add item clock right \
+           --set clock update_freq=10 icon='' script="$PLUGIN_DIR/clock.sh" \
+           --add item battery right \
+           --set battery update_freq=120 script="$PLUGIN_DIR/battery.sh" \
+           --subscribe battery system_woke power_source_change \
            --add item volume right \
            --set volume script="$PLUGIN_DIR/volume.sh" \
            --subscribe volume volume_change \
+           --add item ctl_l right --set ctl_l icon=" " label.drawing=off
+
+sketchybar --add bracket ctl_island ctl_r clock battery volume ctl_l \
+    --set ctl_island \
+    background.drawing=on \
+    background.color=$ISLAND_BG \
+    background.border_width=1 \
+    background.border_color=$ISLAND_BORDER \
+    background.corner_radius=$ISLAND_RADIUS \
+    background.height=$ISLAND_HEIGHT
+
+# gap between the control island and the HA island
+sketchybar --add item gap_ctl_ha right --set gap_ctl_ha icon="  " label.drawing=off
+
+sketchybar --add item ha_r right --set ha_r icon=" " label.drawing=off \
            --add item lamp right \
            --set lamp update_freq=30 \
-           icon=$'\U000F095F' icon.font="SauceCodePro Nerd Font Mono:Bold:19.0" icon.color=0xff777777 \
+           icon='󰥟' icon.font="SauceCodePro Nerd Font Mono:Bold:19.0" icon.color=$HA_OFF \
            label.drawing=off \
            script="$PLUGIN_DIR/lamp.sh" \
            --subscribe lamp mouse.clicked system_woke \
-           --add item battery right \
-           --set battery update_freq=120 script="$PLUGIN_DIR/battery.sh" \
-           --subscribe battery system_woke power_source_change
+           --add item ha_l right --set ha_l icon=" " label.drawing=off
+
+sketchybar --add bracket ha_island ha_r lamp ha_l \
+    --set ha_island \
+    background.drawing=on \
+    background.color=$ISLAND_BG \
+    background.border_width=1 \
+    background.border_color=$ISLAND_BORDER \
+    background.corner_radius=$ISLAND_RADIUS \
+    background.height=$ISLAND_HEIGHT
+
+sketchybar --add item gap_ha_media right --set gap_ha_media icon="  " label.drawing=off
+
+sketchybar --add item media_r right --set media_r icon=" " label.drawing=off \
+           --add item media right \
+           --set media update_freq=5 \
+           icon.font="sketchybar-app-font:Regular:15.0" \
+           icon.color=$HA_OFF \
+           scroll_texts=on \
+           script="$PLUGIN_DIR/media.sh" \
+           click_script="open -a Spotify" \
+           --add item media_l right --set media_l icon=" " label.drawing=off
+
+sketchybar --add bracket media_island media_r media media_l \
+    --set media_island \
+    background.drawing=on \
+    background.color=$ISLAND_BG \
+    background.border_width=1 \
+    background.border_color=$ISLAND_BORDER \
+    background.corner_radius=$ISLAND_RADIUS \
+    background.height=$ISLAND_HEIGHT
 
 ##### Force all scripts to run the first time (never do this in a script) #####
 sketchybar --update
