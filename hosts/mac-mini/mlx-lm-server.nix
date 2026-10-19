@@ -59,6 +59,32 @@ in
     };
   };
 
+  # Canary watchdog: mlx_lm's generation thread dies permanently on GPU OOM
+  # ("generation thread died"; every subsequent request 404s until restart —
+  # seen 2026-10-19 when a 49k-token prompt OOMed at 28.6k prefill). This
+  # agent runs a minimal chat completion every 5 minutes; if it fails,
+  # kickstart the server. Cheap on a warm prompt cache (~1s).
+  launchd.user.agents.mlx-lm-watchdog = {
+    script = ''
+      CODE=$(curl -s -o /dev/null -w '%{http_code}' -m 90 \
+        http://127.0.0.1:8080/v1/chat/completions \
+        -H 'Content-Type: application/json' \
+        -d '{"model":"${cfg.model}","max_tokens":1,"chat_template_kwargs":{"enable_thinking":false},"messages":[{"role":"user","content":"ping"}]}')
+      if [ "$CODE" != "200" ]; then
+        echo "$(date '+%F %T') canary failed (HTTP $CODE), restarting mlx-lm-server" >> ${cfg.logDir}/watchdog.log
+        launchctl kickstart -k gui/$(id -u)/com.user.mlx-lm-server
+      fi
+    '';
+    serviceConfig = {
+      Label = "com.user.mlx-lm-watchdog";
+      RunAtLoad = false;
+      StartInterval = 300; # every 5 minutes
+      ProcessType = "Background";
+      StandardOutPath = "${cfg.logDir}/watchdog.out";
+      StandardErrorPath = "${cfg.logDir}/watchdog.out";
+    };
+  };
+
   # Rotate server.log via newsyslog: when it passes maxLogSizeMB, compress it
   # and keep maxArchives copies. Disk usage stays capped at a few MB total.
   environment.etc."newsyslog.d/mlx-lm.conf".text = ''
