@@ -158,35 +158,26 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
                          headers={k: v for k, v in self.headers.items()
                                   if k.lower() not in HOP_BY_HOP})
             resp = conn.getresponse()
+            # Buffer the full response and send it with an explicit
+            # Content-Length. Pass-through framing (forwarding chunked or
+            # stripping Content-Length) breaks keep-alive clients (httpx /
+            # the OpenAI SDK): with no framing and no Connection: close they
+            # wait forever for the body terminator. Vision responses are
+            # small and generation is short, so buffering is harmless and
+            # makes framing unambiguous. SSE through this proxy arrives as
+            # one final batch instead of incremental chunks.
+            body = resp.read()
             self.send_response(resp.status)
-            chunked = False
             for k, v in resp.getheaders():
                 lk = k.lower()
                 if lk in HOP_BY_HOP:
                     continue
-                if lk == "transfer-encoding" and "chunked" in v.lower():
-                    chunked = True
-                    continue
                 self.send_header(k, v)
-            if chunked:
-                self.send_header("Transfer-Encoding", "chunked")
+            self.send_header("Content-Length", str(len(body)))
             self.end_headers()
-
-            def write_chunk(data):
-                if chunked:
-                    self.wfile.write(f"{len(data):x}\r\n".encode()
-                                     + data + b"\r\n")
-                else:
-                    self.wfile.write(data)
-
-            while True:
-                data = resp.read(8192)
-                if not data:
-                    break
+            if body:
                 _touch()
-                write_chunk(data)
-            if chunked:
-                self.wfile.write(b"0\r\n\r\n")
+                self.wfile.write(body)
             self.wfile.flush()
             conn.close()
         except (http.client.HTTPException, OSError) as e:
