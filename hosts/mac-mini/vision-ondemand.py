@@ -28,6 +28,12 @@ BACKEND_BIN = os.path.expanduser("~/.local/bin/mlx_vlm.server")
 BACKEND_MODEL = "mlx-community/Qwen3.5-4B-4bit"
 BACKEND_START_TIMEOUT = 300  # cold model load can take minutes on first pull
 IDLE_SECONDS = int(os.environ.get("MLX_VISION_IDLE_SECONDS", "600"))
+# The 9B text server (5.5 GB weights + KV) plus this 4B VLM sit near the
+# ~10.5 GB wired GPU cap; a vision request can Metal-OOM while the text
+# server holds a large prompt cache, then succeed once pressure eases.
+# Retry 5xx responses before giving up.
+RETRIES = int(os.environ.get("MLX_VISION_RETRIES", "2"))
+RETRY_DELAY = 5
 LOG_DIR = os.path.expanduser("~/Library/Logs/mlx-vision")
 # ------------------------------------------------------------------------
 
@@ -151,24 +157,40 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
         length = int(self.headers.get("Content-Length") or 0)
         req_body = self.rfile.read(length) if length else None
         _inflight += 1
+        conn = None
         try:
-            conn = http.client.HTTPConnection(BACKEND_HOST, BACKEND_PORT,
-                                              timeout=900)
-            conn.request(method, self.path, body=req_body,
-                         headers={k: v for k, v in self.headers.items()
-                                  if k.lower() not in HOP_BY_HOP})
-            resp = conn.getresponse()
-            # Buffer the full response and send it with an explicit
-            # Content-Length. Pass-through framing (forwarding chunked or
-            # stripping Content-Length) breaks keep-alive clients (httpx /
-            # the OpenAI SDK): with no framing and no Connection: close they
-            # wait forever for the body terminator. Vision responses are
-            # small and generation is short, so buffering is harmless and
-            # makes framing unambiguous. SSE through this proxy arrives as
-            # one final batch instead of incremental chunks.
-            body = resp.read()
-            self.send_response(resp.status)
-            for k, v in resp.getheaders():
+            body = b""
+            status = 502
+            headers = []
+            # Retry 5xx: the 9B text server and this VLM together sit near
+            # the wired GPU cap, so a vision request can Metal-OOM under
+            # transient pressure and succeed a few seconds later.
+            for attempt in range(RETRIES + 1):
+                conn = http.client.HTTPConnection(BACKEND_HOST, BACKEND_PORT,
+                                                  timeout=900)
+                conn.request(method, self.path, body=req_body,
+                             headers={k: v for k, v in self.headers.items()
+                                      if k.lower() not in HOP_BY_HOP})
+                resp = conn.getresponse()
+                body = resp.read()
+                status = resp.status
+                headers = resp.getheaders()
+                if status < 500 or attempt == RETRIES:
+                    break
+                _log(f"backend {status}, retry {attempt + 1}/{RETRIES}")
+                conn.close()
+                conn = None
+                time.sleep(RETRY_DELAY)
+            # Send the buffered response with an explicit Content-Length.
+            # Pass-through framing (forwarding chunked or stripping
+            # Content-Length) breaks keep-alive clients (httpx / the OpenAI
+            # SDK): with no framing and no Connection: close they wait
+            # forever for the body terminator. Vision responses are small
+            # and generation is short, so buffering is harmless and makes
+            # framing unambiguous. SSE through this proxy arrives as one
+            # final batch instead of incremental chunks.
+            self.send_response(status)
+            for k, v in headers:
                 lk = k.lower()
                 if lk in HOP_BY_HOP:
                     continue
@@ -179,10 +201,11 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
                 _touch()
                 self.wfile.write(body)
             self.wfile.flush()
-            conn.close()
         except (http.client.HTTPException, OSError) as e:
             _log(f"proxy error: {e!r}")
         finally:
+            if conn is not None:
+                conn.close()
             _inflight -= 1
             _touch()
 
