@@ -14,6 +14,7 @@
     ./vm-clipboard-sync.nix
     # mlx-lm local inference server (gemma-4-12B qat)
     ./mlx-lm-server.nix
+    ./mlx-vision-ondemand.nix
     # Hindsight memory daemon (profile hermes, pg0 hindsight-embed-hermes)
     ./hindsight-daemon.nix
     # Google Workspace CLI (gws) - admin tooling
