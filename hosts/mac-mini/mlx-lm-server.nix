@@ -43,12 +43,37 @@ in
   launchd.user.agents.mlx-lm-server = {
     script = ''
       mkdir -p ${cfg.logDir}
-      exec ${cfg.bin} \
+      # Server runs in the background with a log-tail supervisor. mlx_lm's
+      # unrecoverable failure mode is a Metal OOM that kills ONLY the
+      # generation thread while the HTTP process keeps serving 404s
+      # forever - launchd KeepAlive never sees a death. Watching the log
+      # for that exact line and killing the process gives Ollama-class
+      # self-healing (seconds to recovery) instead of waiting up to 5
+      # minutes for the canary (which stays as last resort for wedged
+      # servers that log nothing).
+      ${cfg.bin} \
         --model ${cfg.model} \
         --host ${cfg.host} \
         --port "${toString cfg.port}" \
         --prompt-cache-bytes "${toString cfg.promptCacheBytes}" \
-        --kv-bits "${toString cfg.kvBits}"
+        --kv-bits "${toString cfg.kvBits}" &
+      SERVER_PID=$!
+      cleanup() {
+        kill "$SERVER_PID" 2>/dev/null
+        [ -n "''${TAIL_PID:-}" ] && kill "$TAIL_PID" 2>/dev/null
+      }
+      trap cleanup EXIT INT TERM
+      tail -n 0 -F ${cfg.logDir}/server.log 2>/dev/null | while read -r LINE; do
+        case "$LINE" in
+          *"generation thread died"*)
+            echo "$(date '+%F %T') generation thread died, restarting mlx-lm-server" >> ${cfg.logDir}/watchdog.log
+            kill -9 "$SERVER_PID" 2>/dev/null
+            ;;
+        esac
+      done &
+      TAIL_PID=$!
+      wait "$SERVER_PID"
+      exit 0
     '';
     serviceConfig = {
       Label = "com.user.mlx-lm-server";
