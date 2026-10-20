@@ -23,10 +23,12 @@ let
     maxArchives = 3;
     # mlx_lm has no up-front KV reservation (unlike mlx_vlm's --max-kv-size):
     # KV is allocated per request and the prompt cache evicts entries when
-    # the total passes this byte budget. Sized for 8-bit KV: a full 64k-token
-    # context costs ~5.3 GB (see kvBits below), plus slack for a second
-    # smaller cache entry.
-    promptCacheBytes = 7516192768; # 7 GiB
+    # the total passes this byte budget. 3 GiB: big enough to keep both
+    # consumers' system prompts warm, small enough that weights (~5.5 GB)
+    # + cache + a full 64k 8-bit KV (~5.3 GB) stay inside the GPU wired
+    # limit. The 7 GiB budget OOMed Metal during large prefills
+    # (2026-10-20: Insufficient Memory at 24k prefill with a 4.4 GB cache).
+    promptCacheBytes = 3221225472; # 3 GiB
     # 8-bit KV cache: halves the per-token cost, which is what makes the
     # 64k context Hermes requires (MINIMUM_CONTEXT_LENGTH floor) fit next
     # to the ~5.5 GB weights on 16 GB (64k fp16 KV would be ~10.9 GB and
@@ -63,13 +65,22 @@ in
   # seen 2026-10-19 when a 49k-token prompt OOMed at 28.6k prefill). This
   # agent runs a minimal chat completion every 5 minutes; if it fails,
   # kickstart the server. Cheap on a warm prompt cache (~1s).
+  #
+  # CRITICAL: only a DEFINITIVE failure justifies a restart. HTTP 000 means
+  # the canary timed out or could not connect — on a single-slot server
+  # serving a long Hindsight extraction, a healthy server just queues the
+  # canary. Kicking it kills the in-flight request (2026-10-20: the canary
+  # restarted the server every ~5 min all day while Hindsight's backlog
+  # kept it busy, dropping every request in flight). The dead-thread case
+  # this watchdog exists for answers 404 immediately, and a wedged server
+  # answers 5xx — both arrive long before the 180s timeout.
   launchd.user.agents.mlx-lm-watchdog = {
     script = ''
-      CODE=$(curl -s -o /dev/null -w '%{http_code}' -m 90 \
+      CODE=$(curl -s -o /dev/null -w '%{http_code}' -m 180 \
         http://127.0.0.1:8080/v1/chat/completions \
         -H 'Content-Type: application/json' \
         -d '{"model":"${cfg.model}","max_tokens":1,"chat_template_kwargs":{"enable_thinking":false},"messages":[{"role":"user","content":"ping"}]}')
-      if [ "$CODE" != "200" ]; then
+      if [ "$CODE" = "404" ] || [ "$CODE" -ge 500 ] 2>/dev/null; then
         echo "$(date '+%F %T') canary failed (HTTP $CODE), restarting mlx-lm-server" >> ${cfg.logDir}/watchdog.log
         launchctl kickstart -k gui/$(id -u)/com.user.mlx-lm-server
       fi
