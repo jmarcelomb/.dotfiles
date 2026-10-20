@@ -14,6 +14,7 @@
     ./vm-clipboard-sync.nix
     # mlx-lm local inference server (gemma-4-12B qat)
     ./mlx-lm-server.nix
+    ./mlx-lm-priority-proxy.nix
     ./mlx-vision-ondemand.nix
     # Hindsight memory daemon (profile hermes, pg0 hindsight-embed-hermes)
     ./hindsight-daemon.nix

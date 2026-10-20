@@ -13,7 +13,11 @@ let
   cfg = {
     model = "mlx-community/Qwen3.5-9B-4bit";
     host = "127.0.0.1";
-    port = 8080;
+    # Moved behind the priority proxy: mlx_lm binds 8083, the proxy binds
+    # 8080 (the port Hermes and Hindsight both target) and yields
+    # Hindsight's retain traffic to Hermes chat. See
+    # mlx-lm-priority-proxy.nix.
+    port = 8083;
     # uv-managed binary; stable across uv tool upgrades
     bin = "${homeDirectory}/.local/bin/mlx_lm.server";
     logDir = "${homeDirectory}/Library/Logs/mlx-lm";
@@ -102,7 +106,7 @@ in
   launchd.user.agents.mlx-lm-watchdog = {
     script = ''
       CODE=$(curl -s -o /dev/null -w '%{http_code}' -m 180 \
-        http://127.0.0.1:8080/v1/chat/completions \
+        http://127.0.0.1:8083/v1/chat/completions \
         -H 'Content-Type: application/json' \
         -d '{"model":"${cfg.model}","max_tokens":1,"chat_template_kwargs":{"enable_thinking":false},"messages":[{"role":"user","content":"ping"}]}')
       if [ "$CODE" = "404" ] || [ "$CODE" -ge 500 ] 2>/dev/null; then
