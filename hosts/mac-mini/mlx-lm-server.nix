@@ -23,19 +23,18 @@ let
     maxArchives = 3;
     # mlx_lm has no up-front KV reservation (unlike mlx_vlm's --max-kv-size):
     # KV is allocated per request and the prompt cache evicts entries when
-    # the total passes this byte budget. 6 GiB admits one ~32k-token request
-    # (fp16 KV ~5.4 GiB) alongside small ones, matching the effective reach
-    # of the old 32k cap without starving the machine when idle.
-    promptCacheBytes = 6442450944;
-    # Cap concurrent decodes: several parallel big prefills Metal-OOM
-    # ("Insufficient Memory") on 16 GB. Extra requests queue (backpressure).
-    decodeConcurrency = 2;
-    # OPTIONAL 64k context: add "--kv-bits 8" below. 8-bit KV halves the
-    # per-token cost (~5.4 GiB for 64k instead of ~10.7 GiB), but disables
-    # batching (requests serialize) and slightly degrades long-context
-    # quality. Never raise context without it: 64k fp16 KV plus ~5.5 GB
-    # weights exceeds the machine budget (the math that killed the 64k
-    # mlx_vlm cap on 2026-10-17).
+    # the total passes this byte budget. Sized for 8-bit KV: a full 64k-token
+    # context costs ~5.3 GB (see kvBits below), plus slack for a second
+    # smaller cache entry.
+    promptCacheBytes = 7516192768; # 7 GiB
+    # 8-bit KV cache: halves the per-token cost, which is what makes the
+    # 64k context Hermes requires (MINIMUM_CONTEXT_LENGTH floor) fit next
+    # to the ~5.5 GB weights on 16 GB (64k fp16 KV would be ~10.9 GB and
+    # Metal-OOM at ~28k prefill - observed 2026-10-19). Trade-off: kv-bits
+    # disables batching, so requests are served one at a time (extra ones
+    # queue); decodeConcurrency is therefore omitted. Slight quality loss
+    # on very long contexts.
+    kvBits = 8;
   };
 in
 {
@@ -47,7 +46,7 @@ in
         --host ${cfg.host} \
         --port "${toString cfg.port}" \
         --prompt-cache-bytes "${toString cfg.promptCacheBytes}" \
-        --decode-concurrency "${toString cfg.decodeConcurrency}"
+        --kv-bits "${toString cfg.kvBits}"
     '';
     serviceConfig = {
       Label = "com.user.mlx-lm-server";
