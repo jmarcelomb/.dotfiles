@@ -1,4 +1,8 @@
-{
+{ config, ... }: {
+  # Homebrew binaries (remindctl, imsg, gh...) must be on the system PATH so
+  # non-interactive shells (launchd-spawned Hermes sessions, scripts) find them.
+  environment.systemPath = [ config.homebrew.brewPrefix ];
+
   homebrew = {
     enable = true; # Homebrew needs to be installed on its own!
     onActivation = {
@@ -14,6 +18,7 @@
       "gh"
       "openssl@3" # hindsight-embed's postgres (libpq) links against homebrew's libssl.3.dylib
       "steipete/tap/imsg"
+      "steipete/tap/remindctl"
     ];
     casks = [
       "veracrypt"
