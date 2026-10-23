@@ -27,6 +27,8 @@ try: print(json.load(sys.stdin).get("state", "unavailable"))
 except Exception: print("unavailable")' 2>/dev/null)"
 
 if [ "$SENDER" = "mouse.clicked" ]; then
+  # Immediate feedback: dim while the HA round trip runs.
+  sketchybar --set "$NAME" icon="$GLYPH_LAMP" icon.color=$DIM
   if [ "$STATE" = "on" ]; then SVC="turn_off"; else SVC="turn_on"; fi
   ha "/api/services/light/$SVC" -X POST -d "{\"entity_id\": \"$ENTITY\"}" > /dev/null
   sleep 1

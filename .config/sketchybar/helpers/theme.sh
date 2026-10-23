@@ -20,3 +20,4 @@ FOCUS_TEXT=0xff232634        # crust, text on the accent pill
 HA_ON=0xffe5c890             # yellow, lamp on / track playing
 HA_OFF=0xff737994            # overlay0, lamp off
 RED=0xffe78284               # red, unreachable / error
+CHARGE=0xffa6d189            # green, charging / healthy

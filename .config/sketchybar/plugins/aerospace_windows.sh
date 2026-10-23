@@ -1,53 +1,133 @@
 #!/usr/bin/env bash
 
-# Single updater for all workspace items. Subscribed to
-# aerospace_workspace_change by the hidden aerospace_helper item, so ONE run
-# (one `aerospace list-windows --all`, one batched sketchybar call) refreshes
-# every workspace instead of one process per item per event.
+# Workspace updater using real PNG app icons. Mac mini island style.
+# The ws_island bracket provides the dark island background for all
+# workspaces. The focused workspace gets a ws_pill bracket that draws
+# one single rounded rectangle (corner_radius=5) spanning the letter
+# and all app icons, so only the outside corners are rounded.
+# Per-item backgrounds are OFF; the bracket provides the pill.
 
-source "$CONFIG_DIR/helpers/icon_map.sh"
 source "$CONFIG_DIR/helpers/theme.sh"
 
+ICONS_DIR="$CONFIG_DIR/icons"
 WORKSPACES=(1 2 3 4 5 6 7 8 9 10 A B S T)
+MAX_APP_ICONS=3
+
 FOCUSED="$(aerospace list-workspaces --focused)"
 RAW="$(aerospace list-windows --all --format '%{workspace}|%{app-name}')"
 
+__icon_png() {
+  icon_result=""
+  local name="$1"
+  name="${name%% (*}"
+  local safe_name
+  safe_name=$(echo "$name" | tr ' ' '_' | tr '[:upper:]' '[:lower:]')
+  local path="$ICONS_DIR/${safe_name}.png"
+  [ -f "$path" ] && icon_result="$path"
+}
+
 args=()
 for sid in "${WORKSPACES[@]}"; do
-  ICONS=""
+  apps=()
   while IFS= read -r app; do
     [ -z "$app" ] && continue
-    __icon_map "$app"
-    # Apps the font does not know contribute no icon; the workspace letter
-    # still identifies the item.
-    [ -n "$icon_result" ] && ICONS+="$icon_result "
+    apps+=("$app")
   done < <(
     printf '%s\n' "$RAW" | awk -F'|' -v ws="$sid" '
       $1 == ws {
         app = $2; gsub(/^ +| +$/, "", app)
-        sub(/^Microsoft /, "", app)
         if (app != "" && !seen[app]++) print app
       }'
   )
-  ICONS="${ICONS% }"
 
-  # Centering: a bare number/letter gets symmetric padding around the icon;
-  # an item with app glyphs keeps a small gap after the letter and breathing
-  # room after the glyphs.
-  if [ -z "$ICONS" ]; then
-    PADS=(icon.padding_left=8 icon.padding_right=8 label.padding_left=0 label.padding_right=0)
+  has_icons=0
+
+  for ((i = 0; i < MAX_APP_ICONS; i++)); do
+    if (( i < ${#apps[@]} )); then
+      __icon_png "${apps[$i]}"
+      if [ -n "$icon_result" ]; then
+        has_icons=1
+        # App icon: image only, no per-item background.
+        # The ws_pill bracket draws the pill behind it.
+        args+=(
+          --set "app.$sid.$i"
+          drawing=on
+          background.image="$icon_result"
+          background.image.scale=0.5
+          background.drawing=on
+          background.color=0x00000000
+          background.height=20
+          background.corner_radius=0
+          background.padding_left=0
+          background.padding_right=0
+          padding_left=0
+          padding_right=0
+        )
+      else
+        args+=(--set "app.$sid.$i" drawing=off)
+      fi
+    else
+      args+=(--set "app.$sid.$i" drawing=off)
+    fi
+  done
+
+  # Workspace letter: no per-item background. The bracket draws the pill.
+  if [ "$has_icons" = 1 ]; then
+    if [ "$sid" = "$FOCUSED" ]; then
+      args+=(
+        --set "space.$sid"
+        label.drawing=off
+        icon.padding_left=6 icon.padding_right=0
+        padding_right=0
+        background.drawing=off
+        icon.color=$FOCUS_TEXT
+      )
+    else
+      args+=(
+        --set "space.$sid"
+        label.drawing=off
+        icon.padding_left=6 icon.padding_right=2
+        background.drawing=off
+        icon.color=$TEXT
+      )
+    fi
   else
-    PADS=(icon.padding_left=8 icon.padding_right=3 label.padding_left=1 label.padding_right=6)
+    if [ "$sid" = "$FOCUSED" ]; then
+      args+=(
+        --set "space.$sid"
+        label.drawing=off
+        icon.padding_left=6 icon.padding_right=6
+        background.drawing=off
+        icon.color=$FOCUS_TEXT
+      )
+    else
+      args+=(
+        --set "space.$sid"
+        label.drawing=off
+        icon.padding_left=6 icon.padding_right=6
+        background.drawing=off
+        icon.color=$TEXT
+      )
+    fi
   fi
 
+  # ws_pill bracket: one rounded rectangle spanning letter + icons.
+  # Only the focused workspace shows it. This gives rounded outside
+  # corners with no gap between the letter and the icons.
   if [ "$sid" = "$FOCUSED" ]; then
-    args+=(--set "space.$sid" label="$ICONS" "${PADS[@]}" \
-      background.drawing=on background.color=$FOCUS_BG \
-      icon.color=$FOCUS_TEXT label.color=$FOCUS_TEXT)
+    args+=(
+      --set "ws_pill.$sid"
+      background.drawing=on
+      background.color=$FOCUS_BG
+      background.corner_radius=5
+      background.height=20
+      background.border_width=0
+    )
   else
-    args+=(--set "space.$sid" label="$ICONS" "${PADS[@]}" \
-      background.drawing=off \
-      icon.color=$TEXT label.color=$TEXT)
+    args+=(
+      --set "ws_pill.$sid"
+      background.drawing=off
+    )
   fi
 done
 

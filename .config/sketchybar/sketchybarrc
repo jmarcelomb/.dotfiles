@@ -1,8 +1,12 @@
+
+
+
 # Sketchybar config: island style over a transparent bar, Catppuccin Frappe
 # palette in helpers/theme.sh. Groups: AeroSpace workspaces (left),
 # Spotify now-playing, Home Assistant, control center (right).
-# Workspaces are updated by one hidden helper per event
-# (plugins/aerospace_windows.sh). Battery and media auto-hide when their
+# Workspaces are updated by one hidden helper per event plus a 10s poll
+# (plugins/aerospace_windows.sh). CPU/RAM are pushed every 2s by the sampler
+# daemon helpers/system_stats.py. Battery and media auto-hide when their
 # source is absent (plugins/battery.sh, plugins/media.sh).
 
 source "$CONFIG_DIR/helpers/theme.sh"
@@ -38,34 +42,57 @@ sketchybar --add item ws_l left --set ws_l icon=" " label.drawing=off
 
 # Fixed order, independent of which workspaces AeroSpace has created so far.
 WORKSPACES=(1 2 3 4 5 6 7 8 9 10 A B S T)
+MAX_APP_ICONS=3
 
 for sid in "${WORKSPACES[@]}"; do
     sketchybar --add item space.$sid left \
         --set space.$sid \
         icon.font="SauceCodePro Nerd Font Mono:Bold:19.0" \
         icon.y_offset=1 \
-        label.font="sketchybar-app-font:Regular:14.0" \
-        label.y_offset=0 \
+        label.drawing=off \
         background.color=$FOCUS_BG \
         background.corner_radius=5 \
         background.height=20 \
         background.drawing=off \
         icon="$sid" \
         click_script="aerospace workspace $sid"
+
+    for ((j = 0; j < MAX_APP_ICONS; j++)); do
+        sketchybar --add item app.$sid.$j left \
+            --set app.$sid.$j \
+                icon.drawing=off \
+                label.drawing=off \
+                background.height=20 \
+                background.corner_radius=0 \
+                background.padding_left=0 \
+                background.padding_right=0 \
+                background.image_mode=1 \
+                background.image.scale=0.5 \
+                background.drawing=on \
+                background.color=$BAR_BG \
+                drawing=off \
+                click_script="aerospace workspace $sid"
+    done
+
 done
 
 sketchybar --add item ws_r left --set ws_r icon=" " label.drawing=off
 
 # Hidden item that does the actual updating: one aerospace query and one
-# batched sketchybar call per event instead of one process per item.
+# batched sketchybar call per event. The 10s poll catches window changes
+# inside a workspace (AeroSpace has no window event).
 sketchybar --add item aerospace_helper left \
     --set aerospace_helper \
     drawing=off \
+    update_freq=10 \
     script="$PLUGIN_DIR/aerospace_windows.sh" \
     --subscribe aerospace_helper aerospace_workspace_change
 
-sketchybar --add bracket ws_island ws_l space.1 space.2 space.3 space.4 space.5 \
-    space.6 space.7 space.8 space.9 space.10 space.A space.B space.S space.T ws_r \
+sketchybar --add bracket ws_island ws_l space.1 app.1.0 app.1.1 app.1.2 space.2 app.2.0 app.2.1 app.2.2 \
+    space.3 app.3.0 app.3.1 app.3.2 space.4 app.4.0 app.4.1 app.4.2 space.5 app.5.0 app.5.1 app.5.2 \
+    space.6 app.6.0 app.6.1 app.6.2 space.7 app.7.0 app.7.1 app.7.2 space.8 app.8.0 app.8.1 app.8.2 \
+    space.9 app.9.0 app.9.1 app.9.2 space.10 app.10.0 app.10.1 app.10.2 space.A app.A.0 app.A.1 app.A.2 \
+    space.B app.B.0 app.B.1 app.B.2 space.S app.S.0 app.S.1 app.S.2 space.T app.T.0 app.T.1 app.T.2 ws_r \
     --set ws_island \
     background.drawing=on \
     background.color=$ISLAND_BG \
@@ -73,6 +100,15 @@ sketchybar --add bracket ws_island ws_l space.1 space.2 space.3 space.4 space.5 
     background.border_color=$ISLAND_BORDER \
     background.corner_radius=$ISLAND_RADIUS \
     background.height=$ISLAND_HEIGHT
+
+# ws_pill brackets: created AFTER ws_island so they draw on top.
+# Each wraps one workspace's letter + app icons. The plugin toggles
+# the focused one on to draw a mauve rounded pill on top of the island.
+for sid in "${WORKSPACES[@]}"; do
+    sketchybar --add bracket ws_pill.$sid space.$sid \
+        app.$sid.0 app.$sid.1 app.$sid.2 \
+        --set ws_pill.$sid background.drawing=off
+done
 
 ##### Right islands #####
 
@@ -82,15 +118,31 @@ sketchybar --add bracket ws_island ws_l space.1 space.2 space.3 space.4 space.5 
 sketchybar --add item ctl_r right --set ctl_r icon=" " label.drawing=off \
            --add item clock right \
            --set clock update_freq=10 icon='' script="$PLUGIN_DIR/clock.sh" \
+           click_script="open -a Calendar" \
            --add item battery right \
            --set battery update_freq=120 script="$PLUGIN_DIR/battery.sh" \
            --subscribe battery system_woke power_source_change \
            --add item volume right \
            --set volume script="$PLUGIN_DIR/volume.sh" \
-           --subscribe volume volume_change \
+           --subscribe volume volume_change mouse.clicked system_woke \
+           --add item wifi right \
+           --set wifi update_freq=60 script="$PLUGIN_DIR/wifi.sh" \
+           --subscribe wifi wifi_change system_woke \
+           --add item netbird right \
+           --set netbird update_freq=60 script="$PLUGIN_DIR/netbird.sh" \
+           --subscribe netbird system_woke \
+           --add item cpu right \
+           --set cpu icon='󰻠' icon.font="SauceCodePro Nerd Font Mono:Bold:15.0" icon.color=$TEXT \
+           label=".." label.color=$TEXT \
+           --add item ram right \
+           --set ram icon='󰍛' icon.font="SauceCodePro Nerd Font Mono:Bold:15.0" icon.color=$TEXT \
+           label=".." label.color=$TEXT \
+           --add item front_app right \
+           --set front_app script="$PLUGIN_DIR/front_app.sh" \
+           --subscribe front_app front_app_switched system_woke \
            --add item ctl_l right --set ctl_l icon=" " label.drawing=off
 
-sketchybar --add bracket ctl_island ctl_r clock battery volume ctl_l \
+sketchybar --add bracket ctl_island ctl_r clock battery volume wifi netbird cpu ram front_app ctl_l \
     --set ctl_island \
     background.drawing=on \
     background.color=$ISLAND_BG \
@@ -109,9 +161,25 @@ sketchybar --add item ha_r right --set ha_r icon=" " label.drawing=off \
            label.drawing=off \
            script="$PLUGIN_DIR/lamp.sh" \
            --subscribe lamp mouse.clicked system_woke \
+           --add item plug right \
+           --set plug update_freq=30 \
+           icon='󰐧' icon.font="SauceCodePro Nerd Font Mono:Bold:19.0" icon.color=$HA_OFF \
+           label.drawing=off \
+           script="$PLUGIN_DIR/plug.sh" \
+           --subscribe plug mouse.clicked system_woke \
+           --add item solar right \
+           --set solar update_freq=60 \
+           icon='' icon.font="SauceCodePro Nerd Font Mono:Bold:16.0" \
+           icon.color=$HA_OFF label.color=$DIM \
+           script="$PLUGIN_DIR/solar.sh" \
+           --subscribe solar system_woke \
+           --add item load right \
+           --set load \
+           icon='󰋜' icon.font="SauceCodePro Nerd Font Mono:Bold:16.0" \
+           icon.color=$TEXT label.color=$TEXT \
            --add item ha_l right --set ha_l icon=" " label.drawing=off
 
-sketchybar --add bracket ha_island ha_r lamp ha_l \
+sketchybar --add bracket ha_island ha_r lamp plug solar load ha_l \
     --set ha_island \
     background.drawing=on \
     background.color=$ISLAND_BG \
@@ -120,26 +188,37 @@ sketchybar --add bracket ha_island ha_r lamp ha_l \
     background.corner_radius=$ISLAND_RADIUS \
     background.height=$ISLAND_HEIGHT
 
-sketchybar --add item gap_ha_media right --set gap_ha_media icon="  " label.drawing=off
+sketchybar --add item gap_ha_media right --set gap_ha_media icon="  " label.drawing=off drawing=off
 
-sketchybar --add item media_r right --set media_r icon=" " label.drawing=off \
+sketchybar --add item media_r right --set media_r icon=" " label.drawing=off drawing=off \
            --add item media right \
            --set media update_freq=5 \
+           drawing=off \
            icon.font="sketchybar-app-font:Regular:15.0" \
            icon.color=$HA_OFF \
            scroll_texts=on \
            script="$PLUGIN_DIR/media.sh" \
-           click_script="open -a Spotify" \
-           --add item media_l right --set media_l icon=" " label.drawing=off
+           click_script="osascript -e 'tell application \"Spotify\" to playpause'" \
+           --add item media_l right --set media_l icon=" " label.drawing=off drawing=off
 
 sketchybar --add bracket media_island media_r media media_l \
     --set media_island \
-    background.drawing=on \
+    background.drawing=off \
     background.color=$ISLAND_BG \
     background.border_width=1 \
     background.border_color=$ISLAND_BORDER \
     background.corner_radius=$ISLAND_RADIUS \
     background.height=$ISLAND_HEIGHT
+
+# CPU/RAM sampler daemon: pushes updates every 2s (helpers/system_stats.py).
+# Guarded by pidfile (pattern pgrep self-matches arbitrary command lines); the
+# daemon self-exits if the bar dies.
+PIDFILE=/tmp/sketchybar_stats.pid
+if [ -f "$PIDFILE" ] && kill -0 "$(cat "$PIDFILE")" 2>/dev/null; then
+    : # already running
+else
+    nohup python3 "$CONFIG_DIR/helpers/system_stats.py" >/dev/null 2>&1 &
+fi
 
 ##### Force all scripts to run the first time (never do this in a script) #####
 sketchybar --update

@@ -1,0 +1,35 @@
+ObjC.import('AppKit');
+
+function run(argv) {
+    if (argv.length < 2) {
+        $.fprintf($.stderr, "Usage: extract_icon.jxa <app_path> <output_png>\n");
+        $.exit(1);
+    }
+
+    var appPath = argv[0];
+    var outputPath = argv[1];
+
+    var workspace = $.NSWorkspace.sharedWorkspace;
+    var icon = workspace.iconForFile(appPath);
+    icon.setSize($.NSMakeSize(128, 128));
+
+    var tiff = icon.TIFFRepresentation;
+    var rep = $.NSBitmapImageRep.imageRepWithData(tiff);
+
+    if (rep.isNil()) {
+        $.fprintf($.stderr, "Failed to create bitmap rep for %s\n", appPath);
+        $.exit(1);
+    }
+
+    // NSPNGFileType = 4, properties = empty dict
+    var png = rep.representationUsingTypeProperties(4, $.NSMutableDictionary.dictionary);
+
+    if (png.isNil()) {
+        $.fprintf($.stderr, "Failed to create PNG for %s\n", appPath);
+        $.exit(1);
+    }
+
+    png.writeToFileAtomically(outputPath, true);
+    // Resize to 40x40 using sips (called by the wrapper script)
+    return "OK";
+}

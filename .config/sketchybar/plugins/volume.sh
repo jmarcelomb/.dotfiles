@@ -1,23 +1,34 @@
 #!/bin/sh
 
-# The volume_change event supplies a $INFO variable in which the current volume
-# percentage is passed to the script.
+# Volume with mute toggle. Clicking the item toggles mute; the icon renders
+# from the live system state (volume_change events, clicks, wake).
 
-if [ "$SENDER" = "volume_change" ]; then
-  VOLUME="$INFO"
+source "$CONFIG_DIR/helpers/theme.sh"
 
-  case "$VOLUME" in
-  [6-9][0-9] | 100)
-    ICON="􀊨"
-    ;;
-  [3-5][0-9])
-    ICON="􀊦"
-    ;;
-  [1-9] | [1-2][0-9])
-    ICON="􀊤"
-    ;;
-  *) ICON="􀊣" ;;
-  esac
-
-  sketchybar --set "$NAME" icon="$ICON" label="$VOLUME%"
+if [ "$SENDER" = "mouse.clicked" ]; then
+  osascript -e 'set volume output muted not (output muted of (get volume settings))' >/dev/null
 fi
+
+READ="$(osascript -e 'get volume settings' 2>/dev/null)"
+VOLUME="$(echo "$READ" | sed -n 's/.*output volume:\([0-9]*\).*/\1/p')"
+MUTED="$(echo "$READ" | grep -q 'output muted:true' && echo 1)"
+
+if [ "$MUTED" = "1" ]; then
+  ICON="􀊜"
+elif [ "$VOLUME" -ge 60 ]; then
+  ICON="􀊨"
+elif [ "$VOLUME" -ge 30 ]; then
+  ICON="􀊦"
+elif [ "$VOLUME" -ge 1 ]; then
+  ICON="􀊤"
+else
+  ICON="􀊣"
+fi
+
+if [ "$MUTED" = "1" ]; then
+  LABEL="muted"
+else
+  LABEL="${VOLUME}%"
+fi
+
+sketchybar --set "$NAME" icon="$ICON" icon.color=$TEXT label="$LABEL" label.color=$TEXT

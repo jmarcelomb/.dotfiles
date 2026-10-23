@@ -1,10 +1,12 @@
 #!/bin/sh
 
+source "$CONFIG_DIR/helpers/theme.sh"
+
 PERCENTAGE="$(pmset -g batt | grep -Eo '[0-9]+%' | cut -d% -f1)"
 CHARGING="$(pmset -g batt | grep 'AC Power')"
 
 # Auto-hide on desktops: no percentage means no battery.
-if [ "$PERCENTAGE" = "" ]; then
+if [ -z "$PERCENTAGE" ]; then
   sketchybar --set "$NAME" drawing=off
   exit 0
 fi
@@ -25,10 +27,14 @@ case "${PERCENTAGE}" in
 *) ICON="􀛪" ;;
 esac
 
-if [[ "$CHARGING" != "" ]]; then
+# Color speaks: green while charging, red under 20%, text color otherwise.
+if [ -n "$CHARGING" ]; then
   ICON="􀋦"
+  COLOR=$CHARGE
+elif [ "$PERCENTAGE" -le 20 ]; then
+  COLOR=$RED
+else
+  COLOR=$TEXT
 fi
 
-# The item invoking this script (name $NAME) will get its icon and label
-# updated with the current battery status
-sketchybar --set "$NAME" drawing=on icon="$ICON" label="${PERCENTAGE}%"
+sketchybar --set "$NAME" drawing=on icon="$ICON" icon.color=$COLOR label="${PERCENTAGE}%" label.color=$COLOR
