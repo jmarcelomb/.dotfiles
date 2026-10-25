@@ -21,6 +21,7 @@
 
     # Additional modules
     ../../nixos/modules/net.nix
+    ../../nixos/modules/netbird-client.nix
     ../../nixos/modules/nix.nix
     ../../nixos/modules/timezone.nix
     ../../nixos/modules/boot.nix
@@ -34,6 +35,9 @@
 
   # Enable KDE Connect for phone integration
   programs.kdeconnect.enable = true;
+
+  # NetBird mesh client: daemon from the shared module, plus the tray GUI.
+  services.netbird.ui.enable = true;
 
   # SSH server so we can connect into this desktop remotely.
   services.openssh = {

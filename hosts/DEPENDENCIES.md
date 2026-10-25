@@ -13,7 +13,7 @@ times intentionally vague - fill in from your own notes/router.)
 | konoha | aarch64-linux sway desktop VM (VMware Fusion on mac-mini) | often off; shares a VMware folder ↔ `/mnt/hgfs` |
 | chakra | x86_64-linux server VM on TrueNAS | docker stacks from `~/server` (private repo `jmarcelomb/server`) |
 | caddy | x86_64-linux VM (chakra clone) | reverse proxy + netbird client only |
-| byakugan | x86_64-linux sway laptop | holds the GPG commit-signing key (`includeIf hostname:byakugan`) |
+| byakugan | x86_64-linux sway laptop | holds the GPG commit-signing key (`includeIf hostname:byakugan`); netbird client |
 
 ## Cross-host contracts
 
