@@ -2,3 +2,4 @@
 # The shared config includes these conditionally (includeIf hostname:...);
 # each host keeps its own copy with its real values.
 config.signing
+local.inc
