@@ -76,6 +76,7 @@
         rust-bin.stable.latest.default
         rust-analyzer
         nodejs_22
+        bun
         zig
         go
 
