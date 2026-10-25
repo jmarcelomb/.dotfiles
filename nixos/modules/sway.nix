@@ -345,11 +345,11 @@ in
 
           # Clipboard history (Alt+V)
           "${modifier}+v" =
-            "exec ${pkgs.vicinae}/bin/vicinae 'vicinae://extensions/vicinae/clipboard/history'";
+            "exec ${pkgs.vicinae}/bin/vicinae 'vicinae://launch/clipboard/history?toggle=true'";
 
           # Window switcher / Dock (Alt+D) - shows all open windows including minimized
           "${modifier}+d" =
-            "exec ${pkgs.vicinae}/bin/vicinae 'vicinae://extensions/vicinae/wm/switch-windows'";
+            "exec ${pkgs.vicinae}/bin/vicinae 'vicinae://launch/wm/switch-windows?toggle=true'";
 
           # Toggle nwg-dock visibility (Alt+Shift+D)
           "${modifier}+Shift+d" =
