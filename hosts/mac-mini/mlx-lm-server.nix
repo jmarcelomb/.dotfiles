@@ -32,7 +32,7 @@ let
     # + cache + a full 64k 8-bit KV (~5.3 GB) stay inside the GPU wired
     # limit. The 7 GiB budget OOMed Metal during large prefills
     # (2026-10-20: Insufficient Memory at 24k prefill with a 4.4 GB cache).
-    promptCacheBytes = 3221225472; # 3 GiB
+    promptCacheBytes = 1610612736; # 1.5 GiB - lowered from 3 GiB to prevent Metal OOM on 16GB (2026-10-22)
     # 8-bit KV cache: halves the per-token cost, which is what makes the
     # 64k context Hermes requires (MINIMUM_CONTEXT_LENGTH floor) fit next
     # to the ~5.5 GB weights on 16 GB (64k fp16 KV would be ~10.9 GB and
@@ -69,7 +69,7 @@ in
       trap cleanup EXIT INT TERM
       tail -n 0 -F ${cfg.logDir}/server.log 2>/dev/null | while read -r LINE; do
         case "$LINE" in
-          *"generation thread died"*)
+          *"generation thread died"*|*"Insufficient Memory"*|*"Command buffer execution failed"*)
             echo "$(date '+%F %T') generation thread died, restarting mlx-lm-server" >> ${cfg.logDir}/watchdog.log
             kill -9 "$SERVER_PID" 2>/dev/null
             ;;
@@ -103,15 +103,43 @@ in
   # kept it busy, dropping every request in flight). The dead-thread case
   # this watchdog exists for answers 404 immediately, and a wedged server
   # answers 5xx — both arrive long before the 180s timeout.
+  #
+  # SILENT WEDGE (seen 2026-10-29, hung ~1h with cron dead all day): after a
+  # big prefill the generation thread can stall WITHOUT logging anything and
+  # WITHOUT dying — /v1/models still answers 200, chat completions hang
+  # forever, and the canary times out as plain 000, so the old rule never
+  # fired. Discriminator from a healthy server busy decoding a thinking
+  # extraction (which also logs nothing during decode): live decode holds
+  # ~30%+ CPU on the server process, a silent wedge sits near 0%. So on a
+  # canary timeout we sample CPU twice; near-idle twice in a row = wedge,
+  # kickstart. The in-flight request is a dead client anyway (both prior
+  # callers gave up), so nothing of value is lost.
   launchd.user.agents.mlx-lm-watchdog = {
     script = ''
-      CODE=$(curl -s -o /dev/null -w '%{http_code}' -m 180 \
+      CODE=$(curl -s -o /dev/null -w '%{http_code}' -m 120 \
         http://127.0.0.1:8083/v1/chat/completions \
         -H 'Content-Type: application/json' \
         -d '{"model":"${cfg.model}","max_tokens":1,"chat_template_kwargs":{"enable_thinking":false},"messages":[{"role":"user","content":"ping"}]}')
       if [ "$CODE" = "404" ] || [ "$CODE" -ge 500 ] 2>/dev/null; then
         echo "$(date '+%F %T') canary failed (HTTP $CODE), restarting mlx-lm-server" >> ${cfg.logDir}/watchdog.log
         launchctl kickstart -k gui/$(id -u)/com.user.mlx-lm-server
+      elif [ "$CODE" = "000" ]; then
+        # Timeout: healthy decode vs silent wedge. ps %cpu on macOS is a
+        # decayed recent-usage average, so a live decode stays high across
+        # both samples while a stalled thread decays toward 0.
+        PID=$(pgrep -f "mlx_lm.server --model" | head -1)
+        if [ -n "$PID" ]; then
+          C1=$(ps -o %cpu= -p "$PID" | tr -d ' ' || echo 100)
+          sleep 30
+          C2=$(ps -o %cpu= -p "$PID" 2>/dev/null | tr -d ' ' || echo 100)
+          IDLE=$(awk -v a="$C1" -v b="$C2" 'BEGIN{print (a<5 && b<5)?1:0}')
+          if [ "$IDLE" = "1" ]; then
+            echo "$(date '+%F %T') silent wedge (canary 000, cpu $C1/$C2), restarting mlx-lm-server" >> ${cfg.logDir}/watchdog.log
+            launchctl kickstart -k gui/$(id -u)/com.user.mlx-lm-server
+          else
+            echo "$(date '+%F %T') canary 000 but cpu $C1/$C2 (live decode), waiting" >> ${cfg.logDir}/watchdog.log
+          fi
+        fi
       fi
     '';
     serviceConfig = {
