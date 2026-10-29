@@ -26,6 +26,9 @@
       "steipete/tap/remindctl"
     ];
     casks = [
+      # dependency of veracrypt (kernel extension); declared so
+      # onActivation.cleanup = "uninstall" does not try to remove it
+      "macfuse"
       "veracrypt"
       "keycastr"
       "obs"
