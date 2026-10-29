@@ -1110,6 +1110,17 @@
           "CONTEXT7_API_KEY": "{env:CONTEXT7_API_KEY}"
         }
       },
+      "netbird": {
+        "type": "local",
+        "command": [
+          "node",
+          "/Users/jmmb/Code/netbird-mcp/dist/bin/stdio.js"
+        ],
+        "environment": {
+          "NETBIRD_API_URL": "https://netbird.marceloborges.dev",
+          "NETBIRD_API_TOKEN": "{env:NETBIRD_API_TOKEN}"
+        }
+      },
       "github": {
         "type": "remote",
         "url": "https://api.githubcopilot.com/mcp/",
