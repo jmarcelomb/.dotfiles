@@ -117,7 +117,7 @@ in
   launchd.user.agents.mlx-lm-watchdog = {
     script = ''
       CODE=$(curl -s -o /dev/null -w '%{http_code}' -m 120 \
-        http://127.0.0.1:8083/v1/chat/completions \
+        http://127.0.0.1:8080/v1/chat/completions \
         -H 'Content-Type: application/json' \
         -d '{"model":"${cfg.model}","max_tokens":1,"chat_template_kwargs":{"enable_thinking":false},"messages":[{"role":"user","content":"ping"}]}')
       if [ "$CODE" = "404" ] || [ "$CODE" -ge 500 ] 2>/dev/null; then
@@ -137,9 +137,31 @@ in
             echo "$(date '+%F %T') silent wedge (canary 000, cpu $C1/$C2), restarting mlx-lm-server" >> ${cfg.logDir}/watchdog.log
             launchctl kickstart -k gui/$(id -u)/com.user.mlx-lm-server
           else
-            echo "$(date '+%F %T') canary 000 but cpu $C1/$C2 (live decode), waiting" >> ${cfg.logDir}/watchdog.log
+            # Live CPU can still be an orphaned generation: a client that
+            # gave up left the single-slot server decoding a thinking run
+            # nobody will read (2026-10-29 22:09-00:17: pinned ~35% CPU,
+            # zero completions, Telegram and cron starved behind it).
+            # BUT a LEGITIMATE thinking retain also pins CPU for 15-25 min
+            # (documented in hermes.env, LLM_TIMEOUT=1800 by user choice),
+            # so time is the only discriminator: the canary now goes via
+            # the priority proxy, so between two backlog generations it is
+            # served immediately and resets this counter; only a single
+            # generation spanning 5 cycles (~37 min, past the worst
+            # observed loop) is a true runaway. Restart then.
+            STALLED=${cfg.logDir}/watchdog.stalled
+            N=$(( $(cat "$STALLED" 2>/dev/null || echo 0) + 1 ))
+            echo "$N" > "$STALLED"
+            if [ "$N" -ge 5 ]; then
+              echo "$(date '+%F %T') sustained wedge ($N cycles of canary 000 with cpu $C1/$C2), restarting mlx-lm-server" >> ${cfg.logDir}/watchdog.log
+              rm -f "$STALLED"
+              launchctl kickstart -k gui/$(id -u)/com.user.mlx-lm-server
+            else
+              echo "$(date '+%F %T') canary 000 but cpu $C1/$C2 (live decode), waiting ($N/5)" >> ${cfg.logDir}/watchdog.log
+            fi
           fi
         fi
+      else
+        rm -f ${cfg.logDir}/watchdog.stalled
       fi
     '';
     serviceConfig = {
