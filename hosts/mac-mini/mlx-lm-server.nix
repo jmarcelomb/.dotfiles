@@ -14,9 +14,10 @@ let
     model = "mlx-community/Qwen3.5-9B-4bit";
     host = "127.0.0.1";
     # Moved behind the priority proxy: mlx_lm binds 8083, the proxy binds
-    # 8080 (the port Hermes and Hindsight both target) and yields
-    # Hindsight's retain traffic to Hermes chat. See
-    # mlx-lm-priority-proxy.nix.
+    # 8080 (the port Hermes chat targets; Hindsight moved to its own
+    # dedicated E2B server on 8085 in 2026-10-30 — see
+    # mlx-hindsight-server.nix). The proxy's background-key hold logic is
+    # now inert but harmless.
     port = 8083;
     # uv-managed binary; stable across uv tool upgrades
     bin = "${homeDirectory}/.local/bin/mlx_lm.server";
