@@ -17,4 +17,9 @@
       NB_HOSTNAME = "fluxer";
     };
   };
+
+  # nixpkgs quirk: the login unit is emitted even with login.enable unset
+  # (and is broken without a setup key file). The daemon connects from its
+  # persisted identity, so the login unit is not needed at all.
+  systemd.services."netbird-fluxer-login".enable = false;
 }
