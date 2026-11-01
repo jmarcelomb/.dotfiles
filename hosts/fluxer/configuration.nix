@@ -61,6 +61,9 @@
     priority = 100;
   };
 
+  # rexctl doctor: Redis/Valkey needs overcommit for background saves.
+  boot.kernel.sysctl."vm.overcommit_memory" = 1;
+
   # NFS backup share from TrueNAS (HDD pool). `x-systemd.automount` mounts
   # on first access so a TrueNAS outage doesn't block VM boot. Same pattern
   # as chakra's /mnt/nfs-chakra.
