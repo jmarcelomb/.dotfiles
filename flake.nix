@@ -202,6 +202,14 @@
           system = "x86_64-linux";
           isServer = true;
         };
+        fluxer = makeNixosSystem {
+          hostname = "fluxer";
+          user = "hinata";
+          homeDirectory = "/home/hinata";
+          stateVersion = "26.05";
+          system = "x86_64-linux";
+          isServer = true;
+        };
         byakugan = makeNixosSystem {
           hostname = "byakugan";
           user = "hinata";
