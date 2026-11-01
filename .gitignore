@@ -4,3 +4,4 @@ result
 .config/fish/fish_variables
 .config/helix/runtime/
 scripts/set-autolock.sh
+.config/sketchybar/icons/
