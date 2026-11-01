@@ -2,8 +2,10 @@
 # docker container). Joins the mesh so the NetBird reverse proxy can target
 # this VM as a peer for the public fluxer.marceloborges.dev service.
 #
-# login.setupKeyFile is consumed once at first enrollment (LoadCredential);
-# after the peer is enrolled the key can be deleted from that path.
+# Enrolled once with a setup key (services.netbird.clients.fluxer.login);
+# the identity persists in /var/lib/netbird-fluxer, so no key is kept on
+# disk. To re-enroll from scratch, temporarily re-add
+# `login.enable = true; login.setupKeyFile = <path>;` with a fresh key.
 {
   ...
 }:
@@ -14,7 +16,5 @@
       NB_MANAGEMENT_URL = "https://netbird.marceloborges.dev";
       NB_HOSTNAME = "fluxer";
     };
-    login.enable = true;
-    login.setupKeyFile = "/home/hinata/netbird-setup-key";
   };
 }
