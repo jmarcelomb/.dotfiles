@@ -41,10 +41,8 @@
     ];
   };
 
-  swapDevices = [
-    { device = "/dev/disk/by-uuid/6de2302f-e393-4a76-9f9d-2efa451401be"; }
-  ];
-
+  # No swapDevices: the disk swap partition was absorbed into the root
+  # filesystem when the zvol was grown to 80G. zram (below) covers swap.
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
   # still possible to use this option, but it's recommended to use it in conjunction

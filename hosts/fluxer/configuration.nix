@@ -26,9 +26,10 @@
     ../../nixos/modules/timezone.nix
     ../../nixos/modules/user.nix
 
-    # No netbird-stack.nix, backups.nix or NFS here: fluxer is a
-    # single-purpose VM. The instance lives in ~/fluxer, managed by rexctl
-    # (installed as hinata, docker group; backups via `rexctl backup`).
+    # No netbird-stack.nix here: fluxer is a single-purpose VM. The
+    # instance lives in ~/fluxer, managed by rexctl (installed as hinata,
+    # docker group; backups via `rexctl backup` shipped nightly to TrueNAS).
+    ./modules/backups.nix
   ];
 
   networking.hostName = hostname;
@@ -57,5 +58,23 @@
     enable = true;
     memoryPercent = 25;
     priority = 100;
+  };
+
+  # NFS backup share from TrueNAS (HDD pool). `x-systemd.automount` mounts
+  # on first access so a TrueNAS outage doesn't block VM boot. Same pattern
+  # as chakra's /mnt/nfs-chakra.
+  fileSystems."/mnt/nfs-fluxer" = {
+    device = "truenas.home:/mnt/nas/fluxer";
+    fsType = "nfs";
+    options = [
+      "nfsvers=4"
+      "rw"
+      "soft"
+      "timeo=100"
+      "retrans=3"
+      "x-systemd.automount"
+      "x-systemd.mount-timeout=30"
+      "noauto"
+    ];
   };
 }
