@@ -26,9 +26,10 @@
     ../../nixos/modules/timezone.nix
     ../../nixos/modules/user.nix
 
-    # No netbird-stack.nix here: fluxer is a single-purpose VM. The
-    # instance lives in ~/fluxer, managed by rexctl (installed as hinata,
-    # docker group; backups via `rexctl backup` shipped nightly to TrueNAS).
+    # NetBird peer so the NetBird reverse proxy can target this VM.
+    ./modules/netbird.nix
+
+    # Nightly backup of the Fluxer instance shipped to TrueNAS (HDD pool).
     ./modules/backups.nix
   ];
 
