@@ -29,6 +29,9 @@
     # NetBird peer so the NetBird reverse proxy can target this VM.
     ./modules/netbird.nix
 
+    # Boot bring-up for the rexctl-managed instance.
+    ./modules/instance.nix
+
     # Nightly backup of the Fluxer instance shipped to TrueNAS (HDD pool).
     ./modules/backups.nix
   ];
