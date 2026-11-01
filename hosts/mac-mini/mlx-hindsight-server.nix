@@ -107,6 +107,8 @@ in
 
   environment.etc."newsyslog.d/mlx-hindsight.conf".text = ''
     # logfilename                           owner:group  mode  count  size  when  flags
-    ${cfg.logDir}/server.log                ${user}:staff 644  ${toString cfg.maxArchives}  ${toString (cfg.maxLogSizeMB * 1024)}  *  J
+    ${cfg.logDir}/server.log                ${user}:staff 644  ${toString cfg.maxArchives}  ${
+      toString (cfg.maxLogSizeMB * 1024)
+    }  *  J
   '';
 }

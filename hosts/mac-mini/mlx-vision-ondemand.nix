@@ -48,8 +48,14 @@ in
   # logDir; launchd.out catches process-level stderr).
   environment.etc."newsyslog.d/mlx-vision.conf".text = ''
     # logfilename                           owner:group  mode  count  size  when  flags
-    ${cfg.logDir}/proxy.log                 ${user}:staff 644  ${toString cfg.maxArchives}  ${toString (cfg.maxLogSizeMB * 1024)}  *  J
-    ${cfg.logDir}/server.log                ${user}:staff 644  ${toString cfg.maxArchives}  ${toString (cfg.maxLogSizeMB * 1024)}  *  J
-    ${cfg.logDir}/launchd.out               ${user}:staff 644  ${toString cfg.maxArchives}  ${toString (cfg.maxLogSizeMB * 1024)}  *  J
+    ${cfg.logDir}/proxy.log                 ${user}:staff 644  ${toString cfg.maxArchives}  ${
+      toString (cfg.maxLogSizeMB * 1024)
+    }  *  J
+    ${cfg.logDir}/server.log                ${user}:staff 644  ${toString cfg.maxArchives}  ${
+      toString (cfg.maxLogSizeMB * 1024)
+    }  *  J
+    ${cfg.logDir}/launchd.out               ${user}:staff 644  ${toString cfg.maxArchives}  ${
+      toString (cfg.maxLogSizeMB * 1024)
+    }  *  J
   '';
 }

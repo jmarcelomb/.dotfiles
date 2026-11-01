@@ -16,7 +16,12 @@
 # reschedules - fail-safe, not deadlock.
 #
 # Pure Python stdlib; no venv. Streaming (SSE) is relayed chunk by chunk.
-{ pkgs, user, homeDirectory, ... }:
+{
+  pkgs,
+  user,
+  homeDirectory,
+  ...
+}:
 
 let
   proxyScript = pkgs.writeText "mlx-lm-priority-proxy.py" ''

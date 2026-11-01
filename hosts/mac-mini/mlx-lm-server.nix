@@ -179,6 +179,8 @@ in
   # and keep maxArchives copies. Disk usage stays capped at a few MB total.
   environment.etc."newsyslog.d/mlx-lm.conf".text = ''
     # logfilename                           owner:group  mode  count  size  when  flags
-    ${cfg.logDir}/server.log                ${user}:staff 644  ${toString cfg.maxArchives}  ${toString (cfg.maxLogSizeMB * 1024)}  *  J
+    ${cfg.logDir}/server.log                ${user}:staff 644  ${toString cfg.maxArchives}  ${
+      toString (cfg.maxLogSizeMB * 1024)
+    }  *  J
   '';
 }
