@@ -28,6 +28,11 @@ function hbt --description 'hermes TUI chat on glm-5.3'
     hermes chat --model big --tui $argv
 end
 
+# ht  = plain hermes, but in the TUI
+function ht --description 'hermes TUI on the default model'
+    hermes --tui $argv
+end
+
 function hqset --description 'set qwen35 as the default model in config'
     hermes config set model.default qwen35
 end
