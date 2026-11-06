@@ -1,11 +1,12 @@
 { config, ... }: {
   # Homebrew binaries (remindctl, imsg, gh...) must be on the system PATH so
   # non-interactive shells (launchd-spawned Hermes sessions, scripts) find them.
-  # secondbrain/hermes-env is Hermes' own declarative nix env (flake there,
+  # hermes/hermes-env is Hermes' own declarative nix env (flake there,
   # `nix build` updates the result symlink; no system rebuild needed for it).
+  # ~/secondbrain is a compat symlink to ~/hermes (home migrated 2026-11-06).
   environment.systemPath = [
     "${config.homebrew.prefix}/bin"
-    "/Users/jmmb/secondbrain/hermes-env/result/bin"
+    "/Users/jmmb/hermes/hermes-env/result/bin"
   ];
 
   homebrew = {

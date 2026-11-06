@@ -8,7 +8,7 @@
 # (GET /v1/models) are answered statically and never trigger a load.
 #
 # Hermes aux.vision points at http://127.0.0.1:8081/v1 with model
-# mlx-community/Qwen3.5-4B-4bit (see ~/secondbrain/hermes/config.yaml).
+# mlx-community/Qwen3.5-4B-4bit (see ~/hermes/hermes/config.yaml).
 # First request after idle pays a ~10s model load; warm requests ~0.5s.
 { user, homeDirectory, ... }:
 
