@@ -31,10 +31,17 @@ in
       mkdir -p ${cfg.logDir}
       # Same log-tail supervisor as mlx-lm-server: a Metal OOM kills only
       # the generation thread while HTTP keeps serving 404s forever.
+      # Default output cap. Hindsight omits max_tokens on most scopes (only
+      # verification sends one), and mlx_lm.server's implicit default of 512
+      # truncates consolidation merges (OutputTooLongError bisect loops,
+      # 2026-11-07). The env-level pin
+      # HINDSIGHT_API_CONSOLIDATION_MAX_COMPLETION_TOKENS=4096 covers
+      # consolidation explicitly; this covers everything else.
       ${cfg.bin} \
         --model ${cfg.model} \
         --host ${cfg.host} \
-        --port "${toString cfg.port}" &
+        --port "${toString cfg.port}" \
+        --max-tokens 4096 &
       SERVER_PID=$!
       cleanup() {
         kill "$SERVER_PID" 2>/dev/null
