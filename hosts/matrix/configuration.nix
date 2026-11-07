@@ -1,7 +1,9 @@
-# Fluxer - self-hosted Fluxer chat VM (rexctl-managed)
+# Matrix - Matrix homeserver VM (continuwuity, ~/server/matrix)
 #
-# Cloned from chakra's disk (TrueNAS vm.clone), so hardware-configuration.nix
-# carries chakra's UUIDs: they are correct for this VM's own zvols.
+# Formerly the Fluxer chat VM; Fluxer was torn down on 2026-11-07 (backups
+# archived on the nas/fluxer TrueNAS dataset). Cloned from chakra's disk
+# (TrueNAS vm.clone), so hardware-configuration.nix carries chakra's UUIDs:
+# they are correct for this VM's own zvols.
 {
   pkgs,
   lib,
@@ -17,7 +19,7 @@
     ./local-packages.nix
 
     # Shared NixOS modules. Audio/bluetooth/gnome/mime/gpg are intentionally
-    # NOT imported because fluxer is a headless server VM.
+    # NOT imported because matrix is a headless server VM.
     ../../nixos/modules/boot.nix
     ../../nixos/modules/docker.nix
     ../../nixos/modules/env.nix
@@ -29,10 +31,7 @@
     # NetBird peer so the NetBird reverse proxy can target this VM.
     ./modules/netbird.nix
 
-    # Boot bring-up for the rexctl-managed instance.
-    ./modules/instance.nix
-
-    # Nightly backup of the Fluxer instance shipped to TrueNAS (HDD pool).
+    # Nightly backup of the Matrix data shipped to TrueNAS (HDD pool).
     ./modules/backups.nix
   ];
 
@@ -64,14 +63,11 @@
     priority = 100;
   };
 
-  # rexctl doctor: Redis/Valkey needs overcommit for background saves.
-  boot.kernel.sysctl."vm.overcommit_memory" = 1;
-
   # NFS backup share from TrueNAS (HDD pool). `x-systemd.automount` mounts
   # on first access so a TrueNAS outage doesn't block VM boot. Same pattern
   # as chakra's /mnt/nfs-chakra.
-  fileSystems."/mnt/nfs-fluxer" = {
-    device = "truenas.home:/mnt/nas/fluxer";
+  fileSystems."/mnt/nfs-matrix" = {
+    device = "truenas.home:/mnt/nas/matrix";
     fsType = "nfs";
     options = [
       "nfsvers=4"

@@ -202,8 +202,8 @@
           system = "x86_64-linux";
           isServer = true;
         };
-        fluxer = makeNixosSystem {
-          hostname = "fluxer";
+        matrix = makeNixosSystem {
+          hostname = "matrix";
           user = "hinata";
           homeDirectory = "/home/hinata";
           stateVersion = "26.05";
