@@ -35,13 +35,13 @@ in
       # verification sends one), and mlx_lm.server's implicit default of 512
       # truncates consolidation merges (OutputTooLongError bisect loops,
       # 2026-11-07). The env-level pin
-      # HINDSIGHT_API_CONSOLIDATION_MAX_COMPLETION_TOKENS=4096 covers
+      # HINDSIGHT_API_CONSOLIDATION_MAX_COMPLETION_TOKENS=8192 covers
       # consolidation explicitly; this covers everything else.
       ${cfg.bin} \
         --model ${cfg.model} \
         --host ${cfg.host} \
         --port "${toString cfg.port}" \
-        --max-tokens 4096 &
+        --max-tokens 8192 &
       SERVER_PID=$!
       cleanup() {
         kill "$SERVER_PID" 2>/dev/null
