@@ -25,6 +25,7 @@
 
     ./modules/backups.nix
     ./modules/netbird-stack.nix
+    ./modules/renovate.nix
     #(import ./modules/auto-upgrade.nix { inherit inputs; })
   ];
 
