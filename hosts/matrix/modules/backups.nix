@@ -24,7 +24,7 @@
       Type = "oneshot";
       User = "hinata";
       Group = "users";
-      ExecStart = "${pkgs.bash}/bin/bash -c 'docker stop continuwuity; ${pkgs.rsync}/bin/rsync -a --delete /home/hinata/server/matrix/data/ /mnt/nfs-matrix/matrix/data/; docker start continuwuity'";
+      ExecStart = "${pkgs.bash}/bin/bash -c '${pkgs.docker}/bin/docker stop continuwuity; ${pkgs.rsync}/bin/rsync -a --delete /home/hinata/server/matrix/data/ /mnt/nfs-matrix/matrix/data/; ${pkgs.docker}/bin/docker start continuwuity'";
       SyslogIdentifier = "matrix-backup";
     };
   };
