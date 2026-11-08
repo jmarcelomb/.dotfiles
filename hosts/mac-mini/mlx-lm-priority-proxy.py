@@ -9,6 +9,8 @@ changes WHO waits: background never delays priority.
 
 No circular wait is possible: priority requests are never held.
 """
+import json
+import os
 import socket
 import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -18,6 +20,11 @@ UPSTREAM_PORT = 8083
 BACKGROUND_KEY = "hindsight-retain"
 UPSTREAM_TIMEOUT = 1800  # mlx_lm prefills of ~64k can take a while
 LISTEN_PORT = 8080
+# Local-models pause (scripts/local-models): while the flag exists, answer
+# chat completions with a fast 503 instead of forwarding to the gated-off
+# server, and serve /v1/models statically so probes still look sane.
+PAUSE_FLAG = os.path.expanduser("~/.local/state/local-models.paused")
+MODEL_ID = "mlx-community/Qwen3.5-9B-4bit"
 
 lock = threading.Condition()
 priority_inflight = 0
@@ -36,6 +43,25 @@ class Handler(BaseHTTPRequestHandler):
         pass
 
     def _relay(self):
+        if os.path.exists(PAUSE_FLAG):
+            if self.path.rstrip("/").endswith("/models"):
+                return self._send_json(
+                    200,
+                    {
+                        "object": "list",
+                        "data": [{"id": MODEL_ID, "object": "model", "owned_by": "local"}],
+                    },
+                )
+            return self._send_json(
+                503,
+                {
+                    "error": {
+                        "message": "local models paused (resume with ~/scripts/local-models resume)",
+                        "type": "local_models_paused",
+                        "code": 503,
+                    }
+                },
+            )
         global priority_inflight, priority_waiting
         background = is_background(self.headers)
 
@@ -51,6 +77,17 @@ class Handler(BaseHTTPRequestHandler):
             with lock:
                 priority_inflight -= 1
                 lock.notify_all()
+
+    def _send_json(self, status, payload):
+        # Explicit Content-Length + buffered body: pass-through framing of
+        # any kind hangs keep-alive clients (learned on the vision proxy).
+        body = json.dumps(payload).encode("utf-8")
+        self.send_response(status)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(body)))
+        self.send_header("Connection", "close")
+        self.end_headers()
+        self.wfile.write(body)
 
     def _forward(self):
         length = int(self.headers.get("Content-Length") or 0)

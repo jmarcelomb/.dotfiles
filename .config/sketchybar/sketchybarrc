@@ -131,6 +131,12 @@ sketchybar --add item ctl_r right --set ctl_r icon=" " label.drawing=off \
            --add item netbird right \
            --set netbird update_freq=60 script="$PLUGIN_DIR/netbird.sh" \
            --subscribe netbird system_woke \
+           --add item localmodels right \
+           --set localmodels update_freq=15 \
+           icon.font="SauceCodePro Nerd Font Mono:Bold:16.0" \
+           label.drawing=off \
+           script="$PLUGIN_DIR/localmodels.sh" \
+           --subscribe localmodels mouse.clicked system_woke \
            --add item cpu right \
            --set cpu icon='󰻠' icon.font="SauceCodePro Nerd Font Mono:Bold:15.0" icon.color=$TEXT \
            label=".." label.color=$TEXT \
@@ -142,7 +148,7 @@ sketchybar --add item ctl_r right --set ctl_r icon=" " label.drawing=off \
            --subscribe front_app front_app_switched system_woke \
            --add item ctl_l right --set ctl_l icon=" " label.drawing=off
 
-sketchybar --add bracket ctl_island ctl_r clock battery volume wifi netbird cpu ram front_app ctl_l \
+sketchybar --add bracket ctl_island ctl_r clock battery volume wifi netbird localmodels cpu ram front_app ctl_l \
     --set ctl_island \
     background.drawing=on \
     background.color=$ISLAND_BG \

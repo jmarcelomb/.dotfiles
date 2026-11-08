@@ -48,6 +48,15 @@ in
   launchd.user.agents.mlx-lm-server = {
     script = ''
       mkdir -p ${cfg.logDir}
+      # Pause gate (scripts/local-models, sketchybar item "localmodels"):
+      # while ~/.local/state/local-models.paused exists, hold here instead
+      # of loading weights — a paused server costs one sleeping bash
+      # process, nothing else. When the flag appears mid-run the monitor
+      # below kills the server, the script exits 0 and KeepAlive restarts
+      # back into this gate. No launchctl bootout needed to pause.
+      while [ -f ${homeDirectory}/.local/state/local-models.paused ]; do
+        sleep 15
+      done
       # Server runs in the background with a log-tail supervisor. mlx_lm's
       # unrecoverable failure mode is a Metal OOM that kills ONLY the
       # generation thread while the HTTP process keeps serving 404s
@@ -63,9 +72,20 @@ in
         --prompt-cache-bytes "${toString cfg.promptCacheBytes}" \
         --kv-bits "${toString cfg.kvBits}" &
       SERVER_PID=$!
+      # Pause monitor: kill the server the moment the flag appears; the
+      # wait below then returns and KeepAlive restarts into the gate.
+      (
+        while [ ! -f ${homeDirectory}/.local/state/local-models.paused ]; do
+          sleep 15
+        done
+        echo "$(date '+%F %T') pause flag set, stopping mlx-lm-server" >> ${cfg.logDir}/watchdog.log
+        kill "$SERVER_PID" 2>/dev/null
+      ) &
+      PAUSE_MON_PID=$!
       cleanup() {
         kill "$SERVER_PID" 2>/dev/null
         [ -n "''${TAIL_PID:-}" ] && kill "$TAIL_PID" 2>/dev/null
+        [ -n "''${PAUSE_MON_PID:-}" ] && kill "$PAUSE_MON_PID" 2>/dev/null
       }
       trap cleanup EXIT INT TERM
       tail -n 0 -F ${cfg.logDir}/server.log 2>/dev/null | while read -r LINE; do
@@ -117,6 +137,9 @@ in
   # callers gave up), so nothing of value is lost.
   launchd.user.agents.mlx-lm-watchdog = {
     script = ''
+      # While the local-models pause flag exists the servers are gated off
+      # by design and the proxy answers 503; never restart into a pause.
+      [ -f ${homeDirectory}/.local/state/local-models.paused ] && exit 0
       CODE=$(curl -s -o /dev/null -w '%{http_code}' -m 120 \
         http://127.0.0.1:8080/v1/chat/completions \
         -H 'Content-Type: application/json' \

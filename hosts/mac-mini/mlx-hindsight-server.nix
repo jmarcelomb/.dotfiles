@@ -29,6 +29,12 @@ in
   launchd.user.agents.mlx-hindsight-server = {
     script = ''
       mkdir -p ${cfg.logDir}
+      # Pause gate (scripts/local-models): hold here instead of loading
+      # weights while ~/.local/state/local-models.paused exists. Same
+      # mechanics as mlx-lm-server.nix — see the long comment there.
+      while [ -f ${homeDirectory}/.local/state/local-models.paused ]; do
+        sleep 15
+      done
       # Same log-tail supervisor as mlx-lm-server: a Metal OOM kills only
       # the generation thread while HTTP keeps serving 404s forever.
       # Default output cap. Hindsight omits max_tokens on most scopes (only
@@ -43,9 +49,20 @@ in
         --port "${toString cfg.port}" \
         --max-tokens 8192 &
       SERVER_PID=$!
+      # Pause monitor: see mlx-lm-server.nix. KeepAlive restarts into the
+      # gate above once the flag appears and the server dies.
+      (
+        while [ ! -f ${homeDirectory}/.local/state/local-models.paused ]; do
+          sleep 15
+        done
+        echo "$(date '+%F %T') pause flag set, stopping mlx-hindsight-server" >> ${cfg.logDir}/watchdog.log
+        kill "$SERVER_PID" 2>/dev/null
+      ) &
+      PAUSE_MON_PID=$!
       cleanup() {
         kill "$SERVER_PID" 2>/dev/null
         [ -n "''${TAIL_PID:-}" ] && kill "$TAIL_PID" 2>/dev/null
+        [ -n "''${PAUSE_MON_PID:-}" ] && kill "$PAUSE_MON_PID" 2>/dev/null
       }
       trap cleanup EXIT INT TERM
       tail -n 0 -F ${cfg.logDir}/server.log 2>/dev/null | while read -r LINE; do
@@ -79,6 +96,9 @@ in
   # restart; a live retain never spans that.
   launchd.user.agents.mlx-hindsight-watchdog = {
     script = ''
+      # While the local-models pause flag exists the server is gated off by
+      # design; never restart into a pause.
+      [ -f ${homeDirectory}/.local/state/local-models.paused ] && exit 0
       CODE=$(curl -s -o /dev/null -w '%{http_code}' -m 180 \
         http://127.0.0.1:${toString cfg.port}/v1/chat/completions \
         -H 'Content-Type: application/json' \

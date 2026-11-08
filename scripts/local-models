@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+# Pause/resume the local MLX model servers so they release the Mac mini's
+# RAM/GPU when interactive work doesn't need them (chat 8083 + Hindsight
+# extraction 8085, ~9 GB of wired GPU memory together).
+#
+# State is one flag file (~/.local/state/local-models.paused). The launchd
+# wrappers in hosts/mac-mini/mlx-lm-server.nix and mlx-hindsight-server.nix
+# gate on it: with the flag present a (re)started server sleeps instead of
+# loading weights, and a mid-run pause kills the running server so
+# KeepAlive restarts into the gate. The priority proxy (8080) answers chat
+# completions with a 503 while paused; both watchdogs skip their cycle.
+# Toggling therefore needs no launchctl bootout/bootstrap and works from
+# sketchybar, Hermes, cron, anywhere.
+#
+# The Hindsight daemon keeps running on purpose: recall/reflect still work,
+# retains against the paused 8085 fail and are recovered by the weekly
+# hindsight-failed-op-sweep.
+set -euo pipefail
+
+FLAG="$HOME/.local/state/local-models.paused"
+SERVICES=(com.user.mlx-lm-server com.user.mlx-hindsight-server)
+GUI="gui/$(id -u)"
+
+kick_all() {
+  for svc in "${SERVICES[@]}"; do
+    launchctl kickstart -k "$GUI/$svc" 2>/dev/null || true
+  done
+}
+
+warm() {
+  # Weight loading takes tens of seconds; pre-fire one-token canaries in
+  # the background so the first real request after resume is warm.
+  curl -s -o /dev/null -m 300 http://127.0.0.1:8080/v1/chat/completions \
+    -H 'Content-Type: application/json' \
+    -d '{"model":"mlx-community/Qwen3.5-9B-4bit","max_tokens":1,"chat_template_kwargs":{"enable_thinking":false},"messages":[{"role":"user","content":"ping"}]}' &
+  curl -s -o /dev/null -m 300 http://127.0.0.1:8085/v1/chat/completions \
+    -H 'Content-Type: application/json' \
+    -d '{"model":"mlx-community/gemma-4-e2b-it-4bit","max_tokens":1,"chat_template_kwargs":{"enable_thinking":false},"messages":[{"role":"user","content":"ping"}]}' &
+  disown
+}
+
+case "${1:-status}" in
+  pause)
+    mkdir -p "$(dirname "$FLAG")"
+    touch "$FLAG"
+    kick_all
+    echo "local models paused"
+    ;;
+  resume)
+    rm -f "$FLAG"
+    kick_all
+    warm
+    echo "local models resuming (servers loading in background)"
+    ;;
+  toggle)
+    if [ -f "$FLAG" ]; then "$0" resume; else "$0" pause; fi
+    ;;
+  status)
+    if [ -f "$FLAG" ]; then echo "paused"; else echo "running"; fi
+    ;;
+  *)
+    echo "usage: local-models pause|resume|toggle|status" >&2
+    exit 2
+    ;;
+esac
