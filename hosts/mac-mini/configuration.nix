@@ -17,6 +17,8 @@
     ./mlx-vision-ondemand.nix
     # Dedicated Hindsight extraction server (gemma-4-e2b-it-4bit, :8085)
     ./mlx-hindsight-server.nix
+    # LAN bridge exposing the local-models pause state to HA (:8086)
+    ./mlx-local-models-bridge.nix
     # Remote dashboard on the NetBird IP (phone app / browser extension)
     ./hermes-dashboard.nix
     # Hindsight memory daemon (profile hermes, pg0 hindsight-embed-hermes)
