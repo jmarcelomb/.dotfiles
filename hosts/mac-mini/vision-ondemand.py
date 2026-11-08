@@ -6,6 +6,11 @@ mlx_vlm.server on 127.0.0.1:8082 (small VLM). The backend loads on the
 first request and is unloaded after IDLE_SECONDS without traffic, so its
 weights only occupy memory while vision is actually in use.
 
+Pause-aware (scripts/local-models): while
+~/.local/state/local-models.paused exists, requests are refused with a
+503 instead of cold-starting the backend, and a running backend is
+unloaded immediately - a pause must not leave ~2 GB of VLM wired.
+
 Stdlib only; run under /usr/bin/python3 via launchd (mlx-vision-ondemand.nix).
 """
 
@@ -35,6 +40,9 @@ IDLE_SECONDS = int(os.environ.get("MLX_VISION_IDLE_SECONDS", "600"))
 RETRIES = int(os.environ.get("MLX_VISION_RETRIES", "2"))
 RETRY_DELAY = 5
 LOG_DIR = os.path.expanduser("~/Library/Logs/mlx-vision")
+# Local-models pause flag (scripts/local-models). While present the proxy
+# refuses requests instead of cold-starting the VLM.
+PAUSE_FLAG = os.path.expanduser("~/.local/state/local-models.paused")
 # ------------------------------------------------------------------------
 
 _state_lock = threading.Lock()
@@ -56,6 +64,10 @@ def _log(msg):
 def _touch():
     global _last_used
     _last_used = time.time()
+
+
+def _paused():
+    return os.path.exists(PAUSE_FLAG)
 
 
 def _backend_port_open():
@@ -126,6 +138,10 @@ def _unload_backend():
 def _idle_watchdog():
     while True:
         time.sleep(15)
+        # A pause frees memory immediately, not after the idle timeout.
+        if _paused() and _inflight == 0 and _backend_ours():
+            _unload_backend()
+            continue
         if _inflight == 0 and _backend_ours() and _backend_port_open():
             if time.time() - _last_used > IDLE_SECONDS:
                 _unload_backend()
@@ -145,6 +161,15 @@ class ProxyHandler(http.server.BaseHTTPRequestHandler):
 
     def _proxy(self, method):
         global _inflight
+        if _paused():
+            body = json.dumps({"error": {"message":
+                "local models paused (resume with ~/scripts/local-models resume)"}}).encode()
+            self.send_response(503)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+            return
         if not ensure_backend():
             body = json.dumps({"error": {"message":
                 "vision backend unavailable"}}).encode()
