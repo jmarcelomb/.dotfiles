@@ -61,7 +61,9 @@ struct Cfg {
 }
 
 fn load_cfg() -> Cfg {
-    let home = PathBuf::from(env::var("HOME").unwrap_or_else(|_| "/Users/jmmb".into()));
+    // launchd user agents always set HOME; fail loudly instead of guessing
+    // a path (this repo is public - no usernames in source).
+    let home = PathBuf::from(env::var("HOME").expect("HOME not set"));
     let num = |key: &str, default: u64| {
         env::var(key).ok().and_then(|v| v.parse().ok()).unwrap_or(default)
     };

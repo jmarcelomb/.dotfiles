@@ -28,7 +28,9 @@ struct SetState {
 }
 
 fn home_file(rel: &str) -> PathBuf {
-    let home = env::var("HOME").unwrap_or_else(|_| "/Users/jmmb".to_string());
+    // launchd user agents always set HOME; fail loudly instead of guessing
+    // a path (this repo is public - no usernames in source).
+    let home = env::var("HOME").expect("HOME not set");
     PathBuf::from(home).join(rel)
 }
 

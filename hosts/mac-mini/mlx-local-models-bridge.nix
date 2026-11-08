@@ -1,8 +1,9 @@
 # LAN bridge for the local-models pause flag (axum, see local-models-bridge/).
 # Home Assistant's REST switch polls GET /state and toggles via POST, so the
 # pause is visible and controllable from dashboards and the mobile app.
-# Requires no sudo and no SSH: HA -> http://192.168.0.69:8086/state with the
-# shared HASS_TOKEN as Bearer. Local dev builds need
+# Requires no sudo and no SSH: HA -> http://<mac-mini-ip>:8086/state with the
+# shared HASS_TOKEN as Bearer (the real IP lives in the HA config, never in
+# this public repo). Local dev builds need
 # RUSTFLAGS="-C linker=/usr/bin/cc" (zig cc, the system linker, cannot find
 # -liconv); the nix build is unaffected. Surface in HA configuration.yaml:
 #
