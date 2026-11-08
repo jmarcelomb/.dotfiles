@@ -1,0 +1,15 @@
+[package]
+name = "local-models-bridge"
+version = "1.0.0"
+edition = "2024"
+description = "LAN bridge exposing the local-models pause flag to Home Assistant"
+
+[dependencies]
+axum = "0.8"
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[profile.release]
+strip = true
+lto = true

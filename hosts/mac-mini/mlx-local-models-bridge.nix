@@ -1,7 +1,7 @@
-# LAN bridge for the local-models pause flag (see mlx-local-models-bridge.py).
+# LAN bridge for the local-models pause flag (axum, see local-models-bridge/).
 # Home Assistant's REST switch polls GET /state and toggles via POST, so the
 # pause is visible and controllable from dashboards and the mobile app.
-# Requires no sudo and no SSH: HA -> http://<mini>:8086/state with the shared
+# Requires no sudo and no SSH: HA -> http://192.168.0.69:8086/state with the shared
 # HASS_TOKEN as Bearer. Surface in HA configuration.yaml:
 #
 #   switch:
@@ -18,20 +18,26 @@
 # with local_models_bearer: "Bearer <HASS_TOKEN>" in the instance secrets.yaml.
 {
   pkgs,
-  user,
   homeDirectory,
   ...
 }:
 
 let
-  bridgeScript = pkgs.writeText "mlx-local-models-bridge.py" ''
-    ${builtins.readFile ./mlx-local-models-bridge.py}
-  '';
+  bridge = pkgs.rustPlatform.buildRustPackage {
+    pname = "local-models-bridge";
+    version = "1.0.0";
+    # Keep the cargo target dir (hundreds of MB) out of the store source.
+    src = pkgs.lib.cleanSourceWith {
+      src = pkgs.lib.cleanSource ./local-models-bridge;
+      filter = path: _type: baseNameOf path != "target";
+    };
+    cargoLock.lockFile = ./local-models-bridge/Cargo.lock;
+  };
 in
 {
   launchd.user.agents.mlx-local-models-bridge = {
     script = ''
-      exec /usr/bin/python3 ${bridgeScript}
+      exec ${bridge}/bin/local-models-bridge
     '';
     serviceConfig = {
       Label = "com.user.mlx-local-models-bridge";
