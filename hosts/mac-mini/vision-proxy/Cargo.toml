@@ -1,0 +1,12 @@
+[package]
+name = "vision-proxy"
+version = "1.0.0"
+edition = "2024"
+description = "On-demand vision proxy: lazily runs mlx_vlm.server, pause-aware"
+
+[profile.release]
+strip = true
+lto = true
+
+[dependencies]
+nix = { version = "0.30", default-features = false, features = ["signal", "process"] }
