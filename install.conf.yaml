@@ -31,6 +31,10 @@
     ~/.config/crush/: .config/crush/
     ~/.dsh/cordis.patch.yml: .dsh/cordis.patch.yml
     ~/.dsh/AGENTS.md: .dsh/AGENTS.md
+    # Hindsight daemon env (tuned, no secrets; consumed by hindsight-daemon.nix)
+    ~/.hindsight/profiles/hermes.env:
+      path: hosts/mac-mini/hindsight-hermes.env
+      force: true
     ~/.config/lazygit: .config/lazygit/
     ~/.config/nwg-dock/: .config/nwg-dock/
 

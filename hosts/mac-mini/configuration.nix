@@ -25,6 +25,8 @@
     ./hindsight-daemon.nix
     # Hindsight control plane web UI (:19177), loopback only
     ./hindsight-control-plane.nix
+    # Nightly pg_dump of the Hindsight pg0 DB (03:30, rotate 10 / 1GB)
+    ./hindsight-backup.nix
     # Google Workspace CLI (gws) - admin tooling
     ./googleworkspace.cli.nix
   ];
