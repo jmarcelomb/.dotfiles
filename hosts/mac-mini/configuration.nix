@@ -23,6 +23,8 @@
     ./hermes-dashboard.nix
     # Hindsight memory daemon (profile hermes, pg0 hindsight-embed-hermes)
     ./hindsight-daemon.nix
+    # Hindsight control plane web UI (:19177), loopback only
+    ./hindsight-control-plane.nix
     # Google Workspace CLI (gws) - admin tooling
     ./googleworkspace.cli.nix
   ];
