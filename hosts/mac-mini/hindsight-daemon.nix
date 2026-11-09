@@ -14,7 +14,7 @@ let
     port = 9177;
     logDir = "${homeDirectory}/.hindsight/profiles";
     envFile = "${homeDirectory}/.hindsight/profiles/hermes.env";
-    version = "0.10.2";
+    version = "1.2.0";
     # uv from the nix profile; stable across Hermes updates
     uv = "/etc/profiles/per-user/${user}/bin/uv";
   };
@@ -40,7 +40,9 @@ in
       PYEOF
       )"
       set +a
-      exec ${cfg.uv} tool uvx hindsight-api@${cfg.version} --port ${toString cfg.port}
+      # --python 3.14 is REQUIRED: bare uvx resolves the newest CPython (3.15),
+      # which has no onnxruntime wheels, so resolution fails outright.
+      exec ${cfg.uv} tool uvx --python 3.14 hindsight-api@${cfg.version} --port ${toString cfg.port}
     '';
     serviceConfig = {
       Label = "io.hindsight.hermes";
