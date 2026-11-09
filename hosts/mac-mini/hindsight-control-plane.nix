@@ -28,6 +28,10 @@ in
 {
   launchd.user.agents.hindsight-control-plane = {
     script = ''
+      # npx and the package bin it spawns both start with `#!/usr/bin/env node`,
+      # so node has to be on PATH. launchd hands the job a bare /usr/bin:/bin,
+      # which made every run die with "env: node: No such file or directory".
+      export PATH="${cfg.node}/bin:/usr/bin:/bin:/usr/sbin:/sbin"
       exec ${cfg.node}/bin/npx --yes @vectorize-io/hindsight-control-plane@${cfg.version} --port ${toString cfg.port} --hostname ${cfg.host} --api-url ${cfg.apiUrl}
     '';
     serviceConfig = {
