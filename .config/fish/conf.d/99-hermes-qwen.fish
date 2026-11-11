@@ -3,6 +3,7 @@
 # hq / hqt   = local qwen35 (MLX Qwen3.5-9B)
 # hf / hft   = flash (OpenRouter preset: DeepSeek V4.1 Flash 1017 via DeepInfra/Morph)
 # hgf / hgft = gflash (zai glm-5.3-flash)
+# hgz / hgzt = gflash-zdr (OpenRouter preset: glm-flash-fp4, ZDR)
 # hg / hgt   = glm (zai glm-5.3)
 # ht         = plain hermes in the TUI, default model
 # hqset      = set qwen35 as the persistent default model in config
@@ -28,6 +29,14 @@ end
 
 function hgft --description 'hermes TUI chat on glm-5.3-flash'
     hermes chat --model gflash --tui $argv
+end
+
+function hgz --description 'hermes chat on glm-5.3-flash ZDR (OpenRouter fp4 preset)'
+    hermes chat --model gflash-zdr $argv
+end
+
+function hgzt --description 'hermes TUI chat on glm-5.3-flash ZDR (OpenRouter fp4 preset)'
+    hermes chat --model gflash-zdr --tui $argv
 end
 
 function hg --description 'hermes chat on glm-5.3'
