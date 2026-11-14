@@ -24,19 +24,25 @@ in
     script = ''
       export HINDSIGHT_API_DATABASE_URL="pg0://hindsight-embed-hermes"
       # hermes.env is dotenv format (JSON values), NOT shell-sourceable — parse it.
+      # A second, untracked file (hermes-secrets.env) is parsed AFTER it, so keys
+      # there win; keep API keys out of the git-tracked hermes.env.
       set -a
       eval "$(/usr/bin/python3 - <<'PYEOF'
-      import re, shlex
-      for ln in open("${cfg.envFile}"):
-          ln = ln.strip()
-          if not ln or ln.startswith("#") or "=" not in ln:
+      import os, re, shlex
+      files = ["${cfg.envFile}", os.path.expanduser("~/.hindsight/profiles/hermes-secrets.env")]
+      for path in files:
+          if not os.path.isfile(path):
               continue
-          k, v = ln.split("=", 1)
-          if not re.match(r"^[A-Za-z_][A-Za-z0-9_]*$", k):
-              continue
-          if len(v) >= 2 and v[0] == v[-1] and v[0] in "\"'":
-              v = v[1:-1]
-          print("export %s=%s" % (k, shlex.quote(v)))
+          for ln in open(path):
+              ln = ln.strip()
+              if not ln or ln.startswith("#") or "=" not in ln:
+                  continue
+              k, v = ln.split("=", 1)
+              if not re.match(r"^[A-Za-z_][A-Za-z0-9_]*$", k):
+                  continue
+              if len(v) >= 2 and v[0] == v[-1] and v[0] in "\"'":
+                  v = v[1:-1]
+              print("export %s=%s" % (k, shlex.quote(v)))
       PYEOF
       )"
       set +a
