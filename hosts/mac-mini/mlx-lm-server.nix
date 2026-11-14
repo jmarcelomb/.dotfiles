@@ -1,191 +1,49 @@
-# Local text-model server (mlx_lm.server) as a launchd user agent.
-# Runs at login, restarts on crash. All tunables live in the cfg block below.
+# Watchdog for the local text-model stack.
 #
-# 2026-10-19: switched from mlx_vlm.server to mlx_lm.server. mlx_vlm raised
-# HTTP 500 "No user query found in messages" on long tool-call histories
-# (Qwen3.5 chat template raises when every user message is a tool response);
-# mlx_lm 0.32.2 normalizes those payloads correctly (verified by replaying
-# the failed request dump from ~/.hermes/sessions). Vision moved to a
-# separate on-demand server: see mlx-vision-ondemand.nix.
+# 2026-11-14: mlx_lm.server is no longer a launchd agent. The priority proxy
+# (mlx-lm-priority-proxy.nix, :8080) owns the backend on :8083 — it spawns it
+# on the first real request and unloads it after MLX_LM_IDLE_SECONDS, so the
+# 9B weights only occupy memory while local models are used.
+#
+# Consequences for this file:
+#   - The old canary (a real chat completion every 5 min) would cold-start the
+#     model on every cycle and defeat the idle unload, so it is gone. The idle
+#     timer is now the wedge recovery: a stalled backend with no traffic is
+#     unloaded, and the next request spawns a fresh one.
+#   - Metal-OOM ("generation thread died") detection moved into the proxy's
+#     log tailer, which kills the backend so the next request respawns it.
+#   - What remains is proxy liveness: the proxy is stateless, so restarting it
+#     is always safe (a running backend is adopted via its listening port and
+#     cleaned up by the idle watchdog, orphan PIDs included).
+#
+# server.log stays in place: the proxy redirects the backend's stdout there
+# and the newsyslog rule below rotates it.
 { user, homeDirectory, ... }:
 
 let
   cfg = {
-    model = "mlx-community/Qwen3.5-9B-4bit";
-    host = "127.0.0.1";
-    # Moved behind the priority proxy: mlx_lm binds 8083, the proxy binds
-    # 8080 (the port Hermes chat targets; Hindsight moved to its own
-    # dedicated E2B server on 8085 in 2026-10-30 — see
-    # mlx-hindsight-server.nix). The proxy's background-key hold logic is
-    # now inert but harmless.
-    port = 8083;
-    # uv-managed binary; stable across uv tool upgrades
-    bin = "${homeDirectory}/.local/bin/mlx_lm.server";
+    proxyPort = 8080;
     logDir = "${homeDirectory}/Library/Logs/mlx-lm";
     # log rotation (newsyslog): rotate when log passes maxLogSizeMB,
     # keep maxArchives compressed copies
     maxLogSizeMB = 10;
     maxArchives = 3;
-    # mlx_lm has no up-front KV reservation (unlike mlx_vlm's --max-kv-size):
-    # KV is allocated per request and the prompt cache evicts entries when
-    # the total passes this byte budget. 3 GiB: big enough to keep both
-    # consumers' system prompts warm, small enough that weights (~5.5 GB)
-    # + cache + a full 64k 8-bit KV (~5.3 GB) stay inside the GPU wired
-    # limit. The 7 GiB budget OOMed Metal during large prefills
-    # (2026-10-20: Insufficient Memory at 24k prefill with a 4.4 GB cache).
-    promptCacheBytes = 1610612736; # 1.5 GiB - lowered from 3 GiB to prevent Metal OOM on 16GB (2026-10-22)
-    # 8-bit KV cache: halves the per-token cost, which is what makes the
-    # 64k context Hermes requires (MINIMUM_CONTEXT_LENGTH floor) fit next
-    # to the ~5.5 GB weights on 16 GB (64k fp16 KV would be ~10.9 GB and
-    # Metal-OOM at ~28k prefill - observed 2026-10-19). Trade-off: kv-bits
-    # disables batching, so requests are served one at a time (extra ones
-    # queue); decodeConcurrency is therefore omitted. Slight quality loss
-    # on very long contexts.
-    kvBits = 8;
   };
 in
 {
-  launchd.user.agents.mlx-lm-server = {
-    script = ''
-      mkdir -p ${cfg.logDir}
-      # Pause gate (scripts/local-models, sketchybar item "localmodels"):
-      # while ~/.local/state/local-models.paused exists, hold here instead
-      # of loading weights — a paused server costs one sleeping bash
-      # process, nothing else. When the flag appears mid-run the monitor
-      # below kills the server, the script exits 0 and KeepAlive restarts
-      # back into this gate. No launchctl bootout needed to pause.
-      while [ -f ${homeDirectory}/.local/state/local-models.paused ]; do
-        sleep 15
-      done
-      # Server runs in the background with a log-tail supervisor. mlx_lm's
-      # unrecoverable failure mode is a Metal OOM that kills ONLY the
-      # generation thread while the HTTP process keeps serving 404s
-      # forever - launchd KeepAlive never sees a death. Watching the log
-      # for that exact line and killing the process gives Ollama-class
-      # self-healing (seconds to recovery) instead of waiting up to 5
-      # minutes for the canary (which stays as last resort for wedged
-      # servers that log nothing).
-      ${cfg.bin} \
-        --model ${cfg.model} \
-        --host ${cfg.host} \
-        --port "${toString cfg.port}" \
-        --prompt-cache-bytes "${toString cfg.promptCacheBytes}" \
-        --kv-bits "${toString cfg.kvBits}" &
-      SERVER_PID=$!
-      # Pause monitor: kill the server the moment the flag appears; the
-      # wait below then returns and KeepAlive restarts into the gate.
-      (
-        while [ ! -f ${homeDirectory}/.local/state/local-models.paused ]; do
-          sleep 15
-        done
-        echo "$(date '+%F %T') pause flag set, stopping mlx-lm-server" >> ${cfg.logDir}/watchdog.log
-        kill "$SERVER_PID" 2>/dev/null
-      ) &
-      PAUSE_MON_PID=$!
-      cleanup() {
-        kill "$SERVER_PID" 2>/dev/null
-        [ -n "''${TAIL_PID:-}" ] && kill "$TAIL_PID" 2>/dev/null
-        [ -n "''${PAUSE_MON_PID:-}" ] && kill "$PAUSE_MON_PID" 2>/dev/null
-      }
-      trap cleanup EXIT INT TERM
-      tail -n 0 -F ${cfg.logDir}/server.log 2>/dev/null | while read -r LINE; do
-        case "$LINE" in
-          *"generation thread died"*|*"Insufficient Memory"*|*"Command buffer execution failed"*)
-            echo "$(date '+%F %T') generation thread died, restarting mlx-lm-server" >> ${cfg.logDir}/watchdog.log
-            kill -9 "$SERVER_PID" 2>/dev/null
-            ;;
-        esac
-      done &
-      TAIL_PID=$!
-      wait "$SERVER_PID"
-      exit 0
-    '';
-    serviceConfig = {
-      Label = "com.user.mlx-lm-server";
-      RunAtLoad = true;
-      KeepAlive = true; # restart on crash
-      ProcessType = "Background";
-      StandardOutPath = "${cfg.logDir}/server.log";
-      StandardErrorPath = "${cfg.logDir}/server.log";
-    };
-  };
-
-  # Canary watchdog: mlx_lm's generation thread dies permanently on GPU OOM
-  # ("generation thread died"; every subsequent request 404s until restart —
-  # seen 2026-10-19 when a 49k-token prompt OOMed at 28.6k prefill). This
-  # agent runs a minimal chat completion every 5 minutes; if it fails,
-  # kickstart the server. Cheap on a warm prompt cache (~1s).
-  #
-  # CRITICAL: only a DEFINITIVE failure justifies a restart. HTTP 000 means
-  # the canary timed out or could not connect — on a single-slot server
-  # serving a long Hindsight extraction, a healthy server just queues the
-  # canary. Kicking it kills the in-flight request (2026-10-20: the canary
-  # restarted the server every ~5 min all day while Hindsight's backlog
-  # kept it busy, dropping every request in flight). The dead-thread case
-  # this watchdog exists for answers 404 immediately, and a wedged server
-  # answers 5xx — both arrive long before the 180s timeout.
-  #
-  # SILENT WEDGE (seen 2026-10-29, hung ~1h with cron dead all day): after a
-  # big prefill the generation thread can stall WITHOUT logging anything and
-  # WITHOUT dying — /v1/models still answers 200, chat completions hang
-  # forever, and the canary times out as plain 000, so the old rule never
-  # fired. Discriminator from a healthy server busy decoding a thinking
-  # extraction (which also logs nothing during decode): live decode holds
-  # ~30%+ CPU on the server process, a silent wedge sits near 0%. So on a
-  # canary timeout we sample CPU twice; near-idle twice in a row = wedge,
-  # kickstart. The in-flight request is a dead client anyway (both prior
-  # callers gave up), so nothing of value is lost.
   launchd.user.agents.mlx-lm-watchdog = {
     script = ''
       # While the local-models pause flag exists the servers are gated off
       # by design and the proxy answers 503; never restart into a pause.
       [ -f ${homeDirectory}/.local/state/local-models.paused ] && exit 0
-      CODE=$(curl -s -o /dev/null -w '%{http_code}' -m 120 \
-        http://127.0.0.1:8080/v1/chat/completions \
-        -H 'Content-Type: application/json' \
-        -d '{"model":"${cfg.model}","max_tokens":1,"chat_template_kwargs":{"enable_thinking":false},"messages":[{"role":"user","content":"ping"}]}')
-      if [ "$CODE" = "404" ] || [ "$CODE" -ge 500 ] 2>/dev/null; then
-        echo "$(date '+%F %T') canary failed (HTTP $CODE), restarting mlx-lm-server" >> ${cfg.logDir}/watchdog.log
-        launchctl kickstart -k gui/$(id -u)/com.user.mlx-lm-server
-      elif [ "$CODE" = "000" ]; then
-        # Timeout: healthy decode vs silent wedge. ps %cpu on macOS is a
-        # decayed recent-usage average, so a live decode stays high across
-        # both samples while a stalled thread decays toward 0.
-        PID=$(pgrep -f "mlx_lm.server --model" | head -1)
-        if [ -n "$PID" ]; then
-          C1=$(ps -o %cpu= -p "$PID" | tr -d ' ' || echo 100)
-          sleep 30
-          C2=$(ps -o %cpu= -p "$PID" 2>/dev/null | tr -d ' ' || echo 100)
-          IDLE=$(awk -v a="$C1" -v b="$C2" 'BEGIN{print (a<5 && b<5)?1:0}')
-          if [ "$IDLE" = "1" ]; then
-            echo "$(date '+%F %T') silent wedge (canary 000, cpu $C1/$C2), restarting mlx-lm-server" >> ${cfg.logDir}/watchdog.log
-            launchctl kickstart -k gui/$(id -u)/com.user.mlx-lm-server
-          else
-            # Live CPU can still be an orphaned generation: a client that
-            # gave up left the single-slot server decoding a thinking run
-            # nobody will read (2026-10-29 22:09-00:17: pinned ~35% CPU,
-            # zero completions, Telegram and cron starved behind it).
-            # BUT a LEGITIMATE thinking retain also pins CPU for 15-25 min
-            # (documented in hermes.env, LLM_TIMEOUT=1800 by user choice),
-            # so time is the only discriminator: the canary now goes via
-            # the priority proxy, so between two backlog generations it is
-            # served immediately and resets this counter; only a single
-            # generation spanning 5 cycles (~37 min, past the worst
-            # observed loop) is a true runaway. Restart then.
-            STALLED=${cfg.logDir}/watchdog.stalled
-            N=$(( $(cat "$STALLED" 2>/dev/null || echo 0) + 1 ))
-            echo "$N" > "$STALLED"
-            if [ "$N" -ge 5 ]; then
-              echo "$(date '+%F %T') sustained wedge ($N cycles of canary 000 with cpu $C1/$C2), restarting mlx-lm-server" >> ${cfg.logDir}/watchdog.log
-              rm -f "$STALLED"
-              launchctl kickstart -k gui/$(id -u)/com.user.mlx-lm-server
-            else
-              echo "$(date '+%F %T') canary 000 but cpu $C1/$C2 (live decode), waiting ($N/5)" >> ${cfg.logDir}/watchdog.log
-            fi
-          fi
-        fi
-      else
-        rm -f ${cfg.logDir}/watchdog.stalled
+      # Static /v1/models: answered by the proxy itself, never triggers a
+      # model load, so this probe costs nothing and cannot queue behind
+      # generation.
+      CODE=$(curl -s -o /dev/null -w '%{http_code}' -m 15 \
+        http://127.0.0.1:${toString cfg.proxyPort}/v1/models)
+      if [ "$CODE" != "200" ]; then
+        echo "$(date '+%F %T') proxy unhealthy (HTTP $CODE), restarting mlx-lm-priority-proxy" >> ${cfg.logDir}/watchdog.log
+        launchctl kickstart -k gui/$(id -u)/com.user.mlx-lm-priority-proxy
       fi
     '';
     serviceConfig = {
