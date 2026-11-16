@@ -19,7 +19,7 @@ let
   cfg = {
     host = "127.0.0.1";
     port = 19177;
-    version = "1.2.0";
+    version = "1.2.1";
     apiUrl = "http://127.0.0.1:9177";
     logDir = "${homeDirectory}/.hindsight/profiles";
     node = pkgs.nodejs;
