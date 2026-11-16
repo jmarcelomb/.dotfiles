@@ -7,6 +7,15 @@
       SoftwareUpdate.AutomaticallyInstallMacOSUpdates = true;
       LaunchServices.LSQuarantine = false;
       screencapture.location = "${homeDirectory}/Pictures/screenshots";
+      # Keep the login session unlocked when the display sleeps: GUI-bound
+      # automation (imsg/AppleScript to Messages.app, screencapture,
+      # computer_use) hangs while IOConsoleLocked = Yes. The display still
+      # sleeps after 10 min (pmset), only the password prompt is gone.
+      # Manual lock (Ctrl+Cmd+Q) still locks.
+      screensaver = {
+        askForPassword = false;
+        askForPasswordDelay = 0;
+      };
       NSGlobalDomain = {
         _HIHideMenuBar = true;
         AppleShowAllExtensions = true;
