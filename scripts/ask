@@ -1,3 +1,6 @@
 #!/usr/bin/env bash
 
-opencode run --model "${OPENCODE_MODEL:-zai-coding-plan/glm-5.3-flash}" "$*"
+# Default to the OpenRouter ZDR preset. Never default to zai-coding-plan:
+# it is not ZDR and every prompt (including git diffs via gen_commit_msg)
+# would leave personal data on a provider without a retention policy.
+opencode run --model "${OPENCODE_MODEL:-openrouter/@preset/glm-flash-fp4}" "$*"
