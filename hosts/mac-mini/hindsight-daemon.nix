@@ -14,7 +14,7 @@ let
     port = 9177;
     logDir = "${homeDirectory}/.hindsight/profiles";
     envFile = "${homeDirectory}/.hindsight/profiles/hermes.env";
-    version = "1.2.0";
+    version = "1.2.1";
     # uv from the nix profile; stable across Hermes updates
     uv = "/etc/profiles/per-user/${user}/bin/uv";
   };
