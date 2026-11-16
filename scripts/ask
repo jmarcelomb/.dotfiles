@@ -4,4 +4,19 @@
 # it is not ZDR and every prompt (including git diffs via gen_commit_msg)
 # would leave personal data on a provider without a retention policy.
 # DeepSeek flash is the cheap ZDR tier; GLM stays available via OPENCODE_MODEL.
-opencode run --model "${OPENCODE_MODEL:-openrouter/@preset/deepseek-flash-1017}" "$*"
+model="${OPENCODE_MODEL:-openrouter/@preset/deepseek-flash-1017}"
+
+# Guard against an autonomous agent picking the non-ZDR route by mistake.
+# Marcelo uses the coding plan deliberately; an agent should not.
+case "$model" in
+  zai-coding-plan/*)
+    if [ "${ALLOW_ZAI:-0}" != "1" ]; then
+      echo "ask: refusing $model" >&2
+      echo "ask: zai-coding-plan is not ZDR and publishes no retention policy." >&2
+      echo "ask: set ALLOW_ZAI=1 to use it deliberately." >&2
+      exit 2
+    fi
+    ;;
+esac
+
+opencode run --model "$model" "$*"
