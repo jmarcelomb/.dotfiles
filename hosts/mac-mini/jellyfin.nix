@@ -36,8 +36,10 @@ in
   # /etc/fstab (macOS autofsd mounts nfs entries from fstab). /etc/fstab is
   # NOT managed declaratively because it already carries the Determinate Nix
   # Installer's /nix apfs entry, which must survive untouched; the activation
-  # script below only appends our line once.
-  system.activationScripts.jellyfinNfs.text = ''
+  # below only appends our line once. NOTE: custom system.activationScripts
+  # entries never run in nix-darwin unless a standard target pulls them in,
+  # hence extraActivation here.
+  system.activationScripts.extraActivation.text = ''
     mkdir -p "${dataDir}" "${cacheDir}" "${logDir}" "${mediaMount}"
     chown "${user}:staff" "${dataDir}" "${cacheDir}" "${logDir}" "${mediaMount}"
     if ! grep -q '${nasLanIp}:${nfsExport}' /etc/fstab; then
@@ -64,8 +66,9 @@ in
         "${dataDir}/config"
         "--logdir"
         logDir
-        "--ffmpeg"
-        "${pkgs.jellyfin-ffmpeg}/bin/ffmpeg"
+        # NB: do NOT pass --ffmpeg here - the nixpkgs wrapper already adds
+        # --ffmpeg (and --webdir); a second one makes the arg parser abort
+        # with "Option 'ffmpeg' is defined multiple times"
       ];
       RunAtLoad = true;
       KeepAlive = true;
