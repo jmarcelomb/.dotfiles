@@ -29,6 +29,9 @@
     ./hindsight-backup.nix
     # Google Workspace CLI (gws) - admin tooling
     ./googleworkspace.cli.nix
+    # Jellyfin media server (native build: VideoToolbox transcoding; media
+    # over NFS from the TrueNAS pool)
+    ./jellyfin.nix
   ];
 
   # Host-specific configuration
