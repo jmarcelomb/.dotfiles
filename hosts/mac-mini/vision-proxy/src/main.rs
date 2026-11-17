@@ -86,8 +86,16 @@ fn load_cfg() -> Cfg {
 struct State {
     child: Option<Child>,
     inflight: u32,
+    bg_inflight: u32,
+    priority_waiting: u32,
     last_used: Instant,
 }
+
+/// Priority lane: how many background-marked requests may be in flight at the
+/// backend simultaneously (1 = an interactive request queues behind at most one
+/// caption), and how long a held background request waits before giving up.
+const BG_LIMIT: u32 = 1;
+const BG_WAIT_TIMEOUT: Duration = Duration::from_secs(300);
 
 fn log(cfg: &Cfg, msg: &str) {
     let line = format!("{} {}\n", fmt_now(), msg);
@@ -415,6 +423,57 @@ fn handle(cfg: &'static Cfg, state: &'static Mutex<State>, mut stream: TcpStream
         return;
     }
 
+    // Priority lane (same contract as mlx-lm-priority-proxy): requests marked
+    // X-Priority: background (batch captioning - immich loop, messages delta)
+    // are held while interactive traffic is waiting, and at most BG_LIMIT run
+    // against the backend at once. The backend serializes generation anyway,
+    // so throughput is unchanged; an interactive request only ever queues
+    // behind the ONE in-flight caption instead of the whole batch.
+    let is_bg = req_headers.iter().any(|(n, v)| {
+        n.eq_ignore_ascii_case("x-priority") && v.trim().eq_ignore_ascii_case("background")
+    });
+    if is_bg {
+        let deadline = Instant::now() + BG_WAIT_TIMEOUT;
+        loop {
+            {
+                let mut s = match state.lock() {
+                    Ok(s) => s,
+                    Err(_) => return,
+                };
+                if s.priority_waiting == 0 && s.bg_inflight < BG_LIMIT {
+                    s.bg_inflight += 1;
+                    break;
+                }
+            }
+            if Instant::now() >= deadline {
+                send_json(
+                    &mut stream,
+                    503,
+                    "Service Unavailable",
+                    r#"{"error": {"message": "vision proxy busy: background request yielded to interactive traffic"}}"#,
+                );
+                return;
+            }
+            thread::sleep(Duration::from_millis(100));
+        }
+    } else if let Ok(mut s) = state.lock() {
+        s.priority_waiting += 1;
+    }
+    // Release admission counters on ANY exit path past this point.
+    struct Admission<'a>(&'a Mutex<State>, bool);
+    impl Drop for Admission<'_> {
+        fn drop(&mut self) {
+            if let Ok(mut s) = self.0.lock() {
+                if self.1 {
+                    s.bg_inflight = s.bg_inflight.saturating_sub(1);
+                } else {
+                    s.priority_waiting = s.priority_waiting.saturating_sub(1);
+                }
+            }
+        }
+    }
+    let _admission = Admission(state, is_bg);
+
     {
         let mut s = match state.lock() {
             Ok(s) => s,
@@ -514,6 +573,8 @@ fn main() {
     let state: &'static Mutex<State> = Box::leak(Box::new(Mutex::new(State {
         child: None,
         inflight: 0,
+        bg_inflight: 0,
+        priority_waiting: 0,
         last_used: Instant::now(),
     })));
     let _ = fs::create_dir_all(&cfg.log_dir);
