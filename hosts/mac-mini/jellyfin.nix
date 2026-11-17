@@ -32,6 +32,16 @@ let
   mediaMount = "${homeDirectory}/server/nas-media";
 in
 {
+  # macOS enforces NFS file permissions locally against the uid/gid the
+  # server reports. Media on the NAS is owned 3001:568 with mode 770 (dirs
+  # made by the arr containers are uid 568), so user 501 gets denied at
+  # open() even though the server-side mapall would allow it. A local group
+  # with the NAS's gid 568 containing the user makes the group bits apply.
+  users.groups.nas-media = {
+    gid = 568;
+    members = [ user ];
+  };
+
   # No fileSystems option in this nix-darwin - the NFS mount goes through
   # /etc/fstab (macOS autofsd mounts nfs entries from fstab). /etc/fstab is
   # NOT managed declaratively because it already carries the Determinate Nix
