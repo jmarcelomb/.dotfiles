@@ -18,6 +18,7 @@
         # Archive tools
         zip
         unzip
+        rsync # real rsync (macOS ships openrsync without --info/--sparse)
 
         # Version control
         git
@@ -95,7 +96,7 @@
         lazydocker
 
         # Data & document tools
-        tabiew
+        # tabiew
         glow
         imagemagick
       ];
