@@ -37,10 +37,9 @@ in
   # made by the arr containers are uid 568), so user 501 gets denied at
   # open() even though the server-side mapall would allow it. A local group
   # with the NAS's gid 568 containing the user makes the group bits apply.
-  users.groups.nas-media = {
-    gid = 568;
-    members = [ user ];
-  };
+  # (users.groups does not work for standalone groups in this nix-darwin -
+  # activation only creates groups referenced by users.users - so the group
+  # is managed with idempotent dscl calls below.)
 
   # No fileSystems option in this nix-darwin - the NFS mount goes through
   # /etc/fstab (macOS autofsd mounts nfs entries from fstab). /etc/fstab is
@@ -50,6 +49,15 @@ in
   # entries never run in nix-darwin unless a standard target pulls them in,
   # hence extraActivation here.
   system.activationScripts.extraActivation.text = ''
+    # Local group mirroring the NAS apps gid (see comment above)
+    if ! dscl . -read /Groups/nas-media PrimaryGroupID >/dev/null 2>&1; then
+      dscl . -create /Groups/nas-media PrimaryGroupID 568
+      dscl . -create /Groups/nas-media RealName 'NAS media (gid 568) for NFS access'
+    fi
+    if ! dscl . -read /Groups/nas-media GroupMembership 2>/dev/null | grep -qw '${user}'; then
+      dscl . -append /Groups/nas-media GroupMembership '${user}'
+    fi
+
     mkdir -p "${dataDir}" "${cacheDir}" "${logDir}" "${mediaMount}"
     chown "${user}:staff" "${dataDir}" "${cacheDir}" "${logDir}"
     # NB: never chown the media mount - once fstab automounts the NFS export
