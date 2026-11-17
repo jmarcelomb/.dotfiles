@@ -51,7 +51,10 @@ in
   # hence extraActivation here.
   system.activationScripts.extraActivation.text = ''
     mkdir -p "${dataDir}" "${cacheDir}" "${logDir}" "${mediaMount}"
-    chown "${user}:staff" "${dataDir}" "${cacheDir}" "${logDir}" "${mediaMount}"
+    chown "${user}:staff" "${dataDir}" "${cacheDir}" "${logDir}"
+    # NB: never chown the media mount - once fstab automounts the NFS export
+    # there, chown fails (Operation not permitted) and aborts the whole
+    # activation switch
     if ! grep -q '${nasLanIp}:${nfsExport}' /etc/fstab; then
       printf '%s:%s %s nfs rw,resvport,locallocks\n' \
         '${nasLanIp}' '${nfsExport}' '${mediaMount}' >> /etc/fstab
