@@ -21,6 +21,8 @@
     ./mlx-local-models-bridge.nix
     # Remote dashboard on the NetBird IP (phone app / browser extension)
     ./hermes-dashboard.nix
+    # Firecrawl Local (:3002) local web_extract backend, no cloud key
+    ./firecrawl-local.nix
     # Hindsight memory daemon (profile hermes, pg0 hindsight-embed-hermes)
     ./hindsight-daemon.nix
     # Hindsight control plane web UI (:19177), loopback only
