@@ -1,9 +1,11 @@
 #!/bin/sh
-# firecrawl-local-update — check or apply a firecrawl-local version bump.
+# firecrawl-local-update — check, apply or auto-apply a firecrawl-local bump.
 #
-#   firecrawl-local-update check    one line: up-to-date / update-available (exit 1 when behind)
-#   firecrawl-local-update notify   prints ONLY when a newer release exists (cron no_agent mode)
-#   firecrawl-local-update apply    cargo install the latest, then restart the launchd agent
+#   check      one line: up-to-date / update-available (exit 1 when behind)
+#   notify     prints ONLY when a newer release exists (manual watchdog)
+#   apply      build the latest release now, then restart the launchd agent
+#   auto       cron entry point: silent when current, otherwise build detached
+#              and report the outcome to the watch target when it finishes
 #
 # The binary is not in nixpkgs and has no brew formula, so darwin-rebuild never
 # touches it: ~/.dotfiles/hosts/mac-mini/firecrawl-local.nix carries only the
@@ -18,7 +20,11 @@ API="https://crates.io/api/v1/crates/$CRATE"
 BIN="$HOME/.cargo/bin/$CRATE"
 LABEL="io.firecrawl.local"
 LOG="$HOME/.hermes/logs/firecrawl-local-update.log"
+TARGET="${FIRECRAWL_WATCH_TARGET:-matrix:!_AIcu1YQKB7_AGWO8EhtwxBWa-vKAGprs97vSgUpgUY}"
+SELF="$HOME/scripts/firecrawl-local-update"
 PATH="/etc/profiles/per-user/$(id -un)/bin:/usr/bin:/bin:/usr/sbin:/sbin:$HOME/.cargo/bin:$PATH"
+[ -x "$HOME/hermes/hermes/hermes-agent/.hermes/bin/hermes" ] && \
+  PATH="$HOME/hermes/hermes/hermes-agent/.hermes/bin:$PATH"
 export PATH
 
 installed() {
@@ -31,6 +37,34 @@ latest() {
     | python3 -c 'import json,sys; print(json.load(sys.stdin)["crate"]["max_version"])'
 }
 
+# Build the latest release and restart the agent. Prints one closing line and
+# returns non-zero (old binary still serving) when the build fails.
+do_apply() {
+  i=$(installed)
+  l=$(latest)
+  if [ "$i" = "$l" ]; then
+    echo "already up-to-date ($i)"
+    return 0
+  fi
+  echo "building $l (installed $i), log: $LOG"
+  export SDKROOT="$(/usr/bin/xcrun --show-sdk-path)"
+  export CC=/usr/bin/clang CXX=/usr/bin/clang++
+  export CARGO_TARGET_AARCH64_APPLE_DARWIN_LINKER=/usr/bin/clang
+  if ! cargo install "$CRATE" >>"$LOG" 2>&1; then
+    echo "build failed, still serving $i; see $LOG"
+    return 1
+  fi
+  launchctl kickstart -k "gui/$(id -u)/$LABEL"
+  n=0
+  while [ "$n" -lt 10 ]; do
+    sleep 2
+    n=$((n + 1))
+    curl -fsS --max-time 3 http://127.0.0.1:3002/health >/dev/null 2>&1 && break
+  done
+  health=$(curl -fsS --max-time 5 http://127.0.0.1:3002/health || echo DOWN)
+  echo "now running $(installed), health: $health"
+}
+
 case "${1:-check}" in
   check)
     i=$(installed); l=$(latest)
@@ -40,34 +74,35 @@ case "${1:-check}" in
     echo "update-available installed=$i latest=$l"; exit 1
     ;;
   notify)
-    # Cron mode: silence is the normal answer, and a crates.io hiccup must not
-    # turn into a delivery error either.
+    # Silence is the normal answer, and a crates.io hiccup must not become a
+    # delivery error either.
     i=$(installed) || exit 0
     l=$(latest 2>/dev/null) || exit 0
     [ "$i" = "$l" ] && exit 0
     printf 'firecrawl-local %s disponível (instalado %s). Aplicar com: ~/scripts/firecrawl-local-update apply\n' "$l" "$i"
     ;;
   apply)
-    i=$(installed); l=$(latest)
-    if [ "$i" = "$l" ]; then
-      echo "already up-to-date ($i)"; exit 0
+    do_apply
+    ;;
+  auto)
+    # Cron entry point: stay silent unless there is work, and hand the ~30 min
+    # build to a detached child so the scheduler returns at once.
+    i=$(installed) || exit 0
+    l=$(latest 2>/dev/null) || exit 0
+    [ "$i" = "$l" ] && exit 0
+    nohup "$SELF" _auto-run "$i" "$l" >>"$LOG" 2>&1 &
+    ;;
+  _auto-run)
+    from=${2:-?}; to=${3:-?}
+    if out=$(do_apply 2>&1); then
+      msg="firecrawl-local atualizado $from -> $to. $(printf '%s' "$out" | tail -n 1)"
+    else
+      msg="firecrawl-local: build de $to falhou, continua em $(installed). Log: $LOG"
     fi
-    echo "building $l (installed $i), log: $LOG"
-    export SDKROOT="$(/usr/bin/xcrun --show-sdk-path)"
-    export CC=/usr/bin/clang CXX=/usr/bin/clang++
-    export CARGO_TARGET_AARCH64_APPLE_DARWIN_LINKER=/usr/bin/clang
-    if ! cargo install "$CRATE" >>"$LOG" 2>&1; then
-      echo "build failed, still serving $(installed); see $LOG" >&2
-      exit 1
-    fi
-    launchctl kickstart -k "gui/$(id -u)/$LABEL"
-    for _ in 1 2 3 4 5 6 7 8 9 10; do
-      sleep 2
-      curl -fsS --max-time 3 http://127.0.0.1:3002/health >/dev/null 2>&1 && break
-    done
-    echo "now running $(installed); health: $(curl -fsS --max-time 5 http://127.0.0.1:3002/health || echo DOWN)"
+    printf '%s\n' "$msg" >>"$LOG"
+    hermes send -t "$TARGET" -q "$msg" || printf 'send failed: %s\n' "$msg" >>"$LOG"
     ;;
   *)
-    echo "usage: $0 [check|notify|apply]" >&2; exit 2
+    echo "usage: $0 [check|notify|apply|auto]" >&2; exit 2
     ;;
 esac
