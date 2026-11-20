@@ -9,6 +9,14 @@
 #   cargo install firecrawl-local
 # (nix's `cc` is GCC, which fails the aws-lc-sys link step with `-liconv`.)
 #
+# Updating is manual and independent of darwin-rebuild: nixpkgs has no
+# firecrawl-local attribute and there is no brew formula, so this file pins the
+# launchd wrapper, not the version. To bump, rerun the same cargo install (it
+# picks the latest crates.io release, ~30 min cold) and restart the agent:
+#   launchctl kickstart -k gui/$(id -u)/io.firecrawl.local
+# The service keeps serving the old binary until that kickstart, so a failed
+# build changes nothing.
+#
 # FIRECRAWL_CLOUD=off keeps every fetch local: no search, no blocked-page
 # hand-off to Firecrawl Cloud. Search stays on searxng, which Hermes already uses.
 { user, homeDirectory, ... }:
