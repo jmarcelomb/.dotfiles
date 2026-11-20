@@ -18,8 +18,12 @@
 # A cold build takes ~30 min; the service keeps serving the old binary until
 # the kickstart, so a failed build changes nothing.
 #
-# FIRECRAWL_CLOUD=off keeps every fetch local: no search, no blocked-page
-# hand-off to Firecrawl Cloud. Search stays on searxng, which Hermes already uses.
+# Hybrid mode: local first, cloud only for pages this machine cannot get. The
+# server does the cloud call itself, so the key must be in ITS environment; it
+# lives in ~/.hermes/firecrawl-local.env (outside git) and sets
+# FIRECRAWL_CLOUD=auto. Without that file the agent falls back to off, so the
+# service still runs with no key at all. Each cloud fallback costs 1 credit on
+# the free plan and comes back with "source": "firecrawl-cloud".
 { user, homeDirectory, ... }:
 
 let
@@ -32,7 +36,15 @@ in
 {
   launchd.user.agents.firecrawl-local = {
     script = ''
-      export FIRECRAWL_CLOUD=off
+      # Cloud fallback config (key + FIRECRAWL_CLOUD) lives outside the repo.
+      # Absent file means pure local mode, which is a valid deployment.
+      if [ -f "${homeDirectory}/.hermes/firecrawl-local.env" ]; then
+        set -a
+        . "${homeDirectory}/.hermes/firecrawl-local.env"
+        set +a
+      else
+        export FIRECRAWL_CLOUD=off
+      fi
       exec ${cfg.bin} serve --port ${toString cfg.port}
     '';
     serviceConfig = {
