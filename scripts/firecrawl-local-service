@@ -1,0 +1,69 @@
+#!/bin/sh
+# firecrawl-local-service start|stop|status|restart
+#
+# Manages the launchd agent io.firecrawl.local (port 3002). It is off by default
+# since 2026-11-20: web_extract runs on the keyless vendor ring (keenable) so no
+# bot traffic leaves the house. Start it when a task needs what only the local
+# instance gives: screenshots, html/links formats, the full Reddit thread, or no
+# vendor rate limits. Remember its traffic comes from this machine's IP.
+#
+# The agent runs whatever plist is installed (hosts/mac-mini/firecrawl-local.nix,
+# applied by darwin-rebuild); it sources ~/.hermes/firecrawl-local.env when present.
+set -eu
+
+LABEL="io.firecrawl.local"
+PLIST="$HOME/Library/LaunchAgents/$LABEL.plist"
+DOMAIN="gui/$(id -u)"
+PORT=3002
+
+health() {
+  curl -fsS --max-time 4 "http://127.0.0.1:$PORT/health" 2>/dev/null || true
+}
+
+loaded() {
+  launchctl print "$DOMAIN/$LABEL" >/dev/null 2>&1
+}
+
+case "${1:-status}" in
+  start)
+    [ -f "$PLIST" ] || { echo "no plist at $PLIST (run darwin-rebuild first)" >&2; exit 1; }
+    if loaded; then
+      echo "already loaded"
+    else
+      launchctl bootstrap "$DOMAIN" "$PLIST"
+    fi
+    n=0
+    while [ "$n" -lt 10 ]; do
+      [ -n "$(health)" ] && break
+      sleep 1
+      n=$((n + 1))
+    done
+    echo "health: $(health || echo DOWN)"
+    ;;
+  stop)
+    if loaded; then
+      launchctl bootout "$DOMAIN/$LABEL"
+      echo "stopped"
+    else
+      echo "already stopped"
+    fi
+    ;;
+  restart)
+    "$0" stop
+    "$0" start
+    ;;
+  status)
+    if loaded; then
+      echo "launchd: loaded"
+      launchctl print "$DOMAIN/$LABEL" | grep -E "^\s+(state|pid|runs)" | sed 's/^/  /'
+    else
+      echo "launchd: not loaded"
+    fi
+    echo "binary:  $("$HOME/.cargo/bin/firecrawl-local" --version 2>/dev/null || echo missing)"
+    echo "health:  $(health || echo DOWN)"
+    ;;
+  *)
+    echo "usage: $0 [start|stop|status|restart]" >&2
+    exit 2
+    ;;
+esac
