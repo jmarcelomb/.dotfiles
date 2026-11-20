@@ -1,0 +1,73 @@
+#!/bin/sh
+# firecrawl-local-update — check or apply a firecrawl-local version bump.
+#
+#   firecrawl-local-update check    one line: up-to-date / update-available (exit 1 when behind)
+#   firecrawl-local-update notify   prints ONLY when a newer release exists (cron no_agent mode)
+#   firecrawl-local-update apply    cargo install the latest, then restart the launchd agent
+#
+# The binary is not in nixpkgs and has no brew formula, so darwin-rebuild never
+# touches it: ~/.dotfiles/hosts/mac-mini/firecrawl-local.nix carries only the
+# launchd wrapper. A cold build takes ~30 min (aws-lc-sys and friends).
+#
+# The clang/SDKROOT exports are required: the nix profile's `cc` is GCC, which
+# fails the aws-lc-sys link step with `ld: library not found for -liconv`.
+set -eu
+
+CRATE=firecrawl-local
+API="https://crates.io/api/v1/crates/$CRATE"
+BIN="$HOME/.cargo/bin/$CRATE"
+LABEL="io.firecrawl.local"
+LOG="$HOME/.hermes/logs/firecrawl-local-update.log"
+PATH="/etc/profiles/per-user/$(id -un)/bin:/usr/bin:/bin:/usr/sbin:/sbin:$HOME/.cargo/bin:$PATH"
+export PATH
+
+installed() {
+  [ -x "$BIN" ] || { echo none; return 0; }
+  "$BIN" --version 2>/dev/null | awk '{print $2}'
+}
+
+latest() {
+  curl -fsS --max-time 25 -H "User-Agent: hermes-firecrawl-update" "$API" \
+    | python3 -c 'import json,sys; print(json.load(sys.stdin)["crate"]["max_version"])'
+}
+
+case "${1:-check}" in
+  check)
+    i=$(installed); l=$(latest)
+    if [ "$i" = "$l" ]; then
+      echo "up-to-date installed=$i latest=$l"; exit 0
+    fi
+    echo "update-available installed=$i latest=$l"; exit 1
+    ;;
+  notify)
+    # Cron mode: silence is the normal answer, and a crates.io hiccup must not
+    # turn into a delivery error either.
+    i=$(installed) || exit 0
+    l=$(latest 2>/dev/null) || exit 0
+    [ "$i" = "$l" ] && exit 0
+    printf 'firecrawl-local %s disponível (instalado %s). Aplicar com: ~/scripts/firecrawl-local-update apply\n' "$l" "$i"
+    ;;
+  apply)
+    i=$(installed); l=$(latest)
+    if [ "$i" = "$l" ]; then
+      echo "already up-to-date ($i)"; exit 0
+    fi
+    echo "building $l (installed $i), log: $LOG"
+    export SDKROOT="$(/usr/bin/xcrun --show-sdk-path)"
+    export CC=/usr/bin/clang CXX=/usr/bin/clang++
+    export CARGO_TARGET_AARCH64_APPLE_DARWIN_LINKER=/usr/bin/clang
+    if ! cargo install "$CRATE" >>"$LOG" 2>&1; then
+      echo "build failed, still serving $(installed); see $LOG" >&2
+      exit 1
+    fi
+    launchctl kickstart -k "gui/$(id -u)/$LABEL"
+    for _ in 1 2 3 4 5 6 7 8 9 10; do
+      sleep 2
+      curl -fsS --max-time 3 http://127.0.0.1:3002/health >/dev/null 2>&1 && break
+    done
+    echo "now running $(installed); health: $(curl -fsS --max-time 5 http://127.0.0.1:3002/health || echo DOWN)"
+    ;;
+  *)
+    echo "usage: $0 [check|notify|apply]" >&2; exit 2
+    ;;
+esac

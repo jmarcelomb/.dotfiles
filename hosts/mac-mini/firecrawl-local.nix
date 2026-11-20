@@ -11,11 +11,12 @@
 #
 # Updating is manual and independent of darwin-rebuild: nixpkgs has no
 # firecrawl-local attribute and there is no brew formula, so this file pins the
-# launchd wrapper, not the version. To bump, rerun the same cargo install (it
-# picks the latest crates.io release, ~30 min cold) and restart the agent:
-#   launchctl kickstart -k gui/$(id -u)/io.firecrawl.local
-# The service keeps serving the old binary until that kickstart, so a failed
-# build changes nothing.
+# launchd wrapper, not the version. Use the dotfiles script, which runs the
+# clang/SDKROOT exports, the cargo install and the restart in one go:
+#   ~/scripts/firecrawl-local-update check    # installed vs crates.io
+#   ~/scripts/firecrawl-local-update apply    # build latest, then kickstart
+# A cold build takes ~30 min; the service keeps serving the old binary until
+# the kickstart, so a failed build changes nothing.
 #
 # FIRECRAWL_CLOUD=off keeps every fetch local: no search, no blocked-page
 # hand-off to Firecrawl Cloud. Search stays on searxng, which Hermes already uses.
