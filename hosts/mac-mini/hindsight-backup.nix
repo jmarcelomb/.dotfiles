@@ -10,7 +10,12 @@
 # hindsight-embed-hermes/instance.json; port differs from the work Mac's 5433).
 # The 03:30 slot keeps the backup off the evening window when the local models
 # are in use; pg_dump is I/O-light and does not touch the GPUs.
-{ user, homeDirectory, pkgs, ... }:
+{
+  user,
+  homeDirectory,
+  pkgs,
+  ...
+}:
 
 let
   backupScript = pkgs.writeShellScript "hindsight-backup" ''

@@ -18,7 +18,12 @@
 # Hermes aux.vision points at http://127.0.0.1:8081/v1 with model
 # mlx-community/Qwen3.5-4B-4bit (see ~/hermes/hermes/config.yaml).
 # First request after idle pays a ~10s model load; warm requests ~0.5s.
-{ pkgs, user, homeDirectory, ... }:
+{
+  pkgs,
+  user,
+  homeDirectory,
+  ...
+}:
 
 let
   visionProxy = pkgs.rustPlatform.buildRustPackage {

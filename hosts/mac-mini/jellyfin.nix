@@ -20,7 +20,12 @@
 #
 # The old NAS app is the rollback path (sudo midclt call app.start
 # id=jellyfin) - keep it stopped, do not delete it.
-{ pkgs, user, homeDirectory, ... }:
+{
+  pkgs,
+  user,
+  homeDirectory,
+  ...
+}:
 
 let
   # DHCP lease with router reservation (same situation as hermes-dashboard.nix)
