@@ -1,7 +1,7 @@
 # Matrix - Matrix homeserver VM (continuwuity, ~/server/matrix)
 #
-# Formerly the Fluxer chat VM; Fluxer was torn down on 2026-11-07 (backups
-# archived on the nas/fluxer TrueNAS dataset). Cloned from chakra's disk
+# Formerly the Fluxer chat VM; Fluxer was torn down on 2026-11-07 and its
+# last backups were deleted on 2026-11-22. Cloned from chakra's disk
 # (TrueNAS vm.clone), so hardware-configuration.nix carries chakra's UUIDs:
 # they are correct for this VM's own zvols.
 {

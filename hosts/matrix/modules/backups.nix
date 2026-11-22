@@ -9,7 +9,7 @@
   # restart policy - hence the explicit `docker start`.
   #
   # (The Fluxer nightly backup that used to live here died with Fluxer on
-  # 2026-11-07; its backups are archived on the nas/fluxer TrueNAS dataset.)
+  # 2026-11-07; its remaining backups were deleted on 2026-11-22.)
   systemd.services.matrix-backup = {
     description = "Backup Matrix homeserver data to TrueNAS";
     wants = [ "network-online.target" ];
