@@ -38,4 +38,37 @@
 
   # Host-specific configuration
   # (Most config comes from nix-darwin/profiles/base.nix)
+
+  # Automatic login at boot, so the user LaunchAgents (Hermes gateway, MLX
+  # proxies, Hindsight, dashboard) come up with nobody at the console.
+  # macOS refuses automatic login while FileVault is on, so this only takes
+  # effect after `sudo fdesetup disable` has finished decrypting the disk.
+  # This writes the preference only; the stored password comes from the
+  # "Automatically log in as" toggle in System Settings or from
+  # `sudo sysadminctl -autologin set`.
+  system.defaults.loginwindow.autoLoginUser = "jmmb";
+
+  # Lock the console again right after that automatic login: session up,
+  # services running, desktop waiting for the password. Only within the first
+  # 10 minutes of boot, so a manual logout/login later in the day does not get
+  # locked out from under you. Uses the Shortcuts "Lock Screen" action instead
+  # of the screensaver, because askForPassword is deliberately false in
+  # nix-darwin/system.nix (a screensaver lock would also fire on every display
+  # sleep and hang GUI-bound automation: imsg, screencapture, computer_use).
+  launchd.user.agents.console-lock = {
+    serviceConfig = {
+      ProgramArguments = [
+        "/bin/sh"
+        "-c"
+        ''
+          sleep 20
+          boot=$(/usr/sbin/sysctl -n kern.boottime | sed 's/[^0-9]*\([0-9]\{1,\}\).*/\1/')
+          [ $(( $(/bin/date +%s) - boot )) -lt 600 ] && exec /usr/bin/shortcuts run 'Bloquear ecrã'
+          exit 0
+        ''
+      ];
+      RunAtLoad = true;
+      KeepAlive = false;
+    };
+  };
 }
