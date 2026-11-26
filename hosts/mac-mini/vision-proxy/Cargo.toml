@@ -9,4 +9,4 @@ strip = true
 lto = true
 
 [dependencies]
-nix = { version = "0.30", default-features = false, features = ["signal", "process"] }
+nix = { version = "0.32", default-features = false, features = ["signal", "process"] }
